@@ -9,8 +9,8 @@ public class Order extends ModelBase implements Serializable {
     private int id;
     private String no;
     private Date date;
-    private int cus_id;
     private int wh_id;
+    private int cus_id;
     private String cus_name;
     private OrderStat stat;
     private List<OrderItem> items;
@@ -22,13 +22,14 @@ public class Order extends ModelBase implements Serializable {
     private String usr_name;
     private static final long serialVersionUID = 2L;
 
-    public Order() {
+    public Order(int cus_id,String cus_name) {
         super(true);
         date = new Date();
         itemCount = 0;
         qty = 0;
         weight = 0;
         amount = 0;
+        this.cus_id = cus_id;
         usr_id = Global.usr_Id;
         usr_name = Global.usr_name;
         items = new ArrayList<>();
@@ -52,9 +53,6 @@ public class Order extends ModelBase implements Serializable {
         this.usr_name = usr_name;
     }
 
-    public void setCus_id(int cus_id) {
-        this.cus_id = cus_id;
-    }
 
     public String getNo() {
         return no;
@@ -72,10 +70,6 @@ public class Order extends ModelBase implements Serializable {
         return cus_name;
     }
 
-    public void setCus_name(String cus_name) {
-        this.cus_name = cus_name;
-    }
-
     public OrderStat getStat() {
         return stat;
     }
@@ -85,11 +79,18 @@ public class Order extends ModelBase implements Serializable {
     }
 
     public void setId(int id) {
-        this.id = id;
+        if (this.id != id) {
+            this.id = id;
+            updateRecordStat();
+        }
     }
 
     public void setStat(OrderStat stat) {
-        this.stat = stat;
+        if (this.stat != stat) {
+            this.stat = stat;
+            updateRecordStat();
+        }
+
     }
 
     public List<OrderItem> getItems() {
@@ -105,7 +106,11 @@ public class Order extends ModelBase implements Serializable {
     }
 
     public void setItemCount(int itemCount) {
-        this.itemCount = itemCount;
+        if (this.itemCount != itemCount) {
+            this.itemCount = itemCount;
+            updateRecordStat();
+        }
+
     }
 
     public int getQty() {
@@ -113,7 +118,10 @@ public class Order extends ModelBase implements Serializable {
     }
 
     public void setQty(int qty) {
-        this.qty = qty;
+        if (this.qty != qty) {
+            this.qty = qty;
+            updateRecordStat();
+        }
     }
 
     public float getWeight() {
@@ -121,7 +129,11 @@ public class Order extends ModelBase implements Serializable {
     }
 
     public void setWeight(float weight) {
-        this.weight = weight;
+        if (this.weight != weight) {
+            this.weight = weight;
+            updateRecordStat();
+        }
+
     }
 
     public float getAmount() {
@@ -129,7 +141,10 @@ public class Order extends ModelBase implements Serializable {
     }
 
     public void setAmount(float amount) {
-        this.amount = amount;
+        if (this.amount != amount) {
+            this.amount = amount;
+            updateRecordStat();
+        }
     }
 
     public int getUsr_id() {
@@ -152,7 +167,4 @@ public class Order extends ModelBase implements Serializable {
         return wh_id;
     }
 
-    public void setWh_id(int wh_id) {
-        this.wh_id = wh_id;
-    }
 }

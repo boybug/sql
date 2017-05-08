@@ -22,6 +22,7 @@ public class ActProductPrice extends ActBase {
     private TextView productprice_name, productprice_stock, productprice_wgt;
     private Product prod;
     private List<StepPrice> stepPrices = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

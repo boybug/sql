@@ -29,6 +29,7 @@ public class ActOrder extends ActBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.listing);
 
+        hideFloatButton(R.id.fab);
         setTitle("รายการบิลขาย@" + Global.wh_name);
 
         try {
@@ -83,11 +84,5 @@ public class ActOrder extends ActBase {
             startActivity(intent);
         });
 
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(v -> {
-            Intent intent = new Intent(ActOrder.this, ActOrderInput.class);
-            startActivity(intent);
-        });
     }
 }

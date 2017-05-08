@@ -33,6 +33,10 @@ public class ActLogin extends ActBase {
         loginPrefsEditor = loginPreferences.edit();
         Boolean saveLogin = loginPreferences.getBoolean("saveLogin", false);
 
+        txt_username.setText("xclnc");
+        txt_password.setText("xclnc");
+
+
         if (saveLogin == true) {
             txt_username.setText(loginPreferences.getString("username", null));
             txt_password.setText(loginPreferences.getString("password", null));
@@ -58,6 +62,8 @@ public class ActLogin extends ActBase {
                 }
             }
         });
+
+        bt_cmd_save.performClick();
     }
 
     private boolean Validate() {

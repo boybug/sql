@@ -1,6 +1,8 @@
 package com.newit.bsrpos_sql.Model;
 
-public class ModelBase {
+import java.io.Serializable;
+
+public class ModelBase implements Serializable {
     private RecordStat recordStat;
 
     public ModelBase(boolean isNew) {

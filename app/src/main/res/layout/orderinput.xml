@@ -48,8 +48,8 @@
                             layout="@layout/listing_search"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentStart="true" />
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true" />
 
                         <ListView
                             android:id="@+id/orderinput_product"
@@ -58,6 +58,7 @@
                             android:layout_below="@+id/search"></ListView>
                     </RelativeLayout>
                 </TableRow>
+
 
                 <TableRow
                     android:id="@+id/tab_empty"
@@ -70,14 +71,6 @@
                         android:layout_span="2" />
                 </TableRow>
             </TableLayout>
-
-            <include
-                layout="@layout/btn_save"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_span="2" />
 
         </LinearLayout>
     </android.support.design.widget.NavigationView>

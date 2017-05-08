@@ -3,27 +3,16 @@ package com.newit.bsrpos_sql.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ListView;
+import android.support.design.widget.FloatingActionButton;
 import android.widget.TextView;
 
 import com.newit.bsrpos_sql.Model.Customer;
-import com.newit.bsrpos_sql.Model.Global;
-import com.newit.bsrpos_sql.Model.Product;
-import com.newit.bsrpos_sql.Model.StepPrice;
 import com.newit.bsrpos_sql.R;
-import com.newit.bsrpos_sql.Util.AdpCustom;
-import com.newit.bsrpos_sql.Util.SqlServer;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ActCustomerDetail extends ActBase {
 
     private TextView customerdetail_name, customerdetail_addr, customerdetail_ship, customerdetail_tel;
-    private Customer cus;
+    private Customer customer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,17 +25,16 @@ public class ActCustomerDetail extends ActBase {
             customerdetail_ship = (TextView) findViewById(R.id.customerdetail_ship);
             customerdetail_tel = (TextView) findViewById(R.id.customerdetail_tel);
 
-            customerdetail_name.setText(cus.getName());
-            customerdetail_addr.setText(String.valueOf(cus.getAddr()));
-            customerdetail_ship.setText(String.valueOf(cus.isShip() ? "ส่ง" : "ไม่ส่ง"));
-            customerdetail_tel.setText(String.valueOf(cus.getTel()));
+            customerdetail_name.setText(customer.getName());
+            customerdetail_addr.setText(String.valueOf(customer.getAddr()));
+            customerdetail_ship.setText(String.valueOf(customer.isShip() ? "ส่ง" : "ไม่ส่ง"));
+            customerdetail_tel.setText(String.valueOf(customer.getTel()));
 
             customerdetail_tel.setOnClickListener(v -> {
                 // TODO Auto-generated method stub
-                if(cus.getTel().equals("")) {
+                if (customer.getTel().equals("")) {
                     return;
-                }
-                else {
+                } else {
                     Intent callIntent = new Intent(Intent.ACTION_DIAL);
                     callIntent.setData(Uri.parse("tel:" + customerdetail_tel.getText()));
                     startActivity(callIntent);
@@ -54,13 +42,21 @@ public class ActCustomerDetail extends ActBase {
             });
 
         }
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("customer", customer);
+            Intent intent = new Intent(ActCustomerDetail.this, ActOrderInput.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        });
     }
 
     private boolean validate() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            cus = (Customer) bundle.getSerializable("customer");
-            if (cus != null)
+            customer = (Customer) bundle.getSerializable("customer");
+            if (customer != null)
                 return true;
         }
         return false;

@@ -69,16 +69,14 @@ public class OrderItem extends ModelBase implements Serializable {
     }
 
     public void setId(int id) {
-        this.id = id;
-        updateRecordStat();
+        if (this.id != id) {
+            this.id = id;
+            updateRecordStat();
+        }
     }
 
     public int getNo() {
         return no;
-    }
-
-    public void setNo(int no) {
-        this.no = no;
     }
 
     public Product getProduct() {
@@ -86,8 +84,10 @@ public class OrderItem extends ModelBase implements Serializable {
     }
 
     public void setProduct(Product product) {
-        this.product = product;
-        updateRecordStat();
+        if (this.product != product) {
+            this.product = product;
+            updateRecordStat();
+        }
     }
 
     public int getQty() {
@@ -95,8 +95,10 @@ public class OrderItem extends ModelBase implements Serializable {
     }
 
     public void setQty(int qty) {
-        this.qty = qty;
-        updateRecordStat();
+        if (this.qty != qty) {
+            this.qty = qty;
+            updateRecordStat();
+        }
     }
 
     public float getPrice() {
@@ -104,8 +106,10 @@ public class OrderItem extends ModelBase implements Serializable {
     }
 
     public void setPrice(float price) {
-        this.price = price;
-        updateRecordStat();
+        if (this.price != price) {
+            this.price = price;
+            updateRecordStat();
+        }
     }
 
     public float getWeight() {
@@ -124,8 +128,10 @@ public class OrderItem extends ModelBase implements Serializable {
     }
 
     public void setAmount(float amount) {
-        this.amount = amount;
-        updateRecordStat();
+        if (this.amount != amount) {
+            this.amount = amount;
+            updateRecordStat();
+        }
     }
 
     public Order getOrder() {
@@ -162,7 +168,4 @@ public class OrderItem extends ModelBase implements Serializable {
         return uom_id;
     }
 
-    public void setUom_id(int uom_id) {
-        this.uom_id = uom_id;
-    }
 }
