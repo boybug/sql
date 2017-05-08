@@ -28,7 +28,7 @@ public class OrderItem extends ModelBase implements Serializable {
         price = 0;
         weight = 0;
         amount = 0;
-        uom_id = 0;
+        uom_id = product.getUom_id();
         initialization(order, no, product);
     }
 
@@ -39,7 +39,7 @@ public class OrderItem extends ModelBase implements Serializable {
         this.price = price;
         this.weight = weight;
         this.amount = amount;
-        this.id = uom_id;
+        this.uom_id = uom_id;
         initialization(order, no, product);
     }
 

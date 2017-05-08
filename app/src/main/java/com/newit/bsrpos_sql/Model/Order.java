@@ -8,7 +8,7 @@ import java.util.List;
 public class Order extends ModelBase implements Serializable {
     private int id;
     private String no;
-    private Date date;
+    private String date;
     private int wh_id;
     private int cus_id;
     private String cus_name;
@@ -20,24 +20,29 @@ public class Order extends ModelBase implements Serializable {
     private float amount;
     private int usr_id;
     private String usr_name;
+    private String pay;
+    private boolean ship;
+    private String remaek;
     private static final long serialVersionUID = 2L;
 
-    public Order(int cus_id,String cus_name) {
+    public Order(int cus_id, String cus_name, boolean ship ) {
         super(true);
-        date = new Date();
+        date = new Date().toString();
         itemCount = 0;
         qty = 0;
         weight = 0;
         amount = 0;
         this.cus_id = cus_id;
+        this.cus_name = cus_name;
         usr_id = Global.usr_Id;
         usr_name = Global.usr_name;
         items = new ArrayList<>();
         stat = OrderStat.New;
         wh_id = Global.wh_Id;
+        this.ship = ship;
     }
 
-    public Order(int id, String no, Date date, int cus_id, String cus_name, int wh_id, OrderStat stat, int qty, float weight, float amount, int usr_Id, String usr_name) {
+    public Order(int id, String no, String date, int cus_id, String cus_name, int wh_id, OrderStat stat, int qty, float weight, float amount, int usr_id, String usr_name, String pay, boolean ship, String remaek) {
         super(false);
         this.id = id;
         this.no = no;
@@ -49,8 +54,11 @@ public class Order extends ModelBase implements Serializable {
         this.qty = qty;
         this.weight = weight;
         this.amount = amount;
-        this.usr_id = usr_Id;
+        this.usr_id = usr_id;
         this.usr_name = usr_name;
+        this.pay = pay;
+        this.ship = ship;
+        this.remaek = remaek;
     }
 
 
@@ -58,7 +66,14 @@ public class Order extends ModelBase implements Serializable {
         return no;
     }
 
-    public Date getDate() {
+    public void setNo(String no) {
+        if (this.no != no) {
+            this.no = no;
+            updateRecordStat();
+        }
+    }
+
+    public String getDate() {
         return date;
     }
 
@@ -167,4 +182,36 @@ public class Order extends ModelBase implements Serializable {
         return wh_id;
     }
 
+    public String getPay() {
+        return pay;
+    }
+
+    public void setPay(String pay) {
+        if (this.pay != pay) {
+            this.pay = pay;
+            updateRecordStat();
+        }
+    }
+
+    public boolean isShip() {
+        return ship;
+    }
+
+    public void setShip(boolean ship) {
+        if (this.ship != ship) {
+            this.ship = ship;
+            updateRecordStat();
+        }
+    }
+
+    public String getRemaek() {
+        return remaek;
+    }
+
+    public void setRemaek(String remaek) {
+        if (this.remaek != remaek) {
+            this.remaek = remaek;
+            updateRecordStat();
+        }
+    }
 }

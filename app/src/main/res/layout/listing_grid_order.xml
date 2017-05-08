@@ -9,23 +9,20 @@
         android:layout_height="fill_parent"
         android:layout_alignBottom="@+id/order_usr"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/order_qty"
+        android:layout_below="@+id/order_ship"
         android:layout_marginRight="6dip"
-        android:contentDescription="TODO"
         android:gravity="center_vertical"
         android:text="00.00"
         android:textColor="#ff0000" />
 
     <TextView
-        android:id="@+id/order_qty"
+        android:id="@+id/order_ship"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_above="@+id/order_cus"
         android:layout_alignEnd="@+id/order_amount"
         android:layout_alignParentTop="true"
-
         android:layout_toStartOf="@+id/order_amount"
-        android:contentDescription="TODO"
         android:gravity="center_vertical"
         android:text="00.00" />
 
@@ -59,7 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_toStartOf="@+id/order_qty"
+        android:layout_toStartOf="@+id/order_ship"
         android:gravity="center_vertical"
         android:paddingLeft="5dp"
         android:text="Example application"

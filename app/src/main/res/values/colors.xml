@@ -2,11 +2,11 @@
 <resources>
     <color name="colorPrimaryDark">#303F9F</color>
 
-    <color name="colorPrimary">#0B6486</color>
+    <color name="colorPrimary">#0b6486</color>
     <color name="colorPrimaryNavy">#9DD8D2</color>
     <color name="colorPrimaryGreen">#80C79B</color>
     <color name="colorPrimaryYellow">#CAD73F</color>
-    <color name="colorAccent">#F49144</color>
+    <color name="colorAccent">#f49144</color>
 
     <color name="colorFish">#0070a2</color>
     <color name="colorSquid">#74b1c7</color>
@@ -15,7 +15,7 @@
     <color name="colorChicken">#71c7b3</color>
     <color name="colorPig">#abdacf</color>
 
-    <color name="colorGrey">#eee</color>
+    <color name="colorGrey">#eeeeee</color>
     <color name="colorDark">#333333</color>
-    <color name="colorWhite">#fff</color>
+    <color name="colorWhite">#ffffff</color>
 </resources>

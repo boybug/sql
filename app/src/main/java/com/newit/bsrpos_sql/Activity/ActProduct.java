@@ -4,6 +4,8 @@ package com.newit.bsrpos_sql.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -18,10 +20,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ActProduct extends ActBase {
 
     private List<Product> products = new ArrayList<>();
+    private List<Product> backup;
+    private String searchString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +72,9 @@ public class ActProduct extends ActBase {
                 }else{
                     product_price.setTextColor(Color.BLACK);
                 }
+
+                if(searchString != null)SetTextSpan(searchString,prod.getName(),product_name);
+
             }
         };
         ListView list = (ListView) findViewById(R.id.listing_list);
@@ -77,6 +85,32 @@ public class ActProduct extends ActBase {
             Intent intent = new Intent(ActProduct.this, ActProductPrice.class);
             intent.putExtras(bundle);
             startActivity(intent);
+        });
+
+        ClearSearch(R.id.search_txt, R.id.clear_btn);
+        AddVoiceSearch(R.id.search_txt, R.id.search_btn);
+        txt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                searchString = s.toString().toLowerCase(Locale.getDefault());
+                List<Product> filtered = new ArrayList<>();
+                for (Product p : products) {
+                    if (p.getName().contains(searchString))
+                        filtered.add(p);
+                }
+                if (backup == null)
+                    backup = new ArrayList<>(products);
+                adap.setModels(filtered);
+                adap.notifyDataSetChanged();
+            }
         });
     }
 }

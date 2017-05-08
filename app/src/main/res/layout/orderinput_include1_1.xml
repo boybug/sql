@@ -17,16 +17,17 @@
             android:paddingLeft="10dp"
             android:text="ลูกค้า : " />
 
-        <Spinner
+        <TextView
             android:id="@+id/orderinput_cus"
-            style="@style/App_TextViewStyle"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_weight="0.55"
+            android:gravity="center|left"
             android:ellipsize="end"
             android:maxLines="1"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
+            android:paddingRight="10dp"
+            android:textColor="@color/colorFish" />
 
     </LinearLayout>
 

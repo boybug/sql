@@ -174,7 +174,7 @@
                 <ListView
                     android:id="@+id/list_order_item"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_span="2" />
 
             </TableRow>
@@ -184,21 +184,11 @@
                 android:paddingBottom="5dp"
                 android:visibility="visible">
 
-                <Button
-                    android:id="@+id/orderinput_save"
+                <include
+                    layout="@layout/btn_save"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/bt_command_height"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/colorFish"
-                    android:gravity="bottom"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="4dp"
-                    android:paddingRight="4dp"
-                    android:text="บันทึก"
-                    android:textAlignment="center"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="22sp" />
-
+                    android:layout_height="match_parent"
+                    android:layout_span="2" />
             </TableRow>
 
         </TableLayout>

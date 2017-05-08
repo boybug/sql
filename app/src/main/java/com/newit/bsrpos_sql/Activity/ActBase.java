@@ -24,12 +24,14 @@ import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.R;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ActBase extends AppCompatActivity {
 
     private ProgressDialog mProgressDialog;
     private ImageButton btn_search;
     protected EditText txt_search;
+    private ImageButton btn_clear;
 
 
     public void showProgressDialog() {
@@ -94,10 +96,10 @@ public class ActBase extends AppCompatActivity {
     }
 
     public void SetTextSpan(String search, String name, TextView lab_name) {
-        int firstIndex = name.indexOf(search, 0);
+        int firstIndex = name.toLowerCase(Locale.getDefault()).indexOf(search,0);
         Spannable span = new SpannableString(name);
         for (int i = 0; i < name.length() && firstIndex != -1; i = firstIndex + 1) {
-            firstIndex = name.indexOf(search, i);
+            firstIndex = name.toLowerCase(Locale.getDefault()).indexOf(search,i);
             if (firstIndex == -1)
                 break;
             else {
@@ -107,6 +109,15 @@ public class ActBase extends AppCompatActivity {
         }
     }
 
+    public void ClearSearch(@IdRes int txtId,@IdRes int btnId) {
+        txt_search = (EditText) findViewById(txtId);
+        btn_clear = (ImageButton) findViewById(btnId);
+        if (txt_search != null && btn_clear != null) {
+            btn_clear.setOnClickListener(v -> {
+                txt_search.setText("");
+            });
+        }
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
