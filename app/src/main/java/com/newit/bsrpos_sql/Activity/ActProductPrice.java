@@ -1,0 +1,79 @@
+package com.newit.bsrpos_sql.Activity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.newit.bsrpos_sql.Model.Global;
+import com.newit.bsrpos_sql.Model.Product;
+import com.newit.bsrpos_sql.Model.StepPrice;
+import com.newit.bsrpos_sql.R;
+import com.newit.bsrpos_sql.Util.AdpCustom;
+import com.newit.bsrpos_sql.Util.SqlServer;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ActProductPrice extends ActBase {
+
+    private TextView productprice_name, productprice_stock, productprice_wgt;
+    private Product prod;
+    private List<StepPrice> stepPrices = new ArrayList<>();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.productprice);
+
+        if (validate()) {
+            productprice_name = (TextView) findViewById(R.id.productprice_name);
+            productprice_stock = (TextView) findViewById(R.id.productprice_stock);
+            productprice_wgt = (TextView) findViewById(R.id.productprice_wgt);
+
+            productprice_name.setText(prod.getName());
+            productprice_stock.setText(String.valueOf(prod.getStock()));
+            productprice_wgt.setText(String.valueOf(prod.getWeight()));
+
+            try {
+                ResultSet rs = SqlServer.execute("{call POS.dbo.getstepprice(" + prod.getId() + ", " + Integer.valueOf(Global.wh_Id) + ")}");
+                while (rs.next()) {
+                    StepPrice sp = new StepPrice(rs.getInt("from"), rs.getInt("to"),rs.getFloat("price"));
+                    stepPrices.add(sp);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            AdpCustom<StepPrice> adap = new AdpCustom<StepPrice>(R.layout.listing_grid_productprice, getLayoutInflater(), stepPrices) {
+                @Override
+                protected void populateView(View v, StepPrice stepPrice) {
+
+                    TextView productprice_from_to = (TextView) v.findViewById(R.id.productprice_from_to);
+                    productprice_from_to.setText(stepPrice.getFrom()+" - "+stepPrice.getTo());
+
+                    TextView productprice_price = (TextView) v.findViewById(R.id.productprice_price);
+                    productprice_price.setText(String.valueOf(stepPrice.getPrice()));
+
+                }
+
+            };
+
+            ListView list = (ListView) findViewById(R.id.productprice_list_price);
+            list.setAdapter(adap);
+        }
+    }
+
+    private boolean validate() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            prod = (Product) bundle.getSerializable("product");
+            if (prod != null)
+                return true;
+        }
+        return false;
+    }
+
+
+}

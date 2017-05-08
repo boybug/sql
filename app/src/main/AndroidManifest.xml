@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.newit.bsrpos_sql">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="Boonsiri POS (On Premise)"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".Activity.ActLogin"
+            android:noHistory="true" />
+        <activity android:name=".Activity.ActSplash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Activity.ActMain" />
+        <activity
+            android:name=".Activity.ActWarehouse"
+            android:noHistory="true" />
+        <activity android:name=".Activity.ActOrder" />
+        <activity android:name=".Activity.ActCustomer" />
+        <activity android:name=".Activity.ActCustomerDetail" />
+        <activity android:name=".Activity.ActProduct" />
+        <activity android:name=".Activity.ActProductPrice" />
+        <activity android:name=".Activity.ActOrderInput" />
+        <activity android:name=".Activity.ActOrderItemInput"></activity>
+    </application>
+
+</manifest>

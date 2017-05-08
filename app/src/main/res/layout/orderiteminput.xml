@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp">
+
+    <ScrollView
+        android:id="@+id/scrollView3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:clipToPadding="true"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/bt_command_height"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp">
+
+        <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:stretchColumns="1">
+
+            <TableRow
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_column="0"
+                    android:gravity="center|right"
+                    android:paddingRight="20dp"
+                    android:text="สินค้า" />
+
+                <TextView
+                    android:id="@+id/orderiteminput_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_column="1"
+                    android:enabled="false"
+                    android:gravity="center|left"
+                    android:paddingRight="5dp"
+                    android:textColor="@color/colorDark" />
+
+            </TableRow>
+
+            <TableRow
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_column="0"
+                    android:gravity="center|right"
+                    android:paddingRight="20dp"
+                    android:text="สต๊อก" />
+
+                <TextView
+                    android:id="@+id/orderiteminput_stock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_column="1"
+                    android:ellipsize="end"
+                    android:enabled="false"
+                    android:gravity="center|left"
+                    android:inputType="text"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:textColor="@color/colorDark" />
+
+            </TableRow>
+
+            <TableRow
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_column="0"
+                    android:gravity="center|right"
+                    android:paddingRight="20dp"
+                    android:text="จำนวน" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_column="1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+
+
+                    <Button
+                        android:id="@+id/orderiteminput_decr"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="0.33"
+                        android:background="@color/colorBeef"
+                        android:text="-"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="30sp" />
+
+                    <EditText
+                        android:id="@+id/orderiteminput_qty"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.34"
+                        android:gravity="center"
+                        android:inputType="numberDecimal"
+                        android:text="1"
+                        android:textAlignment="center"></EditText>
+
+                    <Button
+                        android:id="@+id/orderiteminput_incr"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="0.33"
+                        android:background="@color/colorFish"
+                        android:text="+"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="30sp" />
+
+
+                </LinearLayout>
+            </TableRow>
+
+            <TableRow
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_column="0"
+                    android:gravity="center|right"
+                    android:paddingRight="20dp"
+                    android:text="น้ำหนัก" />
+
+                <TextView
+                    android:id="@+id/orderiteminput_wgt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_column="1"
+                    android:ellipsize="end"
+                    android:enabled="false"
+                    android:gravity="center|left"
+                    android:inputType="text"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:textColor="@color/colorDark" />
+
+            </TableRow>
+
+            <TableRow
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_column="0"
+                    android:gravity="center|right"
+                    android:paddingRight="20dp"
+                    android:text="ราคา" />
+
+                <TextView
+                    android:id="@+id/orderiteminput_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_column="1"
+                    android:enabled="false"
+                    android:gravity="center|left"
+                    android:inputType=""
+                    android:textColor="@color/colorDark" />
+
+            </TableRow>
+
+            <TableRow
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_column="0"
+                    android:gravity="center|right"
+                    android:paddingRight="20dp"
+                    android:text="มูลค่า" />
+
+                <TextView
+                    android:id="@+id/orderiteminput_amt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_column="1"
+                    android:enabled="false"
+                    android:gravity="center|left"
+                    android:inputType=""
+                    android:textColor="@color/colorDark" />
+
+            </TableRow>
+        </TableLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/orderinput_save"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bt_command_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorFish"
+        android:gravity="bottom"
+        android:paddingBottom="10dp"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:text="บันทึก"
+        android:textAlignment="center"
+        android:textColor="@color/colorWhite"
+        android:textSize="22sp" />
+</RelativeLayout>

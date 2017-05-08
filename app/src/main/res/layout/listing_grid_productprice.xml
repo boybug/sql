@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:background="#fff"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:stretchColumns="*">
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/productprice_from_to"
+                style="@style/App_TextViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.8"
+                android:gravity="center|left"
+                android:padding="5dp"
+                android:paddingLeft="10dp"
+                android:text="from_to" />
+
+            <TextView
+                android:id="@+id/productprice_price"
+                style="@style/App_TextViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center|right"
+                android:padding="5dp"
+                android:paddingRight="10dp"
+                android:text="price" />
+
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>
