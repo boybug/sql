@@ -31,7 +31,7 @@ public class ActOrder extends ActBase {
         setContentView(R.layout.listing);
 
         setTitle("รายการบิลขาย@" + Global.wh_name);
-        setSwipeRefresh(R.id.swipe_refresh);
+        setSwipeRefresh(R.id.swipe_refresh, R.id.listing_list);
 
         adap = new AdpCustom<Order>(R.layout.listing_grid_order, getLayoutInflater(), orders) {
             @Override

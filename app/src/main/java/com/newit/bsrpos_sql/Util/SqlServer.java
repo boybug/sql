@@ -34,21 +34,6 @@ public class SqlServer {
         }
     }
 
-//    public static ResultSet execute(String procedure) {
-//        try {
-//            if (SqlServer.conn == null) SqlServer.connect();
-//            if (conn != null) {
-//                CallableStatement stmt = conn.prepareCall(procedure, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-//                stmt.execute();
-//                return stmt.getResultSet();
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
-//
-
     public static ResultSet execute(String procedure, String[] params) {
         try {
             if (SqlServer.conn == null) SqlServer.connect();
@@ -64,5 +49,16 @@ public class SqlServer {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void disconnect() {
+        if (SqlServer.conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            conn = null;
+        }
     }
 }

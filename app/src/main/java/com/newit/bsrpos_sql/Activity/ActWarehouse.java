@@ -27,7 +27,7 @@ public class ActWarehouse extends ActBase {
 
         hideFloatButton(R.id.fab);
         setTitle("โปรดเลือกคลัง");
-        setSwipeRefresh(R.id.swipe_refresh);
+        setSwipeRefresh(R.id.swipe_refresh, R.id.listing_list);
 
         adap = new AdpCustom<Warehouse>(R.layout.listing_grid_wh, getLayoutInflater(), warehouses) {
             @Override

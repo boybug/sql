@@ -30,7 +30,7 @@ public class ActCustomer extends ActBase {
 
         hideFloatButton(R.id.fab);
         setTitle("รายการลูกค้า@" + Global.wh_name);
-        setSwipeRefresh(R.id.swipe_refresh);
+        setSwipeRefresh(R.id.swipe_refresh, R.id.listing_list);
 
         adap = new AdpCustom<Customer>(R.layout.listing_grid_cus, getLayoutInflater(), customers) {
             @Override

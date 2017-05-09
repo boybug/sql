@@ -93,7 +93,7 @@ public class ActOrderInput extends ActBase {
         //region PRODUCT
         if (order.getStat() == OrderStat.New) {
 
-            setSwipeRefresh(R.id.swipe_refresh);
+            setSwipeRefresh(R.id.swipe_refresh, R.id.orderinput_product);
 
             adapProduct = new AdpCustom<Product>(R.layout.listing_grid_orderproduct, getLayoutInflater(), products) {
                 @Override

@@ -20,9 +20,11 @@ import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +32,7 @@ import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.ModelBase;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
+import com.newit.bsrpos_sql.Util.SqlServer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -176,6 +179,7 @@ public class ActBase<T> extends AppCompatActivity {
     }
 
     public void backPressed(Class nextActivity) {
+        if (nextActivity == ActLogin.class) SqlServer.disconnect();
         Intent intent = new Intent(getApplicationContext(), nextActivity);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -189,6 +193,7 @@ public class ActBase<T> extends AppCompatActivity {
         dialog.setCancelable(true);
         dialog.setMessage(message);
         dialog.setPositiveButton("ใช่", (dialog12, which) -> {
+            if (nextActivity == ActLogin.class) SqlServer.disconnect();
             Intent intent = new Intent(getApplicationContext(), nextActivity);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
@@ -198,23 +203,48 @@ public class ActBase<T> extends AppCompatActivity {
         dialog.show();
     }
 
-    public void setSwipeRefresh(@IdRes int swipeid) {
-        final Handler[] handle = new Handler[1];
-        final Runnable[] runable = new Runnable[1];
-        SwipeRefreshLayout swipeRefreshLayout;
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(swipeid);
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            handle[0] = new Handler();
-            runable[0] = () -> {
-                swipeRefreshLayout.setRefreshing(false);
-                refresh();
-                swipeRefreshLayout.removeCallbacks(runable[0]);
-            };
-            handle[0].postDelayed(runable[0], 1000);
-        });
+    public void setSwipeRefresh(@IdRes int swipeid, @IdRes int listviewId) {
+
+        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(swipeid);
+        if (swipeRefreshLayout != null) {
+            final Handler[] handle = new Handler[1];
+            final Runnable[] runable = new Runnable[1];
+            swipeRefreshLayout.setOnRefreshListener(() -> {
+                handle[0] = new Handler();
+                runable[0] = () -> {
+                    swipeRefreshLayout.setRefreshing(false);
+                    refresh();
+                    swipeRefreshLayout.removeCallbacks(runable[0]);
+                };
+                handle[0].postDelayed(runable[0], 1000);
+            });
+        }
+
+        ListView listView = (ListView) findViewById(listviewId);
+        if (listView != null) {
+            listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(AbsListView view, int scrollState) {
+                }
+
+                @Override
+                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                    boolean enable = false;
+                    if (listView != null && listView.getChildCount() > 0) {
+                        boolean firstItemVisible = listView.getFirstVisiblePosition() == 0;
+                        boolean topOfFirstItemVisible = listView.getChildAt(0).getTop() == 0;
+                        enable = firstItemVisible && topOfFirstItemVisible;
+                    }
+                    swipeRefreshLayout.setEnabled(enable);
+
+                }
+            });
+        }
     }
 
     public void refresh() {
         MessageBox("no implementation.");
     }
+
+
 }
