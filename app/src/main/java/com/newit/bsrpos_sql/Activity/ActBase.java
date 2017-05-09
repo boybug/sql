@@ -43,7 +43,7 @@ public class ActBase<T> extends AppCompatActivity {
     private ProgressDialog mProgressDialog;
     protected String searchString;
     private List<T> backup;
-    private ActionBar bar = getSupportActionBar();
+    private ActionBar bar;
 
 
     public void showProgressDialog() {
@@ -71,6 +71,7 @@ public class ActBase<T> extends AppCompatActivity {
     }
 
     public void hideActionBar() {
+        bar = getSupportActionBar();
         if (bar != null) bar.hide();
 
     }
@@ -85,6 +86,7 @@ public class ActBase<T> extends AppCompatActivity {
     }
 
     public void setTitle(String title) {
+        bar = getSupportActionBar();
         if (bar != null) bar.setTitle(title);
     }
 
