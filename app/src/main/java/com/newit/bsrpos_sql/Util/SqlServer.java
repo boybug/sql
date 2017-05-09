@@ -16,10 +16,11 @@ public class SqlServer {
 
     private static void connect() {
 
+
         final String connStrInternet = "xx";
         final String connStrIntranet = "xx";
         final String user = "xx";
-        final String password = "xx";
+        final String password = "xx!";
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);

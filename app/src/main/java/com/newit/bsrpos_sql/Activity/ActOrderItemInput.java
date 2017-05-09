@@ -1,6 +1,7 @@
 package com.newit.bsrpos_sql.Activity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,18 +33,29 @@ public class ActOrderItemInput extends ActBase {
             orderiteminput_qty.setSelectAllOnFocus(true);
             redraw();
 
-            orderiteminput_decr.setOnClickListener(v -> {
-                item.addQty(-1);
-                redraw();
+            orderiteminput_decr.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    item.addQty(-1);
+                    ActOrderItemInput.this.redraw();
+                }
             });
 
-            orderiteminput_incr.setOnClickListener(v -> {
-                item.addQty(1);
-                redraw();
+            orderiteminput_incr.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    item.addQty(1);
+                    ActOrderItemInput.this.redraw();
+                }
             });
 
             Button orderinput_save = (Button) findViewById(R.id.orderinput_save);
-            orderinput_save.setOnClickListener(v -> item.save());
+            orderinput_save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    item.save();
+                }
+            });
 
 
         }

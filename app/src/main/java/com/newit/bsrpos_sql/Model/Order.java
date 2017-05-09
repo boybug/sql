@@ -20,7 +20,6 @@ public class Order extends ModelBase implements Serializable {
     private final String cus_name;
     private OrderStat stat;
     private List<OrderItem> items = new ArrayList<>();
-    private int itemCount;
     private int qty;
     private float weight;
     private float amount;
@@ -33,7 +32,6 @@ public class Order extends ModelBase implements Serializable {
     public Order(int cus_id, String cus_name, boolean ship) {
         super(true);
         date = new Date().toString();
-        itemCount = 0;
         qty = 0;
         weight = 0;
         amount = 0;
@@ -135,18 +133,6 @@ public class Order extends ModelBase implements Serializable {
 
     public void setItems(List<OrderItem> items) {
         this.items = items;
-    }
-
-    public int getItemCount() {
-        return itemCount;
-    }
-
-    public void setItemCount(int itemCount) {
-        if (this.itemCount != itemCount) {
-            this.itemCount = itemCount;
-            updateRecordStat();
-        }
-
     }
 
     public int getQty() {

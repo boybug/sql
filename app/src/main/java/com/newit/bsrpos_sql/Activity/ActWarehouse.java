@@ -3,6 +3,7 @@ package com.newit.bsrpos_sql.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -40,13 +41,16 @@ public class ActWarehouse extends ActBase {
         };
         ListView list = (ListView) findViewById(R.id.listing_list);
         list.setAdapter(adap);
-        list.setOnItemClickListener((parent, view, position, id) -> {
-            Warehouse warehouse = adap.getItem(position);
-            Global.wh_Id = warehouse.getId();
-            Global.wh_name = warehouse.getName();
-            Intent intent = new Intent(ActWarehouse.this, ActMain.class);
-            startActivity(intent);
-            finish();
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Warehouse warehouse = adap.getItem(position);
+                Global.wh_Id = warehouse.getId();
+                Global.wh_name = warehouse.getName();
+                Intent intent = new Intent(ActWarehouse.this, ActMain.class);
+                ActWarehouse.this.startActivity(intent);
+                ActWarehouse.this.finish();
+            }
         });
         refresh();
 

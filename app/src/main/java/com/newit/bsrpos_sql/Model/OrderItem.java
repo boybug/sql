@@ -51,7 +51,6 @@ public class OrderItem extends ModelBase implements Serializable {
                 OrderItem item = new OrderItem(order, rs.getInt("id"), rs.getInt("no"), p, rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("uom_id"));
                 order.getItems().add(item);
             }
-            order.setItemCount(order.getItems().size());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -62,7 +61,6 @@ public class OrderItem extends ModelBase implements Serializable {
         this.order = order;
         this.no = no;
         this.product = product;
-        this.order.setItemCount(order.getItemCount() + 1);
         this.prices = new ArrayList<>();
 
         //price
@@ -203,7 +201,7 @@ public class OrderItem extends ModelBase implements Serializable {
                 e.printStackTrace();
                 result.setMsg("ไม่สามารถเชื่อมต่อกับ server");
             }
-        } else result.setMsg("ไม่มีความเปลี่ยนแปลง");
+        }
         return result;
     }
 

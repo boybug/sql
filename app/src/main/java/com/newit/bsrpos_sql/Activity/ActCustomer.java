@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -50,12 +51,15 @@ public class ActCustomer extends ActBase {
         };
         ListView list = (ListView) findViewById(R.id.listing_list);
         list.setAdapter(adap);
-        list.setOnItemClickListener((parent, view, position, id) -> {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("customer", customers.get(position));
-            Intent intent = new Intent(ActCustomer.this, ActCustomerDetail.class);
-            intent.putExtras(bundle);
-            startActivity(intent);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("customer", customers.get(position));
+                Intent intent = new Intent(ActCustomer.this, ActCustomerDetail.class);
+                intent.putExtras(bundle);
+                ActCustomer.this.startActivity(intent);
+            }
         });
 
         refresh();

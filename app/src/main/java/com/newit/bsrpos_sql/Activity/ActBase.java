@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
@@ -97,21 +98,24 @@ public class ActBase<T> extends AppCompatActivity {
         Toast.makeText(ActBase.this, message, Toast.LENGTH_LONG).show();
     }
 
-    public void AddVoiceSearch(@IdRes int txtId, @IdRes int speakBtnId, @IdRes int clearBtnId, List<T> items, AdpCustom<T> adap) {
+    public void AddVoiceSearch(@IdRes int txtId, @IdRes int speakBtnId, @IdRes int clearBtnId, final List<T> items, final AdpCustom<T> adap) {
         txt_search = (EditText) findViewById(txtId);
         ImageButton btn_search = (ImageButton) findViewById(speakBtnId);
         ImageButton btn_clear = (ImageButton) findViewById(clearBtnId);
 
         if (txt_search != null && btn_search != null) {
-            btn_search.setOnClickListener(v -> {
-                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "th-TH");
-                intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "พูดคำที่ต้องการค้นหา...");
-                try {
-                    startActivityForResult(intent, Global.speechCode);
-                } catch (ActivityNotFoundException a) {
-                    MessageBox("เครื่องนี้ไม่รองรับระบบวิเคราะห์เสียง.");
+            btn_search.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "th-TH");
+                    intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "พูดคำที่ต้องการค้นหา...");
+                    try {
+                        ActBase.this.startActivityForResult(intent, Global.speechCode);
+                    } catch (ActivityNotFoundException a) {
+                        ActBase.this.MessageBox("เครื่องนี้ไม่รองรับระบบวิเคราะห์เสียง.");
+                    }
                 }
             });
 
@@ -140,7 +144,12 @@ public class ActBase<T> extends AppCompatActivity {
                 }
             });
         }
-        btn_clear.setOnClickListener(v -> txt_search.setText(""));
+        btn_clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                txt_search.setText("");
+            }
+        });
     }
 
     public void SetTextSpan(String search, String name, TextView lab_name) {
@@ -186,40 +195,54 @@ public class ActBase<T> extends AppCompatActivity {
         finish();
     }
 
-    public void backPressed(Class nextActivity, String title, String message) {
+    public void backPressed(final Class nextActivity, String title, String message) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle(title);
         dialog.setIcon(R.mipmap.ic_launcher);
         dialog.setCancelable(true);
         dialog.setMessage(message);
-        dialog.setPositiveButton("ใช่", (dialog12, which) -> {
-            if (nextActivity == ActLogin.class) SqlServer.disconnect();
-            Intent intent = new Intent(getApplicationContext(), nextActivity);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
+        dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog12, int which) {
+                if (nextActivity == ActLogin.class) SqlServer.disconnect();
+                Intent intent = new Intent(ActBase.this.getApplicationContext(), nextActivity);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                ActBase.this.startActivity(intent);
+                ActBase.this.finish();
+            }
         });
-        dialog.setNegativeButton("ไม่", (dialog1, which) -> dialog1.cancel());
+        dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog1, int which) {
+                dialog1.cancel();
+            }
+        });
         dialog.show();
     }
 
     public void setSwipeRefresh(@IdRes int swipeid, @IdRes int listviewId) {
-        SwipeRefreshLayout swiper = (SwipeRefreshLayout) findViewById(swipeid);
+        final SwipeRefreshLayout swiper = (SwipeRefreshLayout) findViewById(swipeid);
         if (swiper != null) {
             final Handler[] handle = new Handler[1];
             final Runnable[] runable = new Runnable[1];
-            swiper.setOnRefreshListener(() -> {
-                handle[0] = new Handler();
-                runable[0] = () -> {
-                    swiper.setRefreshing(false);
-                    refresh();
-                    swiper.removeCallbacks(runable[0]);
-                };
-                handle[0].postDelayed(runable[0], 1000);
+            swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    handle[0] = new Handler();
+                    runable[0] = new Runnable() {
+                        @Override
+                        public void run() {
+                            swiper.setRefreshing(false);
+                            ActBase.this.refresh();
+                            swiper.removeCallbacks(runable[0]);
+                        }
+                    };
+                    handle[0].postDelayed(runable[0], 1000);
+                }
             });
         }
 
-        ListView listView = (ListView) findViewById(listviewId);
+        final ListView listView = (ListView) findViewById(listviewId);
         if (listView != null) {
             listView.setOnScrollListener(new AbsListView.OnScrollListener() {
                 @Override

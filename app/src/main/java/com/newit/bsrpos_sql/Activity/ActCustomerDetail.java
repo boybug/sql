@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.view.View;
 import android.widget.TextView;
 
 import com.newit.bsrpos_sql.Model.Customer;
@@ -22,29 +23,35 @@ public class ActCustomerDetail extends ActBase {
             TextView customerdetail_name = (TextView) findViewById(R.id.customerdetail_name);
             TextView customerdetail_addr = (TextView) findViewById(R.id.customerdetail_addr);
             TextView customerdetail_ship = (TextView) findViewById(R.id.customerdetail_ship);
-            TextView customerdetail_tel = (TextView) findViewById(R.id.customerdetail_tel);
+            final TextView customerdetail_tel = (TextView) findViewById(R.id.customerdetail_tel);
 
             customerdetail_name.setText(customer.getName());
             customerdetail_addr.setText(String.valueOf(customer.getAddr()));
             customerdetail_ship.setText(String.valueOf(customer.isShip() ? "ส่ง" : "ไม่ส่ง"));
             customerdetail_tel.setText(String.valueOf(customer.getTel()));
 
-            customerdetail_tel.setOnClickListener(v -> {
-                if (!customer.getTel().equals("")) {
-                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                    callIntent.setData(Uri.parse("tel:" + customerdetail_tel.getText()));
-                    startActivity(callIntent);
+            customerdetail_tel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!customer.getTel().equals("")) {
+                        Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                        callIntent.setData(Uri.parse("tel:" + customerdetail_tel.getText()));
+                        ActCustomerDetail.this.startActivity(callIntent);
+                    }
                 }
             });
 
         }
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(v -> {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("customer", customer);
-            Intent intent = new Intent(ActCustomerDetail.this, ActOrderInput.class);
-            intent.putExtras(bundle);
-            startActivity(intent);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("customer", customer);
+                Intent intent = new Intent(ActCustomerDetail.this, ActOrderInput.class);
+                intent.putExtras(bundle);
+                ActCustomerDetail.this.startActivity(intent);
+            }
         });
     }
 

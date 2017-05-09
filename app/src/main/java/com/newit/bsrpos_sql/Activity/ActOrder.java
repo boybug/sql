@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -70,22 +71,28 @@ public class ActOrder extends ActBase {
         };
         ListView list = (ListView) findViewById(R.id.listing_list);
         list.setAdapter(adap);
-        list.setOnItemClickListener((parent, view, position, id) -> {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("order", orders.get(position));
-            Intent intent = new Intent(ActOrder.this, ActOrderInput.class);
-            intent.putExtras(bundle);
-            startActivity(intent);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("order", orders.get(position));
+                Intent intent = new Intent(ActOrder.this, ActOrderInput.class);
+                intent.putExtras(bundle);
+                ActOrder.this.startActivity(intent);
+            }
         });
 
         refresh();
         AddVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, orders, adap);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(v -> {
-            Intent intent = new Intent(ActOrder.this, ActCustomer.class);
-            startActivity(intent);
-            finish();
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ActOrder.this, ActCustomer.class);
+                ActOrder.this.startActivity(intent);
+                ActOrder.this.finish();
+            }
         });
     }
 

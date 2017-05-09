@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import com.newit.bsrpos_sql.Model.Order;
 import com.newit.bsrpos_sql.Model.OrderItem;
 import com.newit.bsrpos_sql.Model.OrderStat;
 import com.newit.bsrpos_sql.Model.Product;
+import com.newit.bsrpos_sql.Model.RecordStat;
 import com.newit.bsrpos_sql.Model.SqlResult;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
@@ -65,7 +67,7 @@ public class ActOrderInput extends ActBase {
         //endregion
 
         //region ORDERITEM
-        AdpCustom<OrderItem> adapOrderItem = new AdpCustom<OrderItem>(R.layout.listing_grid_orderitem, getLayoutInflater(), order.getItems()) {
+        final AdpCustom<OrderItem> adapOrderItem = new AdpCustom<OrderItem>(R.layout.listing_grid_orderitem, getLayoutInflater(), order.getItems()) {
             @Override
             protected void populateView(View v, OrderItem model) {
 
@@ -79,14 +81,17 @@ public class ActOrderInput extends ActBase {
                 orderitem_qty.setText(String.valueOf(String.valueOf(model.getPrice()) + "x" + model.getQty()));
             }
         };
-        ListView listOrderItem = (ListView) findViewById(R.id.list_order_item);
+        final ListView listOrderItem = (ListView) findViewById(R.id.list_order_item);
         listOrderItem.setAdapter(adapOrderItem);
-        listOrderItem.setOnItemClickListener((parent, view, position, id) -> {
-            Bundle bundle1 = new Bundle();
-            bundle1.putSerializable("orderItem", order.getItems().get(position));
-            Intent intent = new Intent(ActOrderInput.this, ActOrderItemInput.class);
-            intent.putExtras(bundle1);
-            startActivity(intent);
+        listOrderItem.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Bundle bundle1 = new Bundle();
+                bundle1.putSerializable("orderItem", order.getItems().get(position));
+                Intent intent = new Intent(ActOrderInput.this, ActOrderItemInput.class);
+                intent.putExtras(bundle1);
+                ActOrderInput.this.startActivity(intent);
+            }
         });
         //endregion
 
@@ -119,20 +124,23 @@ public class ActOrderInput extends ActBase {
             };
             ListView listProduct = (ListView) findViewById(R.id.orderinput_product);
             listProduct.setAdapter(adapProduct);
-            listProduct.setOnItemClickListener((parent, view, position, id) -> {
-                Product p = products.get(position);
-                if (p.getStock() > 0) {
-                    OrderItem item = order.findItem(p);
-                    if (item == null) {
-                        item = new OrderItem(order, order.getItemCount() + 1, p);
-                        order.getItems().add(item);
+            listProduct.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Product p = products.get(position);
+                    if (p.getStock() > 0) {
+                        OrderItem item = order.findItem(p);
+                        if (item == null) {
+                            item = new OrderItem(order, order.getItems().size() + 1, p);
+                            order.getItems().add(item);
+                        }
+                        item.addQty(1);
+                        listOrderItem.setSelection(order.getItems().indexOf(item));
+                        adapOrderItem.notifyDataSetChanged();
+                        p.setStock(p.getStock() - 1);
+                        ActOrderInput.this.redrawProduct(p.getStock(), view);
+                        ActOrderInput.this.redrawOrder();
                     }
-                    item.addQty(1);
-                    listOrderItem.setSelection(order.getItems().indexOf(item));
-                    adapOrderItem.notifyDataSetChanged();
-                    p.setStock(p.getStock() - 1);
-                    redrawProduct(p.getStock(), view);
-                    redrawOrder();
                 }
             });
 
@@ -144,10 +152,13 @@ public class ActOrderInput extends ActBase {
         //region SAVE
         Button bt_cmd_save = (Button) findViewById(R.id.bt_cmd_save);
         if (order.getStat() == OrderStat.New) {
-            bt_cmd_save.setOnClickListener(v -> {
-                SqlResult result = order.save();
-                redrawOrder();
-                MessageBox(result.getMsg() == null ? "บันทึกสำเร็จ" : result.getMsg());
+            bt_cmd_save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SqlResult result = order.save();
+                    ActOrderInput.this.redrawOrder();
+                    ActOrderInput.this.MessageBox(result.getMsg() == null ? "บันทึกสำเร็จ" : result.getMsg());
+                }
             });
 
         } else bt_cmd_save.setEnabled(false);
@@ -155,12 +166,15 @@ public class ActOrderInput extends ActBase {
 
         //region PAY
         Button bt_pay = (Button) findViewById(R.id.bt_pay);
-        bt_pay.setOnClickListener(v -> {
-            Bundle bundle1 = new Bundle();
-            bundle1.putSerializable("order", order);
-            Intent intent = new Intent(ActOrderInput.this, ActOrderInputPayment.class);
-            intent.putExtras(bundle1);
-            startActivity(intent);
+        bt_pay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle1 = new Bundle();
+                bundle1.putSerializable("order", order);
+                Intent intent = new Intent(ActOrderInput.this, ActOrderInputPayment.class);
+                intent.putExtras(bundle1);
+                ActOrderInput.this.startActivity(intent);
+            }
         });
         //endregion
     }
@@ -183,12 +197,15 @@ public class ActOrderInput extends ActBase {
         orderinput_qty.setText(String.valueOf(order.getQty()));
         orderinput_wgt.setText(String.valueOf(order.getWeight()));
         orderinput_amt.setText(String.valueOf(order.getAmount()));
-        orderinput_listtitle.setText("รายการสินค้า(" + String.valueOf(order.getItemCount()) + ")");
+        orderinput_listtitle.setText("รายการสินค้า(" + String.valueOf(order.getItems().size()) + ")");
     }
 
     @Override
     public void onBackPressed() {
-        backPressed(ActOrder.class, "รายการยังไม่เซฟ", "เอกสารยังไม่เซฟ ท่านต้องการออกโดยไม่เซฟหรือไม่?");
+        if (order.getRecordStat() == RecordStat.NULL)
+            backPressed(ActOrder.class);
+        else
+            backPressed(ActOrder.class, "รายการยังไม่เซฟ", "เอกสารยังไม่เซฟ ท่านต้องการออกโดยไม่เซฟหรือไม่?");
     }
 
     @Override

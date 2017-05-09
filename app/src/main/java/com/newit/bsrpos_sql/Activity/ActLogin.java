@@ -3,6 +3,7 @@ package com.newit.bsrpos_sql.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -47,23 +48,27 @@ public class ActLogin extends ActBase {
         }
 
         Button bt_cmd_save = (Button) findViewById(R.id.login_login);
-        bt_cmd_save.setOnClickListener(v -> {
+        bt_cmd_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-            username = txt_username.getText().toString();
-            password = txt_password.getText().toString();
-            if (Validate()) {
-                try {
-                    ResultSet rs = SqlServer.execute("{call POS.dbo.[getuser](?,?)}", new String[]{username, password});
-                    if (rs != null && rs.next()) {
-                        Global.usr_Id = rs.getInt("usr_Id");
-                        Global.usr_name = rs.getString("usr_name");
-                        loginPrefsEditor.apply();
-                        Intent intent = new Intent(ActLogin.this, ActWarehouse.class);
-                        startActivity(intent);
-                        finish();
-                    } else MessageBox("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง...กรุณาตรวจสอบ");
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                username = txt_username.getText().toString();
+                password = txt_password.getText().toString();
+                if (ActLogin.this.Validate()) {
+                    try {
+                        ResultSet rs = SqlServer.execute("{call POS.dbo.[getuser](?,?)}", new String[]{username, password});
+                        if (rs != null && rs.next()) {
+                            Global.usr_Id = rs.getInt("usr_Id");
+                            Global.usr_name = rs.getString("usr_name");
+                            loginPrefsEditor.apply();
+                            Intent intent = new Intent(ActLogin.this, ActWarehouse.class);
+                            ActLogin.this.startActivity(intent);
+                            ActLogin.this.finish();
+                        } else
+                            ActLogin.this.MessageBox("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง...กรุณาตรวจสอบ");
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
