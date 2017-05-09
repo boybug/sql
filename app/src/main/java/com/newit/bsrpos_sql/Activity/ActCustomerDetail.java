@@ -31,7 +31,6 @@ public class ActCustomerDetail extends ActBase {
             customerdetail_tel.setText(String.valueOf(customer.getTel()));
 
             customerdetail_tel.setOnClickListener(v -> {
-                // TODO Auto-generated method stub
                 if (customer.getTel().equals("")) {
                     return;
                 } else {

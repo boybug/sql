@@ -14,13 +14,9 @@ import android.widget.TextView;
 
 import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.Order;
-import com.newit.bsrpos_sql.Model.OrderStat;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
-import com.newit.bsrpos_sql.Util.SqlServer;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -38,18 +34,7 @@ public class ActOrder extends ActBase {
 
         setTitle("รายการบิลขาย@" + Global.wh_name);
 
-        try {
-            ResultSet rs = SqlServer.execute("{call POS.dbo.getorder(" + Integer.valueOf(Global.wh_Id) + "," + Integer.valueOf(Global.usr_Id) +")}");
-            while (rs.next()) {
-                Order o = new Order(rs.getInt("id"), rs.getString("no"), rs.getString("order_date"),
-                        rs.getInt("cus_id"), rs.getString("cus_name"), rs.getInt("wh_id"), OrderStat.valueOf(rs.getString("order_stat")),
-                        rs.getInt("qty"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("usr_id"), rs.getString("usr_name"),
-                        rs.getString("pay"), rs.getBoolean("ship"), rs.getString("remark"));
-                orders.add(o);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        orders = Order.retrieve(orders);
 
         AdpCustom<Order> adap = new AdpCustom<Order>(R.layout.listing_grid_order, getLayoutInflater(), orders) {
             @Override
@@ -70,20 +55,19 @@ public class ActOrder extends ActBase {
                 TextView order_usr = (TextView) v.findViewById(R.id.order_usr);
                 order_usr.setText("ผู้เปิดบิล : " + String.valueOf(order.getUsr_name()));
 
-                if (order.getStat().toString()== "New") {
+                if (order.getStat().toString() == "New") {
                     v.setBackgroundColor(Color.parseColor("#abdacf"));
                     order_amount.setTextColor(Color.parseColor("#ff0000"));
                     order_cus.setTextColor(Color.parseColor("#0070a2"));
-                } else if (order.getStat().toString()=="Confirm") {
+                } else if (order.getStat().toString() == "Confirm") {
                     v.setBackgroundColor(Color.parseColor("#F49144"));
                     order_amount.setTextColor(Color.parseColor("#000000"));
                     order_cus.setTextColor(Color.parseColor("#000000"));
                 }
 
-                if(searchString != null)
-                {
-                    SetTextSpan(searchString,order.getNo(),order_no);
-                    SetTextSpan(searchString,order.getCus_name(),order_cus);
+                if (searchString != null) {
+                    SetTextSpan(searchString, order.getNo(), order_no);
+                    SetTextSpan(searchString, order.getCus_name(), order_cus);
                 }
             }
         };
@@ -125,13 +109,14 @@ public class ActOrder extends ActBase {
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(v -> {
-            Intent intent = new Intent(ActOrder.this,ActCustomer.class);
+            Intent intent = new Intent(ActOrder.this, ActCustomer.class);
             startActivity(intent);
             finish();
         });
     }
+
     public void onBackPressed() {
-        Intent intent = new Intent(ActOrder.this,ActMain.class);
+        Intent intent = new Intent(ActOrder.this, ActMain.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
@@ -146,7 +131,7 @@ public class ActOrder extends ActBase {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.nav_logout) {
-            Intent intent = new Intent(ActOrder.this,ActLogin.class);
+            Intent intent = new Intent(ActOrder.this, ActLogin.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();

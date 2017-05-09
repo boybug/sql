@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderItem extends ModelBase implements Serializable {
+    private static final long serialVersionUID = 3L;
     private Order order;
     private int id;
     private int no;
@@ -18,8 +19,6 @@ public class OrderItem extends ModelBase implements Serializable {
     private float weight;
     private float amount;
     private int uom_id;
-    private static final long serialVersionUID = 3L;
-
     private List<StepPrice> prices = new ArrayList<>();
 
     public OrderItem(Order order, int no, Product product) {
@@ -41,6 +40,22 @@ public class OrderItem extends ModelBase implements Serializable {
         this.amount = amount;
         this.uom_id = uom_id;
         initialization(order, no, product);
+    }
+
+    public static Order retrieve(Order order) {
+        order.getItems().clear();
+        try {
+            ResultSet rs = SqlServer.execute("{call POS.dbo.getorderitem(" + String.valueOf(order.getId()) + ")}");
+            while (rs.next()) {
+                Product p = Product.retrieve(rs.getInt("prod_id"), order.getWh_id(), rs.getInt("uom_id"));
+                OrderItem item = new OrderItem(order, rs.getInt("id"), rs.getInt("no"), p, rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("uom_id"));
+                order.getItems().add(item);
+            }
+            order.setItemCount(order.getItems().size());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return order;
     }
 
     private void initialization(Order order, int no, Product product) {
@@ -168,4 +183,24 @@ public class OrderItem extends ModelBase implements Serializable {
         return uom_id;
     }
 
+    public SqlResult save() {
+        SqlResult result = new SqlResult();
+        if (getRecordStat() != RecordStat.NULL) {
+            try {
+                ResultSet rs = SqlServer.execute("{call POS.dbo.setorderitem(" + String.valueOf(order.getId()) + "," + String.valueOf(id) + "," + String.valueOf(no) + "," + String.valueOf(product.getId()) + "," + String.valueOf(qty) + "," + String.valueOf(price) + "," + String.valueOf(amount) + "," + String.valueOf(weight) + "," + String.valueOf(uom_id) + ",'" + String.valueOf(getRecordStat()) + "')}");
+                if (rs.next()) {
+                    result.setIden(rs.getInt("Iden"));
+                    result.setMsg(rs.getString("Msg"));
+                    if (result.getIden() > 0) {
+                        setId(result.getIden());
+                        setRecordStat(RecordStat.NULL);
+                    } else result.setMsg("ไม่ได้รับคำตอบจาก server");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                result.setMsg("ไม่สามารถเชื่อมต่อกับ server");
+            }
+        } else result.setMsg("ไม่มีความเปลี่ยนแปลง");
+        return result;
+    }
 }

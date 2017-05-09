@@ -28,9 +28,9 @@ import java.util.Locale;
 
 public class ActBase extends AppCompatActivity {
 
+    protected EditText txt_search;
     private ProgressDialog mProgressDialog;
     private ImageButton btn_search;
-    protected EditText txt_search;
     private ImageButton btn_clear;
 
 
@@ -77,7 +77,7 @@ public class ActBase extends AppCompatActivity {
         Toast.makeText(ActBase.this, message, Toast.LENGTH_LONG).show();
     }
 
-    public void AddVoiceSearch(@IdRes int txtId,@IdRes int btnId) {
+    public void AddVoiceSearch(@IdRes int txtId, @IdRes int btnId) {
         txt_search = (EditText) findViewById(txtId/*R.id.txt_search*/);
         btn_search = (ImageButton) findViewById(btnId/*R.id.btn_search*/);
         if (txt_search != null && btn_search != null) {
@@ -96,10 +96,10 @@ public class ActBase extends AppCompatActivity {
     }
 
     public void SetTextSpan(String search, String name, TextView lab_name) {
-        int firstIndex = name.toLowerCase(Locale.getDefault()).indexOf(search,0);
+        int firstIndex = name.toLowerCase(Locale.getDefault()).indexOf(search, 0);
         Spannable span = new SpannableString(name);
         for (int i = 0; i < name.length() && firstIndex != -1; i = firstIndex + 1) {
-            firstIndex = name.toLowerCase(Locale.getDefault()).indexOf(search,i);
+            firstIndex = name.toLowerCase(Locale.getDefault()).indexOf(search, i);
             if (firstIndex == -1)
                 break;
             else {
@@ -109,7 +109,7 @@ public class ActBase extends AppCompatActivity {
         }
     }
 
-    public void ClearSearch(@IdRes int txtId,@IdRes int btnId) {
+    public void ClearSearch(@IdRes int txtId, @IdRes int btnId) {
         txt_search = (EditText) findViewById(txtId);
         btn_clear = (ImageButton) findViewById(btnId);
         if (txt_search != null && btn_clear != null) {
@@ -118,6 +118,7 @@ public class ActBase extends AppCompatActivity {
             });
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

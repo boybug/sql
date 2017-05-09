@@ -28,6 +28,7 @@ public class ActMain extends ActBase {
             startActivity(intent);
         });
     }
+
     public void onBackPressed() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("ออกจากระบบ");
@@ -36,7 +37,7 @@ public class ActMain extends ActBase {
         dialog.setMessage("คุณต้องการออกจากระบบ?");
         dialog.setPositiveButton("ใช่", (dialog12, which) -> {
 
-            Intent intent = new Intent(ActMain.this,ActLogin.class);
+            Intent intent = new Intent(ActMain.this, ActLogin.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
@@ -56,7 +57,7 @@ public class ActMain extends ActBase {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.nav_logout) {
-            Intent intent = new Intent(ActMain.this,ActLogin.class);
+            Intent intent = new Intent(ActMain.this, ActLogin.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();

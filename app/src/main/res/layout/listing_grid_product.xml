@@ -20,11 +20,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_span="2"
+                android:ellipsize="end"
                 android:gravity="top|left"
+                android:maxLines="2"
                 android:paddingLeft="10dp"
                 android:text="ชื่อ"
-                android:maxLines="2"
-                android:ellipsize="end"
                 android:textColor="@color/colorFish"
                 android:textSize="20dp" />
 
@@ -42,14 +42,15 @@
                 android:gravity="center|left"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:textSize="20dp"
-                android:text="ราคา : " />
+                android:text="ราคา : "
+                android:textSize="20dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
                 android:weightSum="1">
+
                 <TextView
                     android:id="@+id/product_price"
                     android:layout_width="match_parent"
@@ -58,8 +59,8 @@
                     android:gravity="center|left"
                     android:paddingLeft="3dp"
                     android:paddingRight="10dp"
-                    android:textSize="20dp"
-                    android:text="0.0" />
+                    android:text="0.0"
+                    android:textSize="20dp" />
 
             </LinearLayout>
         </TableRow>

@@ -1,11 +1,16 @@
 package com.newit.bsrpos_sql.Model;
 
+import com.newit.bsrpos_sql.Util.SqlServer;
+
 import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Order extends ModelBase implements Serializable {
+    private static final long serialVersionUID = 2L;
     private int id;
     private String no;
     private String date;
@@ -22,10 +27,9 @@ public class Order extends ModelBase implements Serializable {
     private String usr_name;
     private String pay;
     private boolean ship;
-    private String remaek;
-    private static final long serialVersionUID = 2L;
+    private String remark;
 
-    public Order(int cus_id, String cus_name, boolean ship ) {
+    public Order(int cus_id, String cus_name, boolean ship) {
         super(true);
         date = new Date().toString();
         itemCount = 0;
@@ -41,7 +45,7 @@ public class Order extends ModelBase implements Serializable {
         this.ship = ship;
     }
 
-    public Order(int id, String no, String date, int cus_id, String cus_name, int wh_id, OrderStat stat, int qty, float weight, float amount, int usr_id, String usr_name, String pay, boolean ship, String remaek) {
+    public Order(int id, String no, String date, int cus_id, String cus_name, int wh_id, OrderStat stat, int qty, float weight, float amount, int usr_id, String usr_name, String pay, boolean ship, String remark) {
         super(false);
         this.id = id;
         this.no = no;
@@ -57,9 +61,25 @@ public class Order extends ModelBase implements Serializable {
         this.usr_name = usr_name;
         this.pay = pay;
         this.ship = ship;
-        this.remaek = remaek;
+        this.remark = remark;
     }
 
+    public static List<Order> retrieve(List<Order> orders) {
+        orders.clear();
+        try {
+            ResultSet rs = SqlServer.execute("{call POS.dbo.getorder(" + Integer.valueOf(Global.wh_Id) + "," + Integer.valueOf(Global.usr_Id) + ")}");
+            while (rs.next()) {
+                Order o = new Order(rs.getInt("id"), rs.getString("no"), rs.getString("order_date"),
+                        rs.getInt("cus_id"), rs.getString("cus_name"), rs.getInt("wh_id"), OrderStat.valueOf(rs.getString("order_stat")),
+                        rs.getInt("qty"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("usr_id"), rs.getString("usr_name"),
+                        rs.getString("pay"), rs.getBoolean("ship"), rs.getString("remark"));
+                orders.add(o);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return orders;
+    }
 
     public String getNo() {
         return no;
@@ -88,6 +108,14 @@ public class Order extends ModelBase implements Serializable {
         return stat;
     }
 
+    public void setStat(OrderStat stat) {
+        if (this.stat != stat) {
+            this.stat = stat;
+            updateRecordStat();
+        }
+
+    }
+
     public int getId() {
         return id;
     }
@@ -97,14 +125,6 @@ public class Order extends ModelBase implements Serializable {
             this.id = id;
             updateRecordStat();
         }
-    }
-
-    public void setStat(OrderStat stat) {
-        if (this.stat != stat) {
-            this.stat = stat;
-            updateRecordStat();
-        }
-
     }
 
     public List<OrderItem> getItems() {
@@ -203,14 +223,43 @@ public class Order extends ModelBase implements Serializable {
         }
     }
 
-    public String getRemaek() {
-        return remaek;
+    public String getRemark() {
+        return remark;
     }
 
-    public void setRemaek(String remaek) {
-        if (this.remaek != remaek) {
-            this.remaek = remaek;
+    public void setRemark(String remark) {
+        if (this.remark != remark) {
+            this.remark = remark;
             updateRecordStat();
         }
+    }
+
+    public SqlResult save() {
+        SqlResult result = new SqlResult();
+        String ship = this.ship ? "1" : "0";
+        if (getRecordStat() != RecordStat.NULL) {
+            try {
+                ResultSet rs = SqlServer.execute("{call POS.dbo.setorder(" + String.valueOf(id) + "," + String.valueOf(cus_id) + ",'" + String.valueOf(stat) + "'," + String.valueOf(wh_id) + "," + String.valueOf(usr_id) + "," + String.valueOf(qty) + "," + String.valueOf(amount) + "," + String.valueOf(weight) + ",'" + String.valueOf(getRecordStat()) + "'," + ship + ")}");
+                if (rs.next()) {
+                    result.setIden(rs.getInt("Iden"));
+                    result.setMsg(rs.getString("Msg"));
+                    if (result.getIden() > 0) {
+                        setId(result.getIden());
+                        if (getRecordStat() == RecordStat.I) {
+                            setNo(rs.getString("order_no"));
+                        }
+                        setRecordStat(RecordStat.NULL);
+                        for (OrderItem item : items) {
+                            item.getOrder().setId(this.getId());
+                            result = item.save();
+                        }
+                    } else result.setMsg("ไม่ได้รับคำตอบจาก server");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                result.setMsg("ไม่สามารถเชื่อมต่อกับ server");
+            }
+        } else result.setMsg("ไม่มีความเปลี่ยนแปลง");
+        return result;
     }
 }

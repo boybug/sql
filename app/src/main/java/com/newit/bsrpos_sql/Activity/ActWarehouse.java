@@ -10,14 +10,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.newit.bsrpos_sql.Model.Global;
-import com.newit.bsrpos_sql.Model.Product;
 import com.newit.bsrpos_sql.Model.Warehouse;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
-import com.newit.bsrpos_sql.Util.SqlServer;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -36,15 +32,7 @@ public class ActWarehouse extends ActBase {
         hideFloatButton(R.id.fab);
         setTitle("โปรดเลือกคลัง");
 
-        try {
-            ResultSet rs = SqlServer.execute("{call POS.dbo.getwh(" + Global.usr_Id + ")}");
-            while (rs.next()) {
-                Warehouse w = new Warehouse(rs.getInt("wh_Id"), rs.getString("wh_name"));
-                warehouses.add(w);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        warehouses = Warehouse.retrieve(warehouses);
 
         AdpCustom<Warehouse> adap = new AdpCustom<Warehouse>(R.layout.listing_grid_wh, getLayoutInflater(), warehouses) {
             @Override
@@ -52,7 +40,7 @@ public class ActWarehouse extends ActBase {
                 TextView wh_name = (TextView) v.findViewById(R.id.wh_name);
                 wh_name.setText(wh.getName());
 
-                if(searchString != null)SetTextSpan(searchString,wh.getName(),wh_name);
+                if (searchString != null) SetTextSpan(searchString, wh.getName(), wh_name);
             }
         };
         ListView list = (ListView) findViewById(R.id.listing_list);
@@ -101,7 +89,7 @@ public class ActWarehouse extends ActBase {
         dialog.setMessage("คุณต้องการออกจากระบบ?");
         dialog.setPositiveButton("ใช่", (dialog12, which) -> {
 
-            Intent intent = new Intent(ActWarehouse.this,ActLogin.class);
+            Intent intent = new Intent(ActWarehouse.this, ActLogin.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
@@ -109,6 +97,5 @@ public class ActWarehouse extends ActBase {
         dialog.setNegativeButton("ไม่", (dialog1, which) -> dialog1.cancel());
 
         dialog.show();
-
     }
 }

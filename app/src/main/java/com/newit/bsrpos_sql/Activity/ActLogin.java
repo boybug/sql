@@ -15,10 +15,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ActLogin extends ActBase {
+    SharedPreferences.Editor loginPrefsEditor;
     private EditText txt_username, txt_password;
     private String username, password;
     private CheckBox saveLoginCheckBox;
-    SharedPreferences.Editor loginPrefsEditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

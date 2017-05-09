@@ -10,12 +10,12 @@ import java.util.List;
 
 public class Customer implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private int id;
     private String name;
     private String addr;
     private String tel;
     private boolean ship;
-    private static final long serialVersionUID = 1L;
 
     public Customer(int id, String name, String addr, String tel, boolean ship) {
         this.id = id;
@@ -23,6 +23,20 @@ public class Customer implements Serializable {
         this.addr = addr;
         this.tel = tel;
         this.ship = ship;
+    }
+
+    public static List<Customer> retrieve(List<Customer> customers) {
+        customers.clear();
+        try {
+            ResultSet rs = SqlServer.execute("{call POS.dbo.getcus(" + Integer.valueOf(Global.wh_Id) + ")}");
+            while (rs.next()) {
+                Customer c = new Customer(rs.getInt("cus_Id"), rs.getString("cus_name"), rs.getString("cus_addr"), rs.getString("cus_tel"), rs.getBoolean("cus_ship"));
+                customers.add(c);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return customers;
     }
 
     public int getId() {
@@ -43,18 +57,5 @@ public class Customer implements Serializable {
 
     public boolean isShip() {
         return ship;
-    }
-
-    public static List<Customer> retrieve(List<Customer> customers) {
-        try {
-            ResultSet rs = SqlServer.execute("{call POS.dbo.getcus(" + Integer.valueOf(Global.wh_Id) + ")}");
-            while (rs.next()) {
-                Customer c = new Customer(rs.getInt("cus_Id"), rs.getString("cus_name"), rs.getString("cus_addr"), rs.getString("cus_tel"), rs.getBoolean("cus_ship"));
-                customers.add(c);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return customers;
     }
 }

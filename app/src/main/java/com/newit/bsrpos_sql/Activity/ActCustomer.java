@@ -1,7 +1,6 @@
 package com.newit.bsrpos_sql.Activity;
 
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,10 +15,7 @@ import com.newit.bsrpos_sql.Model.Customer;
 import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
-import com.newit.bsrpos_sql.Util.SqlServer;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -52,7 +48,7 @@ public class ActCustomer extends ActBase {
                 TextView cus_tel = (TextView) v.findViewById(R.id.cus_tel);
                 cus_tel.setText(cus.getTel());
 
-                if(searchString != null) SetTextSpan(searchString,cus.getName(),cus_name);
+                if (searchString != null) SetTextSpan(searchString, cus.getName(), cus_name);
 
             }
         };
@@ -93,11 +89,12 @@ public class ActCustomer extends ActBase {
         });
 
     }
+
     public void onBackPressed() {
-            Intent intent = new Intent(ActCustomer.this,ActMain.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
+        Intent intent = new Intent(ActCustomer.this, ActMain.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -109,7 +106,7 @@ public class ActCustomer extends ActBase {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.nav_logout) {
-            Intent intent = new Intent(ActCustomer.this,ActLogin.class);
+            Intent intent = new Intent(ActCustomer.this, ActLogin.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();

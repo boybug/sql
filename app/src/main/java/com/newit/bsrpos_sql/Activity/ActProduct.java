@@ -16,10 +16,7 @@ import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.Product;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
-import com.newit.bsrpos_sql.Util.SqlServer;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -38,18 +35,7 @@ public class ActProduct extends ActBase {
         hideFloatButton(R.id.fab);
         setTitle("รายการสินค้า@" + Global.wh_name);
 
-        try {
-            ResultSet rs = SqlServer.execute("{call POS.dbo.getproduct(" + Integer.valueOf(Global.wh_Id) + ")}");
-            while (rs.next()) {
-                Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"),
-                        rs.getInt("stock"), rs.getFloat("weight"),
-                        rs.getString("color"), rs.getBoolean("stepprice"),
-                        rs.getFloat("price"), rs.getInt("uom_id"));
-                products.add(p);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        products = Product.retrieve(products);
 
         AdpCustom<Product> adap = new AdpCustom<Product>(R.layout.listing_grid_product, getLayoutInflater(), products) {
             @Override
@@ -62,20 +48,19 @@ public class ActProduct extends ActBase {
 
                 v.setBackgroundColor(Color.parseColor(prod.getColor()));
 
-                if(!prod.getColor().equals("#ffffff")) {
+                if (!prod.getColor().equals("#ffffff")) {
                     product_name.setTextColor(Color.BLACK);
-                }
-                else {
+                } else {
                     product_name.setTextColor(Color.parseColor("#0070a2"));
                 }
 
-                if(prod.isStepPrice()) {
+                if (prod.isStepPrice()) {
                     product_price.setTextColor(Color.RED);
-                }else{
+                } else {
                     product_price.setTextColor(Color.BLACK);
                 }
 
-                if(searchString != null)SetTextSpan(searchString,prod.getName(),product_name);
+                if (searchString != null) SetTextSpan(searchString, prod.getName(), product_name);
 
             }
         };
@@ -115,8 +100,9 @@ public class ActProduct extends ActBase {
             }
         });
     }
+
     public void onBackPressed() {
-        Intent intent = new Intent(ActProduct.this,ActMain.class);
+        Intent intent = new Intent(ActProduct.this, ActMain.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
@@ -131,7 +117,7 @@ public class ActProduct extends ActBase {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.nav_logout) {
-            Intent intent = new Intent(ActProduct.this,ActLogin.class);
+            Intent intent = new Intent(ActProduct.this, ActLogin.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();

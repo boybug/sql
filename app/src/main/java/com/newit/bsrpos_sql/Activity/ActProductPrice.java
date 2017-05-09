@@ -5,15 +5,11 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.Product;
 import com.newit.bsrpos_sql.Model.StepPrice;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
-import com.newit.bsrpos_sql.Util.SqlServer;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,28 +33,18 @@ public class ActProductPrice extends ActBase {
             productprice_stock.setText(String.valueOf(prod.getStock()));
             productprice_wgt.setText(String.valueOf(prod.getWeight()));
 
-            try {
-                ResultSet rs = SqlServer.execute("{call POS.dbo.getstepprice(" + prod.getId() + ", " + Integer.valueOf(Global.wh_Id) + ")}");
-                while (rs.next()) {
-                    StepPrice sp = new StepPrice(rs.getInt("from"), rs.getInt("to"),rs.getFloat("price"));
-                    stepPrices.add(sp);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            stepPrices = StepPrice.retrieve(stepPrices, prod.getId());
 
             AdpCustom<StepPrice> adap = new AdpCustom<StepPrice>(R.layout.listing_grid_productprice, getLayoutInflater(), stepPrices) {
                 @Override
                 protected void populateView(View v, StepPrice stepPrice) {
 
                     TextView productprice_from_to = (TextView) v.findViewById(R.id.productprice_from_to);
-                    productprice_from_to.setText(stepPrice.getFrom()+" - "+stepPrice.getTo());
+                    productprice_from_to.setText(stepPrice.getFrom() + " - " + stepPrice.getTo());
 
                     TextView productprice_price = (TextView) v.findViewById(R.id.productprice_price);
                     productprice_price.setText(String.valueOf(stepPrice.getPrice()));
-
                 }
-
             };
 
             ListView list = (ListView) findViewById(R.id.productprice_list_price);
@@ -75,6 +61,4 @@ public class ActProductPrice extends ActBase {
         }
         return false;
     }
-
-
 }
