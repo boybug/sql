@@ -1,7 +1,12 @@
 package com.newit.bsrpos_sql.Model;
 
 
+import com.newit.bsrpos_sql.Util.SqlServer;
+
 import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 public class Customer implements Serializable {
 
@@ -38,5 +43,18 @@ public class Customer implements Serializable {
 
     public boolean isShip() {
         return ship;
+    }
+
+    public static List<Customer> retrieve(List<Customer> customers) {
+        try {
+            ResultSet rs = SqlServer.execute("{call POS.dbo.getcus(" + Integer.valueOf(Global.wh_Id) + ")}");
+            while (rs.next()) {
+                Customer c = new Customer(rs.getInt("cus_Id"), rs.getString("cus_name"), rs.getString("cus_addr"), rs.getString("cus_tel"), rs.getBoolean("cus_ship"));
+                customers.add(c);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return customers;
     }
 }

@@ -35,15 +35,7 @@ public class ActCustomer extends ActBase {
         hideFloatButton(R.id.fab);
         setTitle("รายการลูกค้า@" + Global.wh_name);
 
-        try {
-            ResultSet rs = SqlServer.execute("{call POS.dbo.getcus(" + Integer.valueOf(Global.wh_Id) + ")}");
-            while (rs.next()) {
-                Customer c = new Customer(rs.getInt("cus_Id"), rs.getString("cus_name"), rs.getString("cus_addr"), rs.getString("cus_tel"), rs.getBoolean("cus_ship"));
-                customers.add(c);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        customers = Customer.retrieve(customers);
 
         AdpCustom<Customer> adap = new AdpCustom<Customer>(R.layout.listing_grid_cus, getLayoutInflater(), customers) {
             @Override
