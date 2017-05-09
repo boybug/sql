@@ -204,17 +204,16 @@ public class ActBase<T> extends AppCompatActivity {
     }
 
     public void setSwipeRefresh(@IdRes int swipeid, @IdRes int listviewId) {
-
-        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(swipeid);
-        if (swipeRefreshLayout != null) {
+        SwipeRefreshLayout swiper = (SwipeRefreshLayout) findViewById(swipeid);
+        if (swiper != null) {
             final Handler[] handle = new Handler[1];
             final Runnable[] runable = new Runnable[1];
-            swipeRefreshLayout.setOnRefreshListener(() -> {
+            swiper.setOnRefreshListener(() -> {
                 handle[0] = new Handler();
                 runable[0] = () -> {
-                    swipeRefreshLayout.setRefreshing(false);
+                    swiper.setRefreshing(false);
                     refresh();
-                    swipeRefreshLayout.removeCallbacks(runable[0]);
+                    swiper.removeCallbacks(runable[0]);
                 };
                 handle[0].postDelayed(runable[0], 1000);
             });
@@ -235,7 +234,7 @@ public class ActBase<T> extends AppCompatActivity {
                         boolean topOfFirstItemVisible = listView.getChildAt(0).getTop() == 0;
                         enable = firstItemVisible && topOfFirstItemVisible;
                     }
-                    swipeRefreshLayout.setEnabled(enable);
+                    swiper.setEnabled(enable);
 
                 }
             });
