@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -103,7 +105,7 @@ public class ActProduct extends ActBase {
                 searchString = s.toString().toLowerCase(Locale.getDefault());
                 List<Product> filtered = new ArrayList<>();
                 for (Product p : products) {
-                    if (p.getName().contains(searchString))
+                    if (p.getName().toLowerCase(Locale.getDefault()).contains(searchString))
                         filtered.add(p);
                 }
                 if (backup == null)
@@ -112,5 +114,28 @@ public class ActProduct extends ActBase {
                 adap.notifyDataSetChanged();
             }
         });
+    }
+    public void onBackPressed() {
+        Intent intent = new Intent(ActProduct.this,ActMain.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.base, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.nav_logout) {
+            Intent intent = new Intent(ActProduct.this,ActLogin.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        }
+        return true;
     }
 }

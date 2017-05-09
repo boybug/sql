@@ -129,11 +129,11 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
-        android:layout_width="124dp"
-        android:layout_height="126dp"
+        android:layout_width="94dp"
+        android:layout_height="104dp"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="?android:attr/colorBackgroundCacheHint"
+        app:backgroundTint="@color/colorFish"
         app:elevation="0dp"
         app:rippleColor="@color/colorFish"
         app:srcCompat="@drawable/order" />

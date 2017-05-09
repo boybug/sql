@@ -15,6 +15,7 @@ import com.newit.bsrpos_sql.Model.Customer;
 import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.Order;
 import com.newit.bsrpos_sql.Model.OrderItem;
+import com.newit.bsrpos_sql.Model.OrderStat;
 import com.newit.bsrpos_sql.Model.Product;
 import com.newit.bsrpos_sql.Model.RecordStat;
 import com.newit.bsrpos_sql.R;
@@ -34,7 +35,7 @@ public class ActOrderInput extends ActBase {
     private List<Product> backup;
     private String searchString;
 
-    private TextView orderinput_no, orderinput_qty, orderinput_wgt, orderinput_amt, orderinput_listtitle,orderinput_cus;
+    private TextView orderinput_no, orderinput_qty, orderinput_wgt, orderinput_amt, orderinput_listtitle, orderinput_cus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,20 +63,18 @@ public class ActOrderInput extends ActBase {
         if (order == null && customer != null) {
             setTitle("เปิดบิลใหม่@" + Global.wh_name);
             order = new Order(customer.getId(), customer.getName(), customer.isShip());
-            redrawOrder();
-        } else if (order != null && order.getStat().toString() == "New") {
-            redrawOrder();
+        } else if (order != null) {
             try {
                 ResultSet rs = SqlServer.execute("{call POS.dbo.getorderitem(" + Integer.valueOf(order.getId()) + ")}");
                 while (rs.next()) {
                     Product p = null;
                     try {
                         ResultSet rs1 = SqlServer.execute("{call POS.dbo.getproductbyid(" +
-                                                            Integer.valueOf(rs.getInt("prod_id")) + "," +
-                                                            Integer.valueOf(order.getWh_id())+ "," +
-                                                            Integer.valueOf(rs.getInt("uom_id")) +
-                                                            ")}");
-                        while (rs1.next()) {
+                                Integer.valueOf(rs.getInt("prod_id")) + "," +
+                                Integer.valueOf(order.getWh_id()) + "," +
+                                Integer.valueOf(rs.getInt("uom_id")) +
+                                ")}");
+                        if (rs1.next()) {
                             p = new Product(rs1.getInt("prod_Id"), rs1.getString("prod_name"),
                                     rs1.getInt("stock"), rs1.getFloat("weight"),
                                     rs1.getString("color"), rs1.getBoolean("stepprice"),
@@ -89,11 +88,13 @@ public class ActOrderInput extends ActBase {
                     order.getItems().add(item);
 
                 }
+                order.setItemCount(order.getItems().size());
             } catch (SQLException e) {
                 e.printStackTrace();
             }
             setTitle(order.getNo() + "@" + Global.wh_name);
         }
+        redrawOrder();
         //endregion
 
         //region ORDERITEM
@@ -113,9 +114,7 @@ public class ActOrderInput extends ActBase {
         };
         ListView listOrderItem = (ListView) findViewById(R.id.list_order_item);
         listOrderItem.setAdapter(adapOrderItem);
-        listOrderItem.setOnItemClickListener((parent, view, position, id) ->
-
-        {
+        listOrderItem.setOnItemClickListener((parent, view, position, id) -> {
             Bundle bundle1 = new Bundle();
             bundle1.putSerializable("orderItem", order.getItems().get(position));
             Intent intent = new Intent(ActOrderInput.this, ActOrderItemInput.class);
@@ -125,161 +124,164 @@ public class ActOrderInput extends ActBase {
         //endregion
 
         //region PRODUCT
-        try
-
-        {
-            ResultSet rs = SqlServer.execute("{call POS.dbo.getproduct(" + Integer.valueOf(Global.wh_Id) + ")}");
-            while (rs.next()) {
-                Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"),
-                        rs.getInt("stock"), rs.getFloat("weight"),
-                        rs.getString("color"), rs.getBoolean("stepprice"),
-                        rs.getFloat("price"), rs.getInt("uom_id"));
-                products.add(p);
+        if (order.getStat() == OrderStat.New) {
+            try {
+                ResultSet rs = SqlServer.execute("{call POS.dbo.getproduct(" + Integer.valueOf(Global.wh_Id) + ")}");
+                while (rs.next()) {
+                    Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"),
+                            rs.getInt("stock"), rs.getFloat("weight"),
+                            rs.getString("color"), rs.getBoolean("stepprice"),
+                            rs.getFloat("price"), rs.getInt("uom_id"));
+                    products.add(p);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (
-                SQLException e)
 
-        {
-            e.printStackTrace();
+            AdpCustom<Product> adapProduct = new AdpCustom<Product>(R.layout.listing_grid_orderproduct, getLayoutInflater(), products) {
+                @Override
+                protected void populateView(View v, Product model) {
+
+                    v.setBackgroundColor(Color.parseColor(model.getColor()));
+
+                    TextView orderproduct_name = (TextView) v.findViewById(R.id.orderproduct_name);
+                    orderproduct_name.setText(model.getName());
+
+                    TextView orderproduct_price = (TextView) v.findViewById(R.id.orderproduct_price);
+                    orderproduct_price.setText(String.valueOf(model.getPrice()) + " ฿");
+
+                    if (model.isStepPrice()) {
+                        orderproduct_price.setTextColor(Color.RED);
+                    } else {
+                        orderproduct_price.setTextColor(Color.BLACK);
+                    }
+                    if (searchString != null)
+                        SetTextSpan(searchString, model.getName(), orderproduct_name);
+                    redrawProduct(model.getStock(), v);
+                }
+            };
+            ListView listProduct = (ListView) findViewById(R.id.orderinput_product);
+            listProduct.setAdapter(adapProduct);
+            listProduct.setOnItemClickListener((parent, view, position, id) -> {
+                Product p = products.get(position);
+                if (p.getStock() > 0) {
+                    OrderItem item = order.findItem(p);
+                    if (item == null) {
+                        item = new OrderItem(order, order.getItemCount() + 1, p);
+                        order.getItems().add(item);
+                    }
+                    item.addQty(1);
+                    listOrderItem.setSelection(order.getItems().indexOf(item));
+                    adapOrderItem.notifyDataSetChanged();
+                    p.setStock(p.getStock() - 1);
+                    redrawProduct(p.getStock(), view);
+                    redrawOrder();
+                }
+            });
+
+            ClearSearch(R.id.search_txt, R.id.clear_btn);
+            AddVoiceSearch(R.id.search_txt, R.id.search_btn);
+            txt_search.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    searchString = s.toString().toLowerCase(Locale.getDefault());
+                    List<Product> filtered = new ArrayList<>();
+                    for (Product p : products) {
+                        if (p.getName().toLowerCase(Locale.getDefault()).contains(searchString))
+                            filtered.add(p);
+                    }
+                    if (backup == null)
+                        backup = new ArrayList<>(products);
+                    adapProduct.setModels(filtered);
+                    adapProduct.notifyDataSetChanged();
+                }
+            });
         }
-
-        AdpCustom<Product> adapProduct = new AdpCustom<Product>(R.layout.listing_grid_orderproduct, getLayoutInflater(), products) {
-            @Override
-            protected void populateView(View v, Product model) {
-
-                v.setBackgroundColor(Color.parseColor(model.getColor()));
-
-                TextView orderproduct_name = (TextView) v.findViewById(R.id.orderproduct_name);
-                orderproduct_name.setText(model.getName());
-
-                TextView orderproduct_price = (TextView) v.findViewById(R.id.orderproduct_price);
-                orderproduct_price.setText(String.valueOf(model.getPrice()) + " ฿");
-
-                if (model.isStepPrice()) {
-                    orderproduct_price.setTextColor(Color.RED);
-                } else {
-                    orderproduct_price.setTextColor(Color.BLACK);
-                }
-                if(searchString != null)SetTextSpan(searchString,model.getName(),orderproduct_name);
-                redrawProduct(model.getStock(), v);
-            }
-        };
-        ListView listProduct = (ListView) findViewById(R.id.orderinput_product);
-        listProduct.setAdapter(adapProduct);
-        listProduct.setOnItemClickListener((parent, view, position, id) ->
-
-        {
-            Product p = products.get(position);
-            if (p.getStock() > 0) {
-                OrderItem item = order.findItem(p);
-                if (item == null) {
-                    item = new OrderItem(order, order.getItemCount() + 1, p);
-                    order.getItems().add(item);
-                }
-                item.addQty(1);
-                listOrderItem.setSelection(order.getItems().indexOf(item));
-                adapOrderItem.notifyDataSetChanged();
-                p.setStock(p.getStock() - 1);
-                redrawProduct(p.getStock(), view);
-                redrawOrder();
-            }
-        });
         //endregion
 
         //region SAVE
         Button bt_cmd_save = (Button) findViewById(R.id.bt_cmd_save);
-        bt_cmd_save.setOnClickListener(v -> {
-            int ship = 0;
-            if(order.isShip()) ship = 1 ;
-            if (order.getRecordStat() != RecordStat.NULL)
-                try {
-                    ResultSet rs = SqlServer.execute("{call POS.dbo.setorder(" +
-                            String.valueOf(order.getId()) + "," +
-                            String.valueOf(order.getCus_id()) + ",'" +
-                            String.valueOf(order.getStat()) + "'," +
-                            String.valueOf(order.getWh_id()) + "," +
-                            String.valueOf(order.getUsr_id()) + "," +
-                            String.valueOf(order.getQty()) + "," +
-                            String.valueOf(order.getAmount()) + "," +
-                            String.valueOf(order.getWeight()) + ",'" +
-                            String.valueOf(order.getRecordStat()) + "'," +
-                            Integer.valueOf(ship) +
-                            ")}");
-                    if (rs.next()) {
-                        int iden = rs.getInt("Iden");
-                        if (iden > 0) {
-                            order.setId(iden);
-                            if (order.getRecordStat() == RecordStat.I)
-                            {
-                                order.setNo(rs.getString("order_no"));
-                                redrawOrder();
-                            }
-                            order.setRecordStat(RecordStat.NULL);
+        if (order.getStat() == OrderStat.New) {
+            bt_cmd_save.setOnClickListener(v -> {
+                // int ship = 0;
+                // if (order.isShip()) ship = 1;
+                String ship = order.isShip() ? "1" : "0";
+                String error = "";
+                if (order.getRecordStat() != RecordStat.NULL) {
+                    try {
+                        ResultSet rs = SqlServer.execute("{call POS.dbo.setorder(" +
+                                String.valueOf(order.getId()) + "," +
+                                String.valueOf(order.getCus_id()) + ",'" +
+                                String.valueOf(order.getStat()) + "'," +
+                                String.valueOf(order.getWh_id()) + "," +
+                                String.valueOf(order.getUsr_id()) + "," +
+                                String.valueOf(order.getQty()) + "," +
+                                String.valueOf(order.getAmount()) + "," +
+                                String.valueOf(order.getWeight()) + ",'" +
+                                String.valueOf(order.getRecordStat()) + "'," +
+                                ship + ")}");
+                        if (rs.next()) {
+                            int iden = rs.getInt("Iden");
+                            error = rs.getString("Msg");
+                            if (iden > 0) {
+                                order.setId(iden);
+                                if (order.getRecordStat() == RecordStat.I) {
+                                    order.setNo(rs.getString("order_no"));
+                                    redrawOrder();
+                                }
+                                order.setRecordStat(RecordStat.NULL);
 
-                            for (OrderItem item : order.getItems()) {
-                                item.getOrder().setId(order.getId());
-                                if (item.getRecordStat() != RecordStat.NULL) {
-                                    try {
-                                        ResultSet rs1 = SqlServer.execute("{call POS.dbo.setorderitem(" +
-                                                String.valueOf(item.getOrder().getId()) + "," +
-                                                String.valueOf(item.getId()) + "," +
-                                                String.valueOf(item.getNo()) + "," +
-                                                String.valueOf(item.getProduct().getId()) + "," +
-                                                String.valueOf(item.getQty()) + "," +
-                                                String.valueOf(item.getPrice()) + "," +
-                                                String.valueOf(item.getAmount()) + "," +
-                                                String.valueOf(item.getWeight()) + "," +
-                                                String.valueOf(item.getUom_id()) + ",'" +
-                                                String.valueOf(item.getRecordStat()) +
-                                                "')}");
-                                        if (rs1.next()) {
-                                            int iden1 = rs.getInt("Iden");
-                                            if (iden1 > 0) {
-                                                item.setId(iden1);
-                                                item.setRecordStat(RecordStat.NULL);
-                                            } else MessageBox(rs.getString("Msg"));
+                                for (OrderItem item : order.getItems()) {
+                                    item.getOrder().setId(order.getId());
+                                    if (item.getRecordStat() != RecordStat.NULL) {
+                                        try {
+                                            ResultSet rs1 = SqlServer.execute("{call POS.dbo.setorderitem(" +
+                                                    String.valueOf(item.getOrder().getId()) + "," +
+                                                    String.valueOf(item.getId()) + "," +
+                                                    String.valueOf(item.getNo()) + "," +
+                                                    String.valueOf(item.getProduct().getId()) + "," +
+                                                    String.valueOf(item.getQty()) + "," +
+                                                    String.valueOf(item.getPrice()) + "," +
+                                                    String.valueOf(item.getAmount()) + "," +
+                                                    String.valueOf(item.getWeight()) + "," +
+                                                    String.valueOf(item.getUom_id()) + ",'" +
+                                                    String.valueOf(item.getRecordStat()) +
+                                                    "')}");
+                                            if (rs1.next()) {
+                                                int iden1 = rs1.getInt("Iden");
+                                                error = rs1.getString("Msg");
+                                                if (iden1 > 0) {
+                                                    item.setId(iden1);
+                                                    item.setRecordStat(RecordStat.NULL);
+                                                } else MessageBox(rs.getString("Msg"));
+                                            }
+                                        } catch (SQLException e) {
+                                            e.printStackTrace();
+                                            error = e.getLocalizedMessage();
                                         }
-                                    } catch (SQLException e) {
-                                        e.printStackTrace();
                                     }
                                 }
-                            }
-                        } else MessageBox(rs.getString("Msg"));
+                            } else MessageBox(rs.getString("Msg"));
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        error = e.getLocalizedMessage();
                     }
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                    MessageBox(error == "" ? "บันทึกสำเร็จ" : error);
                 }
+            });
 
-        });
+        } else bt_cmd_save.setEnabled(false);
         //endregion
-
-        ClearSearch(R.id.search_txt, R.id.clear_btn);
-        AddVoiceSearch(R.id.search_txt, R.id.search_btn);
-        txt_search.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                searchString = s.toString().toLowerCase(Locale.getDefault());
-                List<Product> filtered = new ArrayList<>();
-                for (Product p : products) {
-                    if (p.getName().contains(searchString))
-                        filtered.add(p);
-                }
-                if (backup == null)
-                    backup = new ArrayList<>(products);
-                adapProduct.setModels(filtered);
-                adapProduct.notifyDataSetChanged();
-            }
-        });
     }
-
 
     public void redrawProduct(int stock, View v) {
         TextView orderproduct_stock = (TextView) v.findViewById(R.id.orderproduct_stock);
@@ -301,4 +303,6 @@ public class ActOrderInput extends ActBase {
         orderinput_amt.setText(String.valueOf(order.getAmount()));
         orderinput_listtitle.setText("รายการสินค้า(" + String.valueOf(order.getItemCount()) + ")");
     }
+
+
 }

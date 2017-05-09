@@ -20,7 +20,7 @@ public class OrderItem extends ModelBase implements Serializable {
     private int uom_id;
     private static final long serialVersionUID = 3L;
 
-    private List<StepPrice> prices;
+    private List<StepPrice> prices = new ArrayList<>();
 
     public OrderItem(Order order, int no, Product product) {
         super(true);

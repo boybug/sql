@@ -1,10 +1,13 @@
 package com.newit.bsrpos_sql.Activity;
 
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -87,7 +90,7 @@ public class ActCustomer extends ActBase {
                 searchString = s.toString().toLowerCase(Locale.getDefault());
                 List<Customer> filtered = new ArrayList<>();
                 for (Customer p : customers) {
-                    if (p.getName().contains(searchString))
+                    if (p.getName().toLowerCase(Locale.getDefault()).contains(searchString))
                         filtered.add(p);
                 }
                 if (backup == null)
@@ -97,5 +100,28 @@ public class ActCustomer extends ActBase {
             }
         });
 
+    }
+    public void onBackPressed() {
+            Intent intent = new Intent(ActCustomer.this,ActMain.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.base, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.nav_logout) {
+            Intent intent = new Intent(ActCustomer.this,ActLogin.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        }
+        return true;
     }
 }

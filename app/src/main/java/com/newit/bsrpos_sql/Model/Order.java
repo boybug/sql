@@ -13,7 +13,7 @@ public class Order extends ModelBase implements Serializable {
     private int cus_id;
     private String cus_name;
     private OrderStat stat;
-    private List<OrderItem> items;
+    private List<OrderItem> items = new ArrayList<>();
     private int itemCount;
     private int qty;
     private float weight;
@@ -36,7 +36,6 @@ public class Order extends ModelBase implements Serializable {
         this.cus_name = cus_name;
         usr_id = Global.usr_Id;
         usr_name = Global.usr_name;
-        items = new ArrayList<>();
         stat = OrderStat.New;
         wh_id = Global.wh_Id;
         this.ship = ship;

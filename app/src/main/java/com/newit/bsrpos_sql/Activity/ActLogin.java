@@ -63,7 +63,7 @@ public class ActLogin extends ActBase {
             }
         });
 
-        bt_cmd_save.performClick();
+//        bt_cmd_save.performClick();
     }
 
     private boolean Validate() {

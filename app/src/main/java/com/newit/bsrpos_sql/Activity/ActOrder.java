@@ -3,8 +3,11 @@ package com.newit.bsrpos_sql.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,11 +36,10 @@ public class ActOrder extends ActBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.listing);
 
-        hideFloatButton(R.id.fab);
         setTitle("รายการบิลขาย@" + Global.wh_name);
 
         try {
-            ResultSet rs = SqlServer.execute("{call POS.dbo.getorder(" + Integer.valueOf(Global.wh_Id) + ")}");
+            ResultSet rs = SqlServer.execute("{call POS.dbo.getorder(" + Integer.valueOf(Global.wh_Id) + "," + Integer.valueOf(Global.usr_Id) +")}");
             while (rs.next()) {
                 Order o = new Order(rs.getInt("id"), rs.getString("no"), rs.getString("order_date"),
                         rs.getInt("cus_id"), rs.getString("cus_name"), rs.getInt("wh_id"), OrderStat.valueOf(rs.getString("order_stat")),
@@ -111,7 +113,7 @@ public class ActOrder extends ActBase {
                 searchString = s.toString().toLowerCase(Locale.getDefault());
                 List<Order> filtered = new ArrayList<>();
                 for (Order o : orders) {
-                    if (o.getNo().contains(searchString))
+                    if (o.getNo().toLowerCase(Locale.getDefault()).contains(searchString))
                         filtered.add(o);
                 }
                 if (backup == null)
@@ -121,5 +123,34 @@ public class ActOrder extends ActBase {
             }
         });
 
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(v -> {
+            Intent intent = new Intent(ActOrder.this,ActCustomer.class);
+            startActivity(intent);
+            finish();
+        });
+    }
+    public void onBackPressed() {
+        Intent intent = new Intent(ActOrder.this,ActMain.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.base, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.nav_logout) {
+            Intent intent = new Intent(ActOrder.this,ActLogin.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        }
+        return true;
     }
 }
