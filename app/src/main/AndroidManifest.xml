@@ -37,6 +37,7 @@
         <activity android:name=".Activity.ActProduct" />
         <activity android:name=".Activity.ActProductPrice" />
         <activity android:name=".Activity.ActOrderInput" />
+        <activity android:name=".Activity.ActOrderInputPayment" />
         <activity android:name=".Activity.ActOrderItemInput"></activity>
     </application>
 

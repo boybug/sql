@@ -37,7 +37,7 @@
 
             </TableRow>
 
-            <TableRow>
+            <TableRow android:layout_marginTop="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -54,13 +54,12 @@
                     android:layout_column="1">
 
                     <TextView
-                        android:id="@+id/orderinput_no"
+                        android:id="@+id/orderiteminputpayment_no"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="0.55"
                         android:gravity="center|left"
-                        android:paddingLeft="10dp"
-                        android:textColor="@color/colorFish" />
+                        android:paddingLeft="10dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -70,7 +69,7 @@
                         android:text="น้ำหนักรวม : " />
 
                     <TextView
-                        android:id="@+id/orderinput_wgt"
+                        android:id="@+id/orderiteminputpayment_wgt"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
 
@@ -78,13 +77,12 @@
                         android:gravity="center|right"
                         android:paddingLeft="3dp"
                         android:text="0.0"
-                        android:textColor="@color/colorBeef"
                         android:textSize="20sp" />
 
                 </LinearLayout>
             </TableRow>
 
-            <TableRow>
+            <TableRow android:layout_marginTop="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -101,14 +99,13 @@
                     android:layout_column="1">
 
                     <TextView
-                        android:id="@+id/orderinput_qty"
+                        android:id="@+id/orderiteminputpayment_qty"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="0.5"
                         android:enabled="false"
                         android:gravity="center|left"
                         android:paddingLeft="10dp"
-                        android:textColor="@color/colorBeef"
                         android:textSize="20sp" />
 
                     <TextView
@@ -119,7 +116,7 @@
                         android:text="ยอดขายรวม : " />
 
                     <TextView
-                        android:id="@+id/orderinput_amt"
+                        android:id="@+id/orderiteminputpayment_amt"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
 
@@ -127,7 +124,6 @@
                         android:gravity="center|right"
                         android:paddingLeft="3dp"
                         android:text="0.0"
-                        android:textColor="@color/colorBeef"
                         android:textSize="20sp" />
                 </LinearLayout>
 
@@ -135,7 +131,11 @@
             </TableRow>
 
 
-            <TableRow android:id="@+id/tr_item_head">
+            <TableRow android:id="@+id/tr_item_head"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -143,39 +143,14 @@
                     android:layout_span="2"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/orderinput_listtitle"
-                        android:layout_width="0dp"
-                        android:layout_height="35dp"
-                        android:layout_weight="1"
-                        android:background="@color/colorPrimary"
-                        android:gravity="center"
-                        android:paddingLeft="20dp"
-                        android:text="รายการสินค้า(0)"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="22sp"
-                        android:textStyle="bold" />
-
-                    <Button
-                    android:id="@+id/bt_pay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center|right"
-                    android:background="@color/colorAccent"
-                    android:text="จ่ายเงิน"
-                    android:textColor="@color/colorWhite" />
+                    <include
+                        layout="@layout/orderiteminput_payment_include1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_span="2"
+                        />
 
                 </LinearLayout>
-
-            </TableRow>
-
-            <TableRow android:id="@+id/tr_item_detail">
-
-                <ListView
-                    android:id="@+id/list_order_item"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_span="2" />
 
             </TableRow>
 

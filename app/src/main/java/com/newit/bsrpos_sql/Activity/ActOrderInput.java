@@ -151,6 +151,17 @@ public class ActOrderInput extends ActBase {
 
         } else bt_cmd_save.setEnabled(false);
         //endregion
+
+        //region PAY
+        Button bt_pay = (Button) findViewById(R.id.bt_pay);
+        bt_pay.setOnClickListener(v -> {
+            Bundle bundle1 = new Bundle();
+            bundle1.putSerializable("order", order);
+            Intent intent = new Intent(ActOrderInput.this, ActOrderInputPayment.class);
+            intent.putExtras(bundle1);
+            startActivity(intent);
+        });
+        //endregion
     }
 
     public void redrawProduct(int stock, View v) {
