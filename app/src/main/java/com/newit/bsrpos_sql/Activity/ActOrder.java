@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,13 +17,11 @@ import com.newit.bsrpos_sql.Util.AdpCustom;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class ActOrder extends ActBase {
 
     private List<Order> orders = new ArrayList<>();
-    private List<Order> backup;
-    private String searchString;
+    private AdpCustom<Order> adap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +29,9 @@ public class ActOrder extends ActBase {
         setContentView(R.layout.listing);
 
         setTitle("รายการบิลขาย@" + Global.wh_name);
+        setSwipeRefresh(R.id.swipe_refresh);
 
-        orders = Order.retrieve(orders);
-
-        AdpCustom<Order> adap = new AdpCustom<Order>(R.layout.listing_grid_order, getLayoutInflater(), orders) {
+        adap = new AdpCustom<Order>(R.layout.listing_grid_order, getLayoutInflater(), orders) {
             @Override
             protected void populateView(View v, Order order) {
 
@@ -81,31 +76,8 @@ public class ActOrder extends ActBase {
             startActivity(intent);
         });
 
-        ClearSearch(R.id.search_txt, R.id.clear_btn);
-        AddVoiceSearch(R.id.search_txt, R.id.search_btn);
-        txt_search.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                searchString = s.toString().toLowerCase(Locale.getDefault());
-                List<Order> filtered = new ArrayList<>();
-                for (Order o : orders) {
-                    if (o.getNo().toLowerCase(Locale.getDefault()).contains(searchString))
-                        filtered.add(o);
-                }
-                if (backup == null)
-                    backup = new ArrayList<>(orders);
-                adap.setModels(filtered);
-                adap.notifyDataSetChanged();
-            }
-        });
+        refresh();
+        AddVoiceSearch(R.id.search_txt, R.id.search_btn, orders, adap);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(v -> {
@@ -115,11 +87,9 @@ public class ActOrder extends ActBase {
         });
     }
 
+    @Override
     public void onBackPressed() {
-        Intent intent = new Intent(ActOrder.this, ActMain.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish();
+        backPressed(ActMain.class);
     }
 
     @Override
@@ -137,5 +107,11 @@ public class ActOrder extends ActBase {
             finish();
         }
         return true;
+    }
+
+    @Override
+    public void refresh() {
+        orders = Order.retrieve(orders);
+        if (adap != null) adap.notifyDataSetChanged();
     }
 }

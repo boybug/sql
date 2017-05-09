@@ -46,4 +46,9 @@ public class StepPrice extends ModelBase implements Serializable {
     public float getPrice() {
         return price;
     }
+
+    @Override
+    public String getSearchString() {
+        return null;
+    }
 }

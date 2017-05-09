@@ -1,15 +1,20 @@
 package com.newit.bsrpos_sql.Activity;
 
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.support.annotation.IdRes;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,17 +26,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.newit.bsrpos_sql.Model.Global;
+import com.newit.bsrpos_sql.Model.ModelBase;
 import com.newit.bsrpos_sql.R;
+import com.newit.bsrpos_sql.Util.AdpCustom;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-public class ActBase extends AppCompatActivity {
+
+public class ActBase<T> extends AppCompatActivity {
 
     protected EditText txt_search;
     private ProgressDialog mProgressDialog;
     private ImageButton btn_search;
     private ImageButton btn_clear;
+    protected String searchString;
+    private List<T> backup;
 
 
     public void showProgressDialog() {
@@ -77,7 +88,7 @@ public class ActBase extends AppCompatActivity {
         Toast.makeText(ActBase.this, message, Toast.LENGTH_LONG).show();
     }
 
-    public void AddVoiceSearch(@IdRes int txtId, @IdRes int btnId) {
+    public void AddVoiceSearch(@IdRes int txtId, @IdRes int btnId, List<T> items, AdpCustom<T> adap) {
         txt_search = (EditText) findViewById(txtId/*R.id.txt_search*/);
         btn_search = (ImageButton) findViewById(btnId/*R.id.btn_search*/);
         if (txt_search != null && btn_search != null) {
@@ -90,6 +101,31 @@ public class ActBase extends AppCompatActivity {
                     startActivityForResult(intent, Global.speechCode);
                 } catch (ActivityNotFoundException a) {
                     MessageBox("เครื่องนี้ไม่รองรับระบบวิเคราะห์เสียง.");
+                }
+            });
+
+            txt_search.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    searchString = s.toString().toLowerCase(Locale.getDefault());
+                    List<T> filtered = new ArrayList<>();
+                    for (T i : items) {
+                        ModelBase item = (ModelBase) i;
+                        if (item.getSearchString().toLowerCase(Locale.getDefault()).contains(searchString))
+                            filtered.add(i);
+                    }
+                    if (backup == null)
+                        backup = new ArrayList<>(items);
+                    adap.setModels(filtered);
+                    adap.notifyDataSetChanged();
                 }
             });
         }
@@ -145,5 +181,47 @@ public class ActBase extends AppCompatActivity {
 //            Logout();
 //        }
         return true;
+    }
+
+    public void backPressed(Class nextActivity) {
+        Intent intent = new Intent(getApplicationContext(), nextActivity);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+    }
+
+    public void backPressed(Class nextActivity, String title, String message) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle(title);
+        dialog.setIcon(R.mipmap.ic_launcher);
+        dialog.setCancelable(true);
+        dialog.setMessage(message);
+        dialog.setPositiveButton("ใช่", (dialog12, which) -> {
+            Intent intent = new Intent(getApplicationContext(), nextActivity);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        });
+        dialog.setNegativeButton("ไม่", (dialog1, which) -> dialog1.cancel());
+        dialog.show();
+    }
+
+    public void setSwipeRefresh(@IdRes int swipeid) {
+        final Handler[] handle = new Handler[1];
+        final Runnable[] runable = new Runnable[1];
+        SwipeRefreshLayout swipeRefreshLayout;
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(swipeid);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            handle[0] = new Handler();
+            runable[0] = () -> {
+                swipeRefreshLayout.setRefreshing(false);
+                refresh();
+                swipeRefreshLayout.removeCallbacks(runable[0]); // stop runable.
+            };
+            handle[0].postDelayed(runable[0], 1000);
+        });
+    }
+
+    public void refresh() {
     }
 }

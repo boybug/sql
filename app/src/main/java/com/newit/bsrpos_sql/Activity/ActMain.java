@@ -1,6 +1,5 @@
 package com.newit.bsrpos_sql.Activity;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -30,22 +29,7 @@ public class ActMain extends ActBase {
     }
 
     public void onBackPressed() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("ออกจากระบบ");
-        dialog.setIcon(R.mipmap.ic_launcher);
-        dialog.setCancelable(true);
-        dialog.setMessage("คุณต้องการออกจากระบบ?");
-        dialog.setPositiveButton("ใช่", (dialog12, which) -> {
-
-            Intent intent = new Intent(ActMain.this, ActLogin.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
-        });
-        dialog.setNegativeButton("ไม่", (dialog1, which) -> dialog1.cancel());
-
-        dialog.show();
-
+        backPressed(ActLogin.class, "ออกจากระบบ", "ท่านต้องการออกจากระบบหรือไม่?");
     }
 
     @Override

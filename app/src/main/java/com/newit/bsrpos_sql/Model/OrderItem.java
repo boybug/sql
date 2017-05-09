@@ -162,17 +162,17 @@ public class OrderItem extends ModelBase implements Serializable {
     }
 
     public void addQty(int delta) {
-        qty += delta;
-        weight += delta * product.getWeight();
+        setQty(qty + delta);
+        setWeight(weight + (delta * product.getWeight()));
         if (product.isStepPrice() && !prices.isEmpty()) {
             for (StepPrice p : prices) {
                 if (qty >= p.getFrom() && qty <= p.getTo()) {
-                    price = p.getPrice();
+                    setPrice(p.getPrice());
                     break;
                 }
             }
-        } else price = product.getPrice();
-        amount = qty * price;
+        } else setPrice(product.getPrice());
+        setAmount(qty * price);
 
         order.setQty(order.getQty() + delta);
         order.setWeight(order.getWeight() + (delta * product.getWeight()));
@@ -202,5 +202,10 @@ public class OrderItem extends ModelBase implements Serializable {
             }
         } else result.setMsg("ไม่มีความเปลี่ยนแปลง");
         return result;
+    }
+
+    @Override
+    public String getSearchString() {
+        return product.getName();
     }
 }

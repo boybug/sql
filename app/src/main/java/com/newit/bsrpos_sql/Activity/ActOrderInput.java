@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -23,14 +21,12 @@ import com.newit.bsrpos_sql.Util.AdpCustom;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class ActOrderInput extends ActBase {
 
     private Order order;
     private List<Product> products = new ArrayList<>();
-    private List<Product> backup;
-    private String searchString;
+    private AdpCustom<Product> adapProduct;
 
     private TextView orderinput_no, orderinput_qty, orderinput_wgt, orderinput_amt, orderinput_listtitle, orderinput_cus;
 
@@ -96,9 +92,9 @@ public class ActOrderInput extends ActBase {
         //region PRODUCT
         if (order.getStat() == OrderStat.New) {
 
-            products = Product.retrieve(products);
+            setSwipeRefresh(R.id.swipe_refresh);
 
-            AdpCustom<Product> adapProduct = new AdpCustom<Product>(R.layout.listing_grid_orderproduct, getLayoutInflater(), products) {
+            adapProduct = new AdpCustom<Product>(R.layout.listing_grid_orderproduct, getLayoutInflater(), products) {
                 @Override
                 protected void populateView(View v, Product model) {
 
@@ -139,31 +135,8 @@ public class ActOrderInput extends ActBase {
                 }
             });
 
-            ClearSearch(R.id.search_txt, R.id.clear_btn);
-            AddVoiceSearch(R.id.search_txt, R.id.search_btn);
-            txt_search.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    searchString = s.toString().toLowerCase(Locale.getDefault());
-                    List<Product> filtered = new ArrayList<>();
-                    for (Product p : products) {
-                        if (p.getName().toLowerCase(Locale.getDefault()).contains(searchString))
-                            filtered.add(p);
-                    }
-                    if (backup == null)
-                        backup = new ArrayList<>(products);
-                    adapProduct.setModels(filtered);
-                    adapProduct.notifyDataSetChanged();
-                }
-            });
+            refresh();
+            AddVoiceSearch(R.id.search_txt, R.id.search_btn, products, adapProduct);
         }
         //endregion
 
@@ -173,7 +146,7 @@ public class ActOrderInput extends ActBase {
             bt_cmd_save.setOnClickListener(v -> {
                 SqlResult result = order.save();
                 redrawOrder();
-                MessageBox(result.getMsg() == "" ? "บันทึกสำเร็จ" : result.getMsg());
+                MessageBox(result.getMsg() == null ? "บันทึกสำเร็จ" : result.getMsg());
             });
 
         } else bt_cmd_save.setEnabled(false);
@@ -200,4 +173,16 @@ public class ActOrderInput extends ActBase {
         orderinput_amt.setText(String.valueOf(order.getAmount()));
         orderinput_listtitle.setText("รายการสินค้า(" + String.valueOf(order.getItemCount()) + ")");
     }
+
+    @Override
+    public void onBackPressed() {
+        backPressed(ActOrder.class, "รายการยังไม่เซฟ", "เอกสารยังไม่เซฟ ท่านต้องการออกโดยไม่เซฟหรือไม่?");
+    }
+
+    @Override
+    public void refresh() {
+        products = Product.retrieve(products);
+        if (adapProduct != null) adapProduct.notifyDataSetChanged();
+    }
+
 }

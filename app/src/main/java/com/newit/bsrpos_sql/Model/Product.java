@@ -93,4 +93,9 @@ public class Product extends ModelBase implements Serializable {
     public int getUom_id() {
         return uom_id;
     }
+
+    @Override
+    public String getSearchString() {
+        return name;
+    }
 }

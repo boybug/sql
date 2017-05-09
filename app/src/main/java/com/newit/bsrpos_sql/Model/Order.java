@@ -262,4 +262,9 @@ public class Order extends ModelBase implements Serializable {
         } else result.setMsg("ไม่มีความเปลี่ยนแปลง");
         return result;
     }
+
+    @Override
+    public String getSearchString() {
+        return cus_name;
+    }
 }

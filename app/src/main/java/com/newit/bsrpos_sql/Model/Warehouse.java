@@ -40,5 +40,10 @@ public class Warehouse extends ModelBase implements Serializable {
     public String getName() {
         return name;
     }
+
+    @Override
+    public String getSearchString() {
+        return name;
+    }
 }
 

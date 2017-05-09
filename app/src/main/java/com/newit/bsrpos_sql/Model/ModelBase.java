@@ -2,7 +2,7 @@ package com.newit.bsrpos_sql.Model;
 
 import java.io.Serializable;
 
-public class ModelBase implements Serializable {
+public abstract class ModelBase implements Serializable {
     private RecordStat recordStat;
 
     public ModelBase(boolean isNew) {
@@ -20,6 +20,8 @@ public class ModelBase implements Serializable {
     protected void updateRecordStat() {
         this.setRecordStat(getRecordStat() == RecordStat.NULL ? RecordStat.U : getRecordStat());
     }
+
+    public abstract String getSearchString();
 }
 
 

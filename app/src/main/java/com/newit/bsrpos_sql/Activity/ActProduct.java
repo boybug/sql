@@ -4,8 +4,6 @@ package com.newit.bsrpos_sql.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,13 +17,11 @@ import com.newit.bsrpos_sql.Util.AdpCustom;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class ActProduct extends ActBase {
 
     private List<Product> products = new ArrayList<>();
-    private List<Product> backup;
-    private String searchString;
+    private AdpCustom<Product> adap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +30,9 @@ public class ActProduct extends ActBase {
 
         hideFloatButton(R.id.fab);
         setTitle("รายการสินค้า@" + Global.wh_name);
+        setSwipeRefresh(R.id.swipe_refresh);
 
-        products = Product.retrieve(products);
-
-        AdpCustom<Product> adap = new AdpCustom<Product>(R.layout.listing_grid_product, getLayoutInflater(), products) {
+        adap = new AdpCustom<Product>(R.layout.listing_grid_product, getLayoutInflater(), products) {
             @Override
             protected void populateView(View v, Product prod) {
                 TextView product_name = (TextView) v.findViewById(R.id.product_name);
@@ -74,38 +69,13 @@ public class ActProduct extends ActBase {
             startActivity(intent);
         });
 
-        ClearSearch(R.id.search_txt, R.id.clear_btn);
-        AddVoiceSearch(R.id.search_txt, R.id.search_btn);
-        txt_search.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                searchString = s.toString().toLowerCase(Locale.getDefault());
-                List<Product> filtered = new ArrayList<>();
-                for (Product p : products) {
-                    if (p.getName().toLowerCase(Locale.getDefault()).contains(searchString))
-                        filtered.add(p);
-                }
-                if (backup == null)
-                    backup = new ArrayList<>(products);
-                adap.setModels(filtered);
-                adap.notifyDataSetChanged();
-            }
-        });
+        refresh();
+        AddVoiceSearch(R.id.search_txt, R.id.search_btn, products, adap);
     }
 
+    @Override
     public void onBackPressed() {
-        Intent intent = new Intent(ActProduct.this, ActMain.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish();
+        super.backPressed(ActMain.class);
     }
 
     @Override
@@ -123,5 +93,11 @@ public class ActProduct extends ActBase {
             finish();
         }
         return true;
+    }
+
+    @Override
+    public void refresh() {
+        products = Product.retrieve(products);
+        if (adap != null) adap.notifyDataSetChanged();
     }
 }
