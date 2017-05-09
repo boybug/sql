@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class Customer implements Serializable {
+public class Customer extends ModelBase implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private final int id;
@@ -17,7 +17,8 @@ public class Customer implements Serializable {
     private final String tel;
     private final boolean ship;
 
-    private Customer(int id, String name, String addr, String tel, boolean ship) {
+    public Customer(int id, String name, String addr, String tel, boolean ship) {
+        super(false);
         this.id = id;
         this.name = name;
         this.addr = addr;
@@ -57,5 +58,10 @@ public class Customer implements Serializable {
 
     public boolean isShip() {
         return ship;
+    }
+
+    @Override
+    public String getSearchString() {
+        return name;
     }
 }
