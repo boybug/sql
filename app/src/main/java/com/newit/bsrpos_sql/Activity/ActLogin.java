@@ -45,11 +45,12 @@ public class ActLogin extends ActBase {
 
         Button bt_cmd_save = (Button) findViewById(R.id.login_login);
         bt_cmd_save.setOnClickListener(v -> {
+            //todo : sql injection
             username = txt_username.getText().toString();
             password = txt_password.getText().toString();
             if (Validate()) {
                 try {
-                    ResultSet rs = SqlServer.execute("{call POS.dbo.[login]('" + username + "',1)}");
+                    ResultSet rs = SqlServer.execute("{call POS.dbo.[getuser]('" + username + "','" + password + "')}");
                     if (rs.next()) {
                         Global.usr_Id = rs.getInt("usr_Id");
                         Global.usr_name = rs.getString("usr_name");
@@ -62,8 +63,6 @@ public class ActLogin extends ActBase {
                 }
             }
         });
-
-//        bt_cmd_save.performClick();
     }
 
     private boolean Validate() {
