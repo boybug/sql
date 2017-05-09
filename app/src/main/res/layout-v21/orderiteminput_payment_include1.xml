@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RadioGroup
+        android:id="@+id/radio_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/radio_paycash"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="สด"
+            android:paddingLeft="5dp"
+            android:checked="true"
+            style="@style/App_TextViewStyle"/>
+
+        <RadioButton
+            android:id="@+id/radio_paytranfer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="5dp"
+            android:text="โอน"
+            style="@style/App_TextViewStyle"/>
+
+        <RadioButton
+            android:id="@+id/radio_paycredit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="5dp"
+            android:text="บัตร"
+            style="@style/App_TextViewStyle"/>
+
+    </RadioGroup>
+
+    <Switch
+        android:id="@+id/switch_payship"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:splitTrack="false"
+        android:switchTextAppearance="@style/TextAppearance.AppCompat.Large"
+        android:text="ส่ง"
+        android:textOff="ไม่ส่ง"
+        android:textOn="ส่ง"
+        style="@style/App_TextViewStyle"
+        android:layout_alignBottom="@+id/radio_group" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/radio_group"
+        android:lines="2" >
+
+        <EditText
+            android:id="@+id/pay_remark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="หมายเหตุ"
+            android:inputType="textMultiLine"
+            android:lines="5"
+            android:background="@color/colorGrey"
+            android:layout_marginTop="5dp"/>
+
+    </ScrollView>
+
+
+</RelativeLayout>

@@ -11,13 +11,13 @@ import java.util.List;
 public class Customer implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private int id;
-    private String name;
-    private String addr;
-    private String tel;
-    private boolean ship;
+    private final int id;
+    private final String name;
+    private final String addr;
+    private final String tel;
+    private final boolean ship;
 
-    public Customer(int id, String name, String addr, String tel, boolean ship) {
+    private Customer(int id, String name, String addr, String tel, boolean ship) {
         this.id = id;
         this.name = name;
         this.addr = addr;
@@ -28,8 +28,8 @@ public class Customer implements Serializable {
     public static List<Customer> retrieve(List<Customer> customers) {
         customers.clear();
         try {
-            ResultSet rs = SqlServer.execute("{call POS.dbo.getcus(" + Integer.valueOf(Global.wh_Id) + ")}");
-            while (rs.next()) {
+            ResultSet rs = SqlServer.execute("{call POS.dbo.getcus(?)}", new String[]{String.valueOf(Global.wh_Id)});
+            while (rs != null && rs.next()) {
                 Customer c = new Customer(rs.getInt("cus_Id"), rs.getString("cus_name"), rs.getString("cus_addr"), rs.getString("cus_tel"), rs.getBoolean("cus_ship"));
                 customers.add(c);
             }

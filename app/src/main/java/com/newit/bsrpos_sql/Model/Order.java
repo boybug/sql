@@ -8,23 +8,24 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class Order extends ModelBase implements Serializable {
     private static final long serialVersionUID = 2L;
     private int id;
     private String no;
-    private String date;
-    private int wh_id;
-    private int cus_id;
-    private String cus_name;
+    private final String date;
+    private final int wh_id;
+    private final int cus_id;
+    private final String cus_name;
     private OrderStat stat;
     private List<OrderItem> items = new ArrayList<>();
     private int itemCount;
     private int qty;
     private float weight;
     private float amount;
-    private int usr_id;
-    private String usr_name;
+    private final int usr_id;
+    private final String usr_name;
     private String pay;
     private boolean ship;
     private String remark;
@@ -45,7 +46,8 @@ public class Order extends ModelBase implements Serializable {
         this.ship = ship;
     }
 
-    public Order(int id, String no, String date, int cus_id, String cus_name, int wh_id, OrderStat stat, int qty, float weight, float amount, int usr_id, String usr_name, String pay, boolean ship, String remark) {
+    private Order(int id, String no, String date, int cus_id, String cus_name, int wh_id, OrderStat stat, int qty, float weight,
+                  float amount, int usr_id, String usr_name, String pay, boolean ship, String remark) {
         super(false);
         this.id = id;
         this.no = no;
@@ -67,8 +69,8 @@ public class Order extends ModelBase implements Serializable {
     public static List<Order> retrieve(List<Order> orders) {
         orders.clear();
         try {
-            ResultSet rs = SqlServer.execute("{call POS.dbo.getorder(" + Integer.valueOf(Global.wh_Id) + "," + Integer.valueOf(Global.usr_Id) + ")}");
-            while (rs.next()) {
+            ResultSet rs = SqlServer.execute("{call POS.dbo.getorder(?,?)}", new String[]{String.valueOf(Global.wh_Id), String.valueOf(Global.usr_Id)});
+            while (rs != null && rs.next()) {
                 Order o = new Order(rs.getInt("id"), rs.getString("no"), rs.getString("order_date"),
                         rs.getInt("cus_id"), rs.getString("cus_name"), rs.getInt("wh_id"), OrderStat.valueOf(rs.getString("order_stat")),
                         rs.getInt("qty"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("usr_id"), rs.getString("usr_name"),
@@ -86,7 +88,7 @@ public class Order extends ModelBase implements Serializable {
     }
 
     public void setNo(String no) {
-        if (this.no != no) {
+        if (!Objects.equals(this.no, no)) {
             this.no = no;
             updateRecordStat();
         }
@@ -206,7 +208,7 @@ public class Order extends ModelBase implements Serializable {
     }
 
     public void setPay(String pay) {
-        if (this.pay != pay) {
+        if (!Objects.equals(this.pay, pay)) {
             this.pay = pay;
             updateRecordStat();
         }
@@ -228,7 +230,7 @@ public class Order extends ModelBase implements Serializable {
     }
 
     public void setRemark(String remark) {
-        if (this.remark != remark) {
+        if (!Objects.equals(this.remark, remark)) {
             this.remark = remark;
             updateRecordStat();
         }
@@ -236,11 +238,12 @@ public class Order extends ModelBase implements Serializable {
 
     public SqlResult save() {
         SqlResult result = new SqlResult();
-        String ship = this.ship ? "1" : "0";
         if (getRecordStat() != RecordStat.NULL) {
             try {
-                ResultSet rs = SqlServer.execute("{call POS.dbo.setorder(" + String.valueOf(id) + "," + String.valueOf(cus_id) + ",'" + String.valueOf(stat) + "'," + String.valueOf(wh_id) + "," + String.valueOf(usr_id) + "," + String.valueOf(qty) + "," + String.valueOf(amount) + "," + String.valueOf(weight) + ",'" + String.valueOf(getRecordStat()) + "'," + ship + ")}");
-                if (rs.next()) {
+                String[] params = {String.valueOf(id), String.valueOf(cus_id), String.valueOf(stat), String.valueOf(wh_id), String.valueOf(usr_id),
+                        String.valueOf(qty), String.valueOf(amount), String.valueOf(weight), String.valueOf(getRecordStat()), this.ship ? "1" : "0"};
+                ResultSet rs = SqlServer.execute("{call POS.dbo.setorder(?,?,?,?,?,?,?,?,?,?)}", params);
+                if (rs != null && rs.next()) {
                     result.setIden(rs.getInt("Iden"));
                     result.setMsg(rs.getString("Msg"));
                     if (result.getIden() > 0) {

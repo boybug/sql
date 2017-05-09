@@ -9,8 +9,8 @@ import java.util.List;
 
 public abstract class AdpCustom<T> extends BaseAdapter {
 
-    private LayoutInflater inflater;
-    private int layout;
+    private final LayoutInflater inflater;
+    private final int layout;
     private List<T> models;
 
     public AdpCustom(int layout, LayoutInflater inflater, List<T> models) {
@@ -46,10 +46,6 @@ public abstract class AdpCustom<T> extends BaseAdapter {
     }
 
     protected abstract void populateView(View v, T model);
-
-    public List<T> getModels() {
-        return models;
-    }
 
     public void setModels(List<T> models) {
         this.models = models;

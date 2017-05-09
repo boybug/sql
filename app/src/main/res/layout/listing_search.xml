@@ -29,7 +29,7 @@
     </EditText>
 
     <ImageButton
-        android:id="@+id/clear_btn"
+        android:id="@+id/search_clear"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_weight="0.1"

@@ -1,6 +1,7 @@
 package com.newit.bsrpos_sql.Activity;
 
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
@@ -10,6 +11,7 @@ import android.speech.RecognizerIntent;
 import android.support.annotation.IdRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Spannable;
@@ -34,12 +36,14 @@ import java.util.List;
 import java.util.Locale;
 
 
+@SuppressLint("Registered")
 public class ActBase<T> extends AppCompatActivity {
 
     private EditText txt_search;
     private ProgressDialog mProgressDialog;
     protected String searchString;
     private List<T> backup;
+    private ActionBar bar = getSupportActionBar();
 
 
     public void showProgressDialog() {
@@ -62,11 +66,13 @@ public class ActBase<T> extends AppCompatActivity {
             LinearLayout searchbar = (LinearLayout) findViewById(searchId);
             searchbar.setVisibility(View.GONE);
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public void hideActionBar() {
-        getSupportActionBar().hide();
+        if (bar != null) bar.hide();
+
     }
 
     public void hideFloatButton(@IdRes int fabId) {
@@ -74,20 +80,23 @@ public class ActBase<T> extends AppCompatActivity {
             FloatingActionButton fab = (FloatingActionButton) findViewById(fabId);
             fab.setVisibility((View.GONE));
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public void setTitle(String title) {
-        getSupportActionBar().setTitle(title);
+        if (bar != null) bar.setTitle(title);
     }
 
     public void MessageBox(String message) {
         Toast.makeText(ActBase.this, message, Toast.LENGTH_LONG).show();
     }
 
-    public void AddVoiceSearch(@IdRes int txtId, @IdRes int btnId, List<T> items, AdpCustom<T> adap) {
+    public void AddVoiceSearch(@IdRes int txtId, @IdRes int speakBtnId, @IdRes int clearBtnId, List<T> items, AdpCustom<T> adap) {
         txt_search = (EditText) findViewById(txtId);
-        ImageButton btn_search = (ImageButton) findViewById(btnId);
+        ImageButton btn_search = (ImageButton) findViewById(speakBtnId);
+        ImageButton btn_clear = (ImageButton) findViewById(clearBtnId);
+
         if (txt_search != null && btn_search != null) {
             btn_search.setOnClickListener(v -> {
                 Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -126,12 +135,7 @@ public class ActBase<T> extends AppCompatActivity {
                 }
             });
         }
-        ImageButton btn_clear = (ImageButton) findViewById(btnId);
-        if (txt_search != null && btn_clear != null) {
-            btn_clear.setOnClickListener(v -> {
-                txt_search.setText("");
-            });
-        }
+        btn_clear.setOnClickListener(v -> txt_search.setText(""));
     }
 
     public void SetTextSpan(String search, String name, TextView lab_name) {

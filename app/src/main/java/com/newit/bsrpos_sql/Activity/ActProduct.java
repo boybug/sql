@@ -23,6 +23,7 @@ public class ActProduct extends ActBase {
     private List<Product> products = new ArrayList<>();
     private AdpCustom<Product> adap;
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +71,7 @@ public class ActProduct extends ActBase {
         });
 
         refresh();
-        AddVoiceSearch(R.id.search_txt, R.id.search_btn, products, adap);
+        AddVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, products, adap);
     }
 
     @Override

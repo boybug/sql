@@ -19,6 +19,7 @@ public class ActWarehouse extends ActBase {
     private List<Warehouse> warehouses = new ArrayList<>();
     private AdpCustom<Warehouse> adap;
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +50,7 @@ public class ActWarehouse extends ActBase {
         });
         refresh();
 
-        AddVoiceSearch(R.id.search_txt, R.id.search_btn, warehouses, adap);
+        AddVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, warehouses, adap);
     }
 
     public void onBackPressed() {

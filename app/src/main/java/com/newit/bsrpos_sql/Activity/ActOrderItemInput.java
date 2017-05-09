@@ -43,9 +43,7 @@ public class ActOrderItemInput extends ActBase {
             });
 
             Button orderinput_save = (Button) findViewById(R.id.orderinput_save);
-            orderinput_save.setOnClickListener(v -> {
-                item.save();
-            });
+            orderinput_save.setOnClickListener(v -> item.save());
 
 
         }

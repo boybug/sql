@@ -12,17 +12,19 @@ import java.sql.SQLException;
 
 public class SqlServer {
 
-    public static Connection conn;
+    private static Connection conn;
 
-    public static void connect() {
+    private static void connect() {
 
-        final String connStrInternet = "xxx";
-        final String connStrIntranet = "xxx";
-        final String user = "xxx";
-        final String password = "xxx";
+        final String connStrInternet = "jdbc:jtds:sqlserver://203.114.108.46:11433/pos";
+        final String connStrIntranet = "jdbc:jtds:sqlserver://192.168.10.13:11433/pos";
+        final String user = "TM";
+        final String password = "@TM2013!!!";
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
+        DriverManager.setLoginTimeout(10);
 
         try {
             Class.forName("net.sourceforge.jtds.jdbc.Driver");
@@ -32,11 +34,29 @@ public class SqlServer {
         }
     }
 
-    public static ResultSet execute(String procedure) {
+//    public static ResultSet execute(String procedure) {
+//        try {
+//            if (SqlServer.conn == null) SqlServer.connect();
+//            if (conn != null) {
+//                CallableStatement stmt = conn.prepareCall(procedure, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+//                stmt.execute();
+//                return stmt.getResultSet();
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+//
+
+    public static ResultSet execute(String procedure, String[] params) {
         try {
             if (SqlServer.conn == null) SqlServer.connect();
             if (conn != null) {
                 CallableStatement stmt = conn.prepareCall(procedure, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                for (int i = 0; i < params.length; i++) {
+                    stmt.setString(i + 1, params[i]);
+                }
                 stmt.execute();
                 return stmt.getResultSet();
             }

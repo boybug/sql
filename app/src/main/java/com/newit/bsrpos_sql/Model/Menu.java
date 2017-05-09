@@ -1,16 +1,12 @@
 package com.newit.bsrpos_sql.Model;
 
-import android.support.annotation.DrawableRes;
-
 public class Menu {
 
-    private int id;
-    private String name;
-    private Class activity;
-    @DrawableRes
-    private int icon;
-    @DrawableRes
-    private int bgColor;
+    private final int id;
+    private final String name;
+    private final Class activity;
+    private final int icon;
+    private final int bgColor;
 
     public Menu(int Id, String name, int icon, int bgColor, Class activity) {
         this.id = Id;

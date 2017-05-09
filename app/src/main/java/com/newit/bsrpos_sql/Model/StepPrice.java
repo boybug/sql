@@ -10,9 +10,9 @@ import java.util.List;
 public class StepPrice extends ModelBase implements Serializable {
 
     private static final long serialVersionUID = 5L;
-    private int from;
-    private int to;
-    private float price;
+    private final int from;
+    private final int to;
+    private final float price;
 
     public StepPrice(int from, int to, float price) {
         super(false);
@@ -24,8 +24,8 @@ public class StepPrice extends ModelBase implements Serializable {
     public static List<StepPrice> retrieve(List<StepPrice> stepPrices, int prod_Id) {
         stepPrices.clear();
         try {
-            ResultSet rs = SqlServer.execute("{call POS.dbo.getstepprice(" + String.valueOf(prod_Id) + ", " + Integer.valueOf(Global.wh_Id) + ")}");
-            while (rs.next()) {
+            ResultSet rs = SqlServer.execute("{call POS.dbo.getstepprice(?,?)}", new String[]{String.valueOf(prod_Id), String.valueOf(Global.wh_Id)});
+            while (rs != null && rs.next()) {
                 StepPrice sp = new StepPrice(rs.getInt("from"), rs.getInt("to"), rs.getFloat("price"));
                 stepPrices.add(sp);
             }

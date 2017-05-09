@@ -11,6 +11,6 @@
         android:layout_height="wrap_content"
         android:clipToPadding="false"
         android:divider="@color/colorWhite"
-        android:paddingTop="4dp"></ListView>
+        android:paddingTop="4dp" />
 
 </LinearLayout>

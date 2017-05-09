@@ -7,11 +7,6 @@ public class SqlResult {
     public SqlResult() {
     }
 
-    public SqlResult(int iden, String msg) {
-        this.iden = iden;
-        this.msg = msg;
-    }
-
     public int getIden() {
         return iden;
     }

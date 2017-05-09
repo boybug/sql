@@ -8,10 +8,10 @@ import com.newit.bsrpos_sql.R;
 
 public class ActSplash extends ActBase {
 
-    Handler handler;
-    Runnable runnable;
-    long delay_time;
-    long time = 1000L;
+    private Handler handler;
+    private Runnable runnable;
+    private long delay_time;
+    private long time = 1000L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

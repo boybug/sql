@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Switch;
 
 import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.R;
@@ -16,7 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ActLogin extends ActBase {
-    SharedPreferences.Editor loginPrefsEditor;
+    private SharedPreferences.Editor loginPrefsEditor;
     private EditText txt_username, txt_password;
     private String username, password;
     private CheckBox saveLoginCheckBox;
@@ -32,15 +31,16 @@ public class ActLogin extends ActBase {
         saveLoginCheckBox = (CheckBox) findViewById(R.id.login_remember);
         SharedPreferences loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginPrefsEditor = loginPreferences.edit();
+
         Boolean saveLogin = loginPreferences.getBoolean("saveLogin", false);
 
         txt_username.setText("xclnc");
         txt_password.setText("xclnc");
 
-        Switch login_local = (Switch) findViewById(R.id.login_local);
+        CheckBox login_local = (CheckBox) findViewById(R.id.login_local);
         Global.isLocal = login_local.isChecked();
 
-        if (saveLogin == true) {
+        if (saveLogin) {
             txt_username.setText(loginPreferences.getString("username", null));
             txt_password.setText(loginPreferences.getString("password", null));
             saveLoginCheckBox.setChecked(true);
@@ -48,19 +48,20 @@ public class ActLogin extends ActBase {
 
         Button bt_cmd_save = (Button) findViewById(R.id.login_login);
         bt_cmd_save.setOnClickListener(v -> {
-            //todo : sql injection
+
             username = txt_username.getText().toString();
             password = txt_password.getText().toString();
             if (Validate()) {
                 try {
-                    ResultSet rs = SqlServer.execute("{call POS.dbo.[getuser]('" + username + "','" + password + "')}");
-                    if (rs.next()) {
+                    ResultSet rs = SqlServer.execute("{call POS.dbo.[getuser](?,?)}", new String[]{username, password});
+                    if (rs != null && rs.next()) {
                         Global.usr_Id = rs.getInt("usr_Id");
                         Global.usr_name = rs.getString("usr_name");
+                        loginPrefsEditor.apply();
                         Intent intent = new Intent(ActLogin.this, ActWarehouse.class);
                         startActivity(intent);
                         finish();
-                    } else MessageBox("ชื่อผู้ใช้หรือรหัสผ่าน ไม่ถูกต้อง...กรุณาตรวจสอบ");
+                    } else MessageBox("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง...กรุณาตรวจสอบ");
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }

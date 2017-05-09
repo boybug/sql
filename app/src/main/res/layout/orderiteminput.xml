@@ -116,7 +116,7 @@
                         android:gravity="center"
                         android:inputType="numberDecimal"
                         android:text="1"
-                        android:textAlignment="center"></EditText>
+                        android:textAlignment="center" />
 
                     <Button
                         android:id="@+id/orderiteminput_incr"

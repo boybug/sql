@@ -21,8 +21,8 @@ import java.util.List;
 
 public class AdpMenu extends BaseAdapter {
 
-    private List<Menu> menus;
-    private LayoutInflater inflater;
+    private final List<Menu> menus;
+    private final LayoutInflater inflater;
 
     public AdpMenu(Context context) {
         menus = new ArrayList<>();

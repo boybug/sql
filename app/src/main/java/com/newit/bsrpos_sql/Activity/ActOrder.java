@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.Order;
+import com.newit.bsrpos_sql.Model.OrderStat;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
 
@@ -23,6 +24,7 @@ public class ActOrder extends ActBase {
     private List<Order> orders = new ArrayList<>();
     private AdpCustom<Order> adap;
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,11 +52,11 @@ public class ActOrder extends ActBase {
                 TextView order_usr = (TextView) v.findViewById(R.id.order_usr);
                 order_usr.setText("ผู้เปิดบิล : " + String.valueOf(order.getUsr_name()));
 
-                if (order.getStat().toString() == "New") {
+                if (order.getStat() == OrderStat.New) {
                     v.setBackgroundColor(Color.parseColor("#abdacf"));
                     order_amount.setTextColor(Color.parseColor("#ff0000"));
                     order_cus.setTextColor(Color.parseColor("#0070a2"));
-                } else if (order.getStat().toString() == "Confirm") {
+                } else if (order.getStat() == OrderStat.Confirm) {
                     v.setBackgroundColor(Color.parseColor("#F49144"));
                     order_amount.setTextColor(Color.parseColor("#000000"));
                     order_cus.setTextColor(Color.parseColor("#000000"));
@@ -77,7 +79,7 @@ public class ActOrder extends ActBase {
         });
 
         refresh();
-        AddVoiceSearch(R.id.search_txt, R.id.search_btn, orders, adap);
+        AddVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, orders, adap);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(v -> {

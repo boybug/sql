@@ -15,7 +15,6 @@ import java.util.List;
 
 public class ActProductPrice extends ActBase {
 
-    private TextView productprice_name, productprice_stock, productprice_wgt;
     private Product prod;
     private List<StepPrice> stepPrices = new ArrayList<>();
 
@@ -25,9 +24,9 @@ public class ActProductPrice extends ActBase {
         setContentView(R.layout.productprice);
 
         if (validate()) {
-            productprice_name = (TextView) findViewById(R.id.productprice_name);
-            productprice_stock = (TextView) findViewById(R.id.productprice_stock);
-            productprice_wgt = (TextView) findViewById(R.id.productprice_wgt);
+            TextView productprice_name = (TextView) findViewById(R.id.productprice_name);
+            TextView productprice_stock = (TextView) findViewById(R.id.productprice_stock);
+            TextView productprice_wgt = (TextView) findViewById(R.id.productprice_wgt);
 
             productprice_name.setText(prod.getName());
             productprice_stock.setText(String.valueOf(prod.getStock()));

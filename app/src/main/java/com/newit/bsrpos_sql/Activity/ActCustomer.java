@@ -22,6 +22,7 @@ public class ActCustomer extends ActBase {
     private List<Customer> customers = new ArrayList<>();
     private AdpCustom<Customer> adap;
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,8 +59,7 @@ public class ActCustomer extends ActBase {
         });
 
         refresh();
-
-        AddVoiceSearch(R.id.search_txt, R.id.search_btn, customers, adap);
+        AddVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, customers, adap);
     }
 
     @Override

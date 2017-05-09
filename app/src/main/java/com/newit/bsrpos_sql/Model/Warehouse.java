@@ -10,10 +10,10 @@ import java.util.List;
 
 public class Warehouse extends ModelBase implements Serializable {
     private static final long serialVersionUID = 6L;
-    private int id;
-    private String name;
+    private final int id;
+    private final String name;
 
-    public Warehouse(int id, String name) {
+    private Warehouse(int id, String name) {
         super(false);
         this.id = id;
         this.name = name;
@@ -22,8 +22,8 @@ public class Warehouse extends ModelBase implements Serializable {
     public static List<Warehouse> retrieve(List<Warehouse> warehouses) {
         warehouses.clear();
         try {
-            ResultSet rs = SqlServer.execute("{call POS.dbo.getwh(" + Global.usr_Id + ")}");
-            while (rs.next()) {
+            ResultSet rs = SqlServer.execute("{call POS.dbo.getwh(?)}", new String[]{String.valueOf(Global.usr_Id)});
+            while (rs != null && rs.next()) {
                 Warehouse w = new Warehouse(rs.getInt("wh_Id"), rs.getString("wh_name"));
                 warehouses.add(w);
             }

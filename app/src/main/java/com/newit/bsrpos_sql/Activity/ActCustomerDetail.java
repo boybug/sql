@@ -11,7 +11,6 @@ import com.newit.bsrpos_sql.R;
 
 public class ActCustomerDetail extends ActBase {
 
-    private TextView customerdetail_name, customerdetail_addr, customerdetail_ship, customerdetail_tel;
     private Customer customer;
 
     @Override
@@ -20,10 +19,10 @@ public class ActCustomerDetail extends ActBase {
         setContentView(R.layout.customerdetail);
 
         if (validate()) {
-            customerdetail_name = (TextView) findViewById(R.id.customerdetail_name);
-            customerdetail_addr = (TextView) findViewById(R.id.customerdetail_addr);
-            customerdetail_ship = (TextView) findViewById(R.id.customerdetail_ship);
-            customerdetail_tel = (TextView) findViewById(R.id.customerdetail_tel);
+            TextView customerdetail_name = (TextView) findViewById(R.id.customerdetail_name);
+            TextView customerdetail_addr = (TextView) findViewById(R.id.customerdetail_addr);
+            TextView customerdetail_ship = (TextView) findViewById(R.id.customerdetail_ship);
+            TextView customerdetail_tel = (TextView) findViewById(R.id.customerdetail_tel);
 
             customerdetail_name.setText(customer.getName());
             customerdetail_addr.setText(String.valueOf(customer.getAddr()));
@@ -31,9 +30,7 @@ public class ActCustomerDetail extends ActBase {
             customerdetail_tel.setText(String.valueOf(customer.getTel()));
 
             customerdetail_tel.setOnClickListener(v -> {
-                if (customer.getTel().equals("")) {
-                    return;
-                } else {
+                if (!customer.getTel().equals("")) {
                     Intent callIntent = new Intent(Intent.ACTION_DIAL);
                     callIntent.setData(Uri.parse("tel:" + customerdetail_tel.getText()));
                     startActivity(callIntent);

@@ -12,6 +12,7 @@
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
         android:label="Boonsiri POS (On Premise)"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -38,7 +39,7 @@
         <activity android:name=".Activity.ActProductPrice" />
         <activity android:name=".Activity.ActOrderInput" />
         <activity android:name=".Activity.ActOrderInputPayment" />
-        <activity android:name=".Activity.ActOrderItemInput"></activity>
+        <activity android:name=".Activity.ActOrderItemInput" />
     </application>
 
 </manifest>

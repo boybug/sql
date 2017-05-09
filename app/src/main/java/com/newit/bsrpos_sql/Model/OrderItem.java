@@ -18,7 +18,7 @@ public class OrderItem extends ModelBase implements Serializable {
     private float price;
     private float weight;
     private float amount;
-    private int uom_id;
+    private final int uom_id;
     private List<StepPrice> prices = new ArrayList<>();
 
     public OrderItem(Order order, int no, Product product) {
@@ -31,7 +31,7 @@ public class OrderItem extends ModelBase implements Serializable {
         initialization(order, no, product);
     }
 
-    public OrderItem(Order order, int id, int no, Product product, int qty, float price, float weight, float amount, int uom_id) {
+    private OrderItem(Order order, int id, int no, Product product, int qty, float price, float weight, float amount, int uom_id) {
         super(false);
         this.id = id;
         this.qty = qty;
@@ -45,8 +45,8 @@ public class OrderItem extends ModelBase implements Serializable {
     public static Order retrieve(Order order) {
         order.getItems().clear();
         try {
-            ResultSet rs = SqlServer.execute("{call POS.dbo.getorderitem(" + String.valueOf(order.getId()) + ")}");
-            while (rs.next()) {
+            ResultSet rs = SqlServer.execute("{call POS.dbo.getorderitem(?)}", new String[]{String.valueOf(order.getId())});
+            while (rs != null && rs.next()) {
                 Product p = Product.retrieve(rs.getInt("prod_id"), order.getWh_id(), rs.getInt("uom_id"));
                 OrderItem item = new OrderItem(order, rs.getInt("id"), rs.getInt("no"), p, rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("uom_id"));
                 order.getItems().add(item);
@@ -68,8 +68,8 @@ public class OrderItem extends ModelBase implements Serializable {
         //price
         if (order.getStat() == OrderStat.New && product.isStepPrice()) {
             try {
-                ResultSet rs = SqlServer.execute("{call POS.dbo.getstepprice(" + Integer.valueOf(product.getId()) + "," + Integer.valueOf(Global.wh_Id) + ")}");
-                while (rs.next()) {
+                ResultSet rs = SqlServer.execute("{call POS.dbo.getstepprice(?,?)}", new String[]{String.valueOf(product.getId()), String.valueOf(Global.wh_Id)});
+                while (rs != null && rs.next()) {
                     StepPrice p = new StepPrice(rs.getInt("from"), rs.getInt("to"), rs.getFloat("price"));
                     prices.add(p);
                 }
@@ -187,8 +187,11 @@ public class OrderItem extends ModelBase implements Serializable {
         SqlResult result = new SqlResult();
         if (getRecordStat() != RecordStat.NULL) {
             try {
-                ResultSet rs = SqlServer.execute("{call POS.dbo.setorderitem(" + String.valueOf(order.getId()) + "," + String.valueOf(id) + "," + String.valueOf(no) + "," + String.valueOf(product.getId()) + "," + String.valueOf(qty) + "," + String.valueOf(price) + "," + String.valueOf(amount) + "," + String.valueOf(weight) + "," + String.valueOf(uom_id) + ",'" + String.valueOf(getRecordStat()) + "')}");
-                if (rs.next()) {
+                String[] params = {String.valueOf(order.getId()), String.valueOf(id), String.valueOf(no), String.valueOf(product.getId()),
+                        String.valueOf(qty), String.valueOf(price), String.valueOf(amount), String.valueOf(weight), String.valueOf(uom_id),
+                        String.valueOf(getRecordStat())};
+                ResultSet rs = SqlServer.execute("{call POS.dbo.setorderitem(?,?,?,?,?,?,?,?,?,?)}", params);
+                if (rs != null && rs.next()) {
                     result.setIden(rs.getInt("Iden"));
                     result.setMsg(rs.getString("Msg"));
                     if (result.getIden() > 0) {

@@ -1,29 +1,13 @@
 package com.newit.bsrpos_sql.Activity;
 
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.newit.bsrpos_sql.Model.Customer;
-import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.Order;
-import com.newit.bsrpos_sql.Model.OrderItem;
-import com.newit.bsrpos_sql.Model.OrderStat;
-import com.newit.bsrpos_sql.Model.Product;
-import com.newit.bsrpos_sql.Model.SqlResult;
 import com.newit.bsrpos_sql.R;
-import com.newit.bsrpos_sql.Util.AdpCustom;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ActOrderInputPayment extends ActBase {
 
@@ -59,7 +43,7 @@ public class ActOrderInputPayment extends ActBase {
 
     }
 
-    public void redrawOrder() {
+    private void redrawOrder() {
         orderinput_cus.setText(String.valueOf(order.getCus_name()));
         orderiteminputpayment_no.setText(order.getNo());
         orderiteminputpayment_qty.setText(String.valueOf(order.getQty()));

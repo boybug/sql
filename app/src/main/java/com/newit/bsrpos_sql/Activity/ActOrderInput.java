@@ -30,6 +30,7 @@ public class ActOrderInput extends ActBase {
 
     private TextView orderinput_no, orderinput_qty, orderinput_wgt, orderinput_amt, orderinput_listtitle, orderinput_cus;
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,8 +51,8 @@ public class ActOrderInput extends ActBase {
             finish();
         }
 
-        order = (Order) bundle.getSerializable("order");
-        Customer customer = (Customer) bundle.getSerializable("customer");
+        order = (Order) (bundle != null ? bundle.getSerializable("order") : null);
+        Customer customer = (Customer) (bundle != null ? bundle.getSerializable("customer") : null);
 
         if (order == null && customer != null) {
             order = new Order(customer.getId(), customer.getName(), customer.isShip());
@@ -136,7 +137,7 @@ public class ActOrderInput extends ActBase {
             });
 
             refresh();
-            AddVoiceSearch(R.id.search_txt, R.id.search_btn, products, adapProduct);
+            AddVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, products, adapProduct);
         }
         //endregion
 
@@ -164,7 +165,7 @@ public class ActOrderInput extends ActBase {
         //endregion
     }
 
-    public void redrawProduct(int stock, View v) {
+    private void redrawProduct(int stock, View v) {
         TextView orderproduct_stock = (TextView) v.findViewById(R.id.orderproduct_stock);
         orderproduct_stock.setText("[" + String.valueOf(stock) + "]");
 
@@ -176,7 +177,7 @@ public class ActOrderInput extends ActBase {
         }
     }
 
-    public void redrawOrder() {
+    private void redrawOrder() {
         orderinput_cus.setText(String.valueOf(order.getCus_name()));
         orderinput_no.setText(order.getNo());
         orderinput_qty.setText(String.valueOf(order.getQty()));
