@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Switch;
 
 import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.R;
@@ -36,6 +37,8 @@ public class ActLogin extends ActBase {
         txt_username.setText("xclnc");
         txt_password.setText("xclnc");
 
+        Switch login_local = (Switch) findViewById(R.id.login_local);
+        Global.isLocal = login_local.isChecked();
 
         if (saveLogin == true) {
             txt_username.setText(loginPreferences.getString("username", null));

@@ -17,7 +17,6 @@ import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -37,10 +36,8 @@ import java.util.Locale;
 
 public class ActBase<T> extends AppCompatActivity {
 
-    protected EditText txt_search;
+    private EditText txt_search;
     private ProgressDialog mProgressDialog;
-    private ImageButton btn_search;
-    private ImageButton btn_clear;
     protected String searchString;
     private List<T> backup;
 
@@ -62,7 +59,7 @@ public class ActBase<T> extends AppCompatActivity {
 
     public void hideSearchBar(@IdRes int searchId) {
         try {
-            LinearLayout searchbar = (LinearLayout) findViewById(searchId/*R.id.list_search*/);
+            LinearLayout searchbar = (LinearLayout) findViewById(searchId);
             searchbar.setVisibility(View.GONE);
         } catch (Exception e) {
         }
@@ -74,7 +71,7 @@ public class ActBase<T> extends AppCompatActivity {
 
     public void hideFloatButton(@IdRes int fabId) {
         try {
-            FloatingActionButton fab = (FloatingActionButton) findViewById(fabId/*R.id.fab*/);
+            FloatingActionButton fab = (FloatingActionButton) findViewById(fabId);
             fab.setVisibility((View.GONE));
         } catch (Exception e) {
         }
@@ -89,8 +86,8 @@ public class ActBase<T> extends AppCompatActivity {
     }
 
     public void AddVoiceSearch(@IdRes int txtId, @IdRes int btnId, List<T> items, AdpCustom<T> adap) {
-        txt_search = (EditText) findViewById(txtId/*R.id.txt_search*/);
-        btn_search = (ImageButton) findViewById(btnId/*R.id.btn_search*/);
+        txt_search = (EditText) findViewById(txtId);
+        ImageButton btn_search = (ImageButton) findViewById(btnId);
         if (txt_search != null && btn_search != null) {
             btn_search.setOnClickListener(v -> {
                 Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -129,6 +126,12 @@ public class ActBase<T> extends AppCompatActivity {
                 }
             });
         }
+        ImageButton btn_clear = (ImageButton) findViewById(btnId);
+        if (txt_search != null && btn_clear != null) {
+            btn_clear.setOnClickListener(v -> {
+                txt_search.setText("");
+            });
+        }
     }
 
     public void SetTextSpan(String search, String name, TextView lab_name) {
@@ -145,15 +148,6 @@ public class ActBase<T> extends AppCompatActivity {
         }
     }
 
-    public void ClearSearch(@IdRes int txtId, @IdRes int btnId) {
-        txt_search = (EditText) findViewById(txtId);
-        btn_clear = (ImageButton) findViewById(btnId);
-        if (txt_search != null && btn_clear != null) {
-            btn_clear.setOnClickListener(v -> {
-                txt_search.setText("");
-            });
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -172,14 +166,6 @@ public class ActBase<T> extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.base, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-//        if (item.getItemId() == R.id.menu_sign_out) {
-//            Logout();
-//        }
         return true;
     }
 
@@ -216,12 +202,13 @@ public class ActBase<T> extends AppCompatActivity {
             runable[0] = () -> {
                 swipeRefreshLayout.setRefreshing(false);
                 refresh();
-                swipeRefreshLayout.removeCallbacks(runable[0]); // stop runable.
+                swipeRefreshLayout.removeCallbacks(runable[0]);
             };
             handle[0].postDelayed(runable[0], 1000);
         });
     }
 
     public void refresh() {
+        MessageBox("no implementation.");
     }
 }

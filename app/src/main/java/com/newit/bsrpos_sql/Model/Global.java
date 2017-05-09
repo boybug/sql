@@ -6,4 +6,5 @@ public class Global {
     public static String usr_name = "";
     public static int wh_Id = -1;
     public static String wh_name = "";
+    public static boolean isLocal = false;
 }
