@@ -42,6 +42,7 @@ public class Order extends ModelBase implements Serializable {
         stat = OrderStat.New;
         wh_id = Global.wh_Id;
         this.ship = ship;
+        this.pay = OrderPay.Cash;
     }
 
     private Order(int id, String no, String date, int cus_id, String cus_name, int wh_id, OrderStat stat, int qty, float weight,
@@ -269,6 +270,24 @@ public class Order extends ModelBase implements Serializable {
         return result;
     }
 
+    public SqlResult updatepay() {
+        SqlResult result = new SqlResult();
+        try {
+            String[] params = {String.valueOf(id), this.ship ? "1" : "0", String.valueOf(pay), String.valueOf(remark)};
+            ResultSet rs = SqlServer.execute("{call POS.dbo.setorderpay(?,?,?,?)}", params);
+            if (rs != null && rs.next()) {
+                result.setIden(rs.getInt("Iden"));
+                result.setMsg(rs.getString("Msg"));
+                if (result.getIden() > 0) {
+                    setRecordStat(RecordStat.NULL);
+                } else result.setMsg("ไม่ได้รับคำตอบจาก server");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            result.setMsg("ไม่สามารถเชื่อมต่อกับ server");
+        }
+        return result;
+    }
 
     @Override
     public String getSearchString() {

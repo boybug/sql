@@ -2,8 +2,11 @@ package com.newit.bsrpos_sql.Activity;
 
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -11,18 +14,12 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.newit.bsrpos_sql.Model.Order;
 import com.newit.bsrpos_sql.Model.OrderPay;
 import com.newit.bsrpos_sql.Model.OrderStat;
-import com.newit.bsrpos_sql.Model.RecordStat;
 import com.newit.bsrpos_sql.Model.SqlResult;
 import com.newit.bsrpos_sql.R;
-import com.newit.bsrpos_sql.Util.SqlServer;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class ActOrderInputPayment extends ActBase {
 
@@ -53,7 +50,9 @@ public class ActOrderInputPayment extends ActBase {
 
 
         Bundle bundle = getIntent().getExtras();
-        order = (Order) bundle.getSerializable("order");
+        if (bundle != null) {
+            order = (Order) bundle.getSerializable("order");
+        }
 
         radio_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -74,7 +73,7 @@ public class ActOrderInputPayment extends ActBase {
         switch_payship.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                order.setShip(isChecked ? true : false);
+                order.setShip(isChecked);
             }
         });
 
@@ -85,8 +84,7 @@ public class ActOrderInputPayment extends ActBase {
         bt_cmd_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (order.getStat() == OrderStat.Confirm)
-                    Toast.makeText(ActOrderInputPayment.this, "เอกสารได้ถูกยืนยันไปแล้ว.", Toast.LENGTH_SHORT).show();
+                if (order.getStat() == OrderStat.Confirm) MessageBox("เอกสารได้ถูกยืนยันไปแล้ว.");
                 else {
                     android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(ActOrderInputPayment.this);
                     dialog.setTitle("ยืนยันเอกสาร");
@@ -95,8 +93,14 @@ public class ActOrderInputPayment extends ActBase {
                     dialog.setMessage("เอกสารยันแล้วจะไม่สามารถแก้ไขได้   คุณต้องการยืนยันใช่หรือไม่");
                     dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            SqlResult result = save();
-                            if (result.getMsg() == null) backPressed(ActOrder.class);
+                            order.setRemark(orderiteminputpayment_remark.getText().toString());
+                            SqlResult result = order.updatepay();
+                            if (result.getMsg() == null) {
+                                Intent intent = new Intent();
+                                intent.putExtra("FINISH",true);
+                                setResult(2,intent);
+                                backPressed(ActOrder.class);
+                            }
                             else MessageBox(result.getMsg());
                         }
                     });
@@ -111,19 +115,15 @@ public class ActOrderInputPayment extends ActBase {
         });
 
         //endregion
-
-
     }
 
     private void redrawOrder() {
-        order.setPay(OrderPay.Cash);
         orderinput_cus.setText(order.getCus_name());
         orderiteminputpayment_no.setText(order.getNo());
         orderiteminputpayment_qty.setText(String.valueOf(order.getQty()));
         orderiteminputpayment_wgt.setText(String.valueOf(order.getWeight()));
         orderiteminputpayment_amt.setText(String.valueOf(order.getAmount()));
-        if (order.isShip()) switch_payship.setChecked(true);
-        else switch_payship.setChecked(false);
+        switch_payship.setChecked(order.isShip());
 
         if (order.getStat() == OrderStat.Confirm) {
             if (order.getPay() == OrderPay.Cash) {
@@ -134,27 +134,20 @@ public class ActOrderInputPayment extends ActBase {
                 radio_paycredit.setChecked(true);
             }
             orderiteminputpayment_remark.setText(order.getRemark());
-        }
+        } else order.setPay(OrderPay.Cash);
     }
 
-    public SqlResult save() {
-        SqlResult result = new SqlResult();
-        try {
-            String[] params = {String.valueOf(order.getId()), order.isShip() ? "1" : "0", String.valueOf(order.getPay()), String.valueOf(orderiteminputpayment_remark.getText().toString())};
-            ResultSet rs = SqlServer.execute("{call POS.dbo.setorderpay(?,?,?,?)}", params);
-            if (rs != null && rs.next()) {
-                result.setIden(rs.getInt("Iden"));
-                result.setMsg(rs.getString("Msg"));
-                if (result.getIden() > 0) {
-                    order.setRecordStat(RecordStat.NULL);
-                } else result.setMsg("ไม่ได้รับคำตอบจาก server");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            result.setMsg("ไม่สามารถเชื่อมต่อกับ server");
-        }
-        return result;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.base, menu);
+        return true;
     }
 
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.nav_logout) {
+            super.backPressed(ActLogin.class);
+        }
+        return true;
+    }
 }

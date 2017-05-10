@@ -1,6 +1,8 @@
 package com.newit.bsrpos_sql.Activity;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -59,5 +61,19 @@ public class ActProductPrice extends ActBase {
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.base, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.nav_logout) {
+            super.backPressed(ActLogin.class);
+        }
+        return true;
     }
 }

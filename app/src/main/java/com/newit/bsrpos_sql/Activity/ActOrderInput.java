@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -173,10 +175,18 @@ public class ActOrderInput extends ActBase {
                 bundle1.putSerializable("order", order);
                 Intent intent = new Intent(ActOrderInput.this, ActOrderInputPayment.class);
                 intent.putExtras(bundle1);
-                ActOrderInput.this.startActivity(intent);
+                ActOrderInput.this.startActivityForResult(intent, 1);
             }
         });
         //endregion
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 2) {
+            if(data.getBooleanExtra("FINISH", false))
+                finish();
+        }
     }
 
     private void redrawProduct(int stock, View v) {
@@ -212,6 +222,19 @@ public class ActOrderInput extends ActBase {
     public void refresh() {
         products = Product.retrieve(products);
         if (adapProduct != null) adapProduct.notifyDataSetChanged();
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.base, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.nav_logout) {
+            super.backPressed(ActLogin.class);
+        }
+        return true;
     }
 
 }

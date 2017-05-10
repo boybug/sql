@@ -1,6 +1,8 @@
 package com.newit.bsrpos_sql.Activity;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -79,5 +81,19 @@ public class ActOrderItemInput extends ActBase {
         orderiteminput_price.setText(String.valueOf(item.getPrice()));
         orderiteminput_amt.setText(String.valueOf(item.getAmount()));
         orderiteminput_qty.clearFocus();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.base, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.nav_logout) {
+            super.backPressed(ActLogin.class);
+        }
+        return true;
     }
 }

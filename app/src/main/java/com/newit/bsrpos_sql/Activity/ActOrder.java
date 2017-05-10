@@ -139,6 +139,12 @@ public class ActOrder extends ActBase {
     }
 
     @Override
+    public void refresh() {
+        orders = Order.retrieve(orders);
+        if (adap != null) adap.notifyDataSetChanged();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.base, menu);
         return true;
@@ -147,17 +153,8 @@ public class ActOrder extends ActBase {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.nav_logout) {
-            Intent intent = new Intent(ActOrder.this, ActLogin.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
+            super.backPressed(ActLogin.class);
         }
         return true;
-    }
-
-    @Override
-    public void refresh() {
-        orders = Order.retrieve(orders);
-        if (adap != null) adap.notifyDataSetChanged();
     }
 }

@@ -92,10 +92,7 @@ public class ActProduct extends ActBase {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.nav_logout) {
-            Intent intent = new Intent(ActProduct.this, ActLogin.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
+            super.backPressed(ActLogin.class);
         }
         return true;
     }

@@ -2,6 +2,8 @@ package com.newit.bsrpos_sql.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -65,5 +67,19 @@ public class ActWarehouse extends ActBase {
     public void refresh() {
         warehouses = Warehouse.retrieve(warehouses);
         if (adap != null) adap.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.base, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.nav_logout) {
+            super.backPressed(ActLogin.class);
+        }
+        return true;
     }
 }
