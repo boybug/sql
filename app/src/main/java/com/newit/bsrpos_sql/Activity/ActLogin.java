@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.newit.bsrpos_sql.Model.Global;
+import com.newit.bsrpos_sql.Model.User;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.SqlServer;
 
@@ -56,16 +57,15 @@ public class ActLogin extends ActBase {
                 password = txt_password.getText().toString();
                 if (ActLogin.this.Validate()) {
                     try {
-                        ResultSet rs = SqlServer.execute("{call POS.dbo.[getuser](?,?)}", new String[]{username, password});
-                        if (rs != null && rs.next()) {
-                            Global.usr_Id = rs.getInt("usr_Id");
-                            Global.usr_name = rs.getString("usr_name");
+                        ResultSet rs = SqlServer.execute("{call POS.dbo.login(?,?)}", new String[]{username, password});
+                        if (rs != null && rs.next() && rs.getInt("usr_Id") > 0) {
+                            Global.user = new User(rs.getInt("usr_Id"), rs.getString("login_name"), rs.getString("usr_name"), rs.getBoolean("admin"), rs.getBoolean("deleteorder"));
                             loginPrefsEditor.apply();
                             Intent intent = new Intent(ActLogin.this, ActWarehouse.class);
                             ActLogin.this.startActivity(intent);
                             ActLogin.this.finish();
                         } else
-                            ActLogin.this.MessageBox("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง...กรุณาตรวจสอบ");
+                            ActLogin.this.MessageBox("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }

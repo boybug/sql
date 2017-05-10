@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--todo: ฝากทำให้งดงาม-->
+    <TextView
+        android:id="@+id/user_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ล้อกอิน" />
+
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ชื่อ" />
+
+    <TextView
+        android:id="@+id/user_deleteorder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ลบบิล" />
+
+    <TextView
+        android:id="@+id/user_admin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="แอดมิน" />
+</LinearLayout>

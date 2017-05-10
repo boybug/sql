@@ -1,5 +1,7 @@
 package com.newit.bsrpos_sql.Activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.Order;
 import com.newit.bsrpos_sql.Model.OrderStat;
+import com.newit.bsrpos_sql.Model.SqlResult;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
 
@@ -81,15 +84,49 @@ public class ActOrder extends ActBase {
                 ActOrder.this.startActivity(intent);
             }
         });
+        if (Global.user.isDeleteorder()) {
+            list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                    final Order order = orders.get(position);
+                    if (order.getStat() == OrderStat.Confirm)
+                        MessageBox("เอกสารยืนยันแล้วลบไม่ได้");
+                    else {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(ActOrder.this);
+                        dialog.setTitle("ยืนยันการลบ");
+                        dialog.setIcon(R.mipmap.ic_launcher);
+                        dialog.setCancelable(true);
+                        dialog.setMessage("ท่านต้องการลบรายการนี้หรือไม่?");
+                        dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog12, int which) {
+                                SqlResult result = order.delete();
+                                MessageBox(result.getMsg() == null ? "ลบเอกสารแล้ว" : result.getMsg());
+                                refresh();
+                            }
+                        });
+                        dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog1, int which) {
+                                dialog1.cancel();
+                            }
+                        });
+                        dialog.show();
+                    }
+                    return true;
+                }
+            });
+        }
 
         refresh();
-        AddVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, orders, adap);
+        addVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, orders, adap);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ActOrder.this, ActCustomer.class);
+                intent.putExtra("bypasscustomer", true);
                 ActOrder.this.startActivity(intent);
                 ActOrder.this.finish();
             }

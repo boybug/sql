@@ -40,6 +40,8 @@
         <activity android:name=".Activity.ActOrderInput" />
         <activity android:name=".Activity.ActOrderInputPayment" />
         <activity android:name=".Activity.ActOrderItemInput" />
+        <activity android:name=".Activity.ActUser" />
+        <activity android:name=".Activity.ActUserInput"></activity>
     </application>
 
 </manifest>

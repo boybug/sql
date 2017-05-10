@@ -22,7 +22,7 @@ public class Warehouse extends ModelBase implements Serializable {
     public static List<Warehouse> retrieve(List<Warehouse> warehouses) {
         warehouses.clear();
         try {
-            ResultSet rs = SqlServer.execute("{call POS.dbo.getwh(?)}", new String[]{String.valueOf(Global.usr_Id)});
+            ResultSet rs = SqlServer.execute("{call POS.dbo.getwh(?)}", new String[]{String.valueOf(Global.user.getId())});
             while (rs != null && rs.next()) {
                 Warehouse w = new Warehouse(rs.getInt("wh_Id"), rs.getString("wh_name"));
                 warehouses.add(w);

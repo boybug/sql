@@ -75,7 +75,7 @@ public class ActProduct extends ActBase {
         });
 
         refresh();
-        AddVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, products, adap);
+        addVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, products, adap);
     }
 
     @Override

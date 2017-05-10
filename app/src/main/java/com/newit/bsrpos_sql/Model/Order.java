@@ -37,8 +37,8 @@ public class Order extends ModelBase implements Serializable {
         amount = 0;
         this.cus_id = cus_id;
         this.cus_name = cus_name;
-        usr_id = Global.usr_Id;
-        usr_name = Global.usr_name;
+        usr_id = Global.user.getId();
+        usr_name = Global.user.getName();
         stat = OrderStat.New;
         wh_id = Global.wh_Id;
         this.ship = ship;
@@ -67,7 +67,7 @@ public class Order extends ModelBase implements Serializable {
     public static List<Order> retrieve(List<Order> orders) {
         orders.clear();
         try {
-            ResultSet rs = SqlServer.execute("{call POS.dbo.getorder(?,?)}", new String[]{String.valueOf(Global.wh_Id), String.valueOf(Global.usr_Id)});
+            ResultSet rs = SqlServer.execute("{call POS.dbo.getorder(?,?)}", new String[]{String.valueOf(Global.wh_Id), String.valueOf(Global.user.getId())});
             while (rs != null && rs.next()) {
                 Order o = new Order(rs.getInt("id"), rs.getString("no"), rs.getString("order_date"),
                         rs.getInt("cus_id"), rs.getString("cus_name"), rs.getInt("wh_id"), OrderStat.valueOf(rs.getString("order_stat")),
@@ -251,6 +251,24 @@ public class Order extends ModelBase implements Serializable {
         } else result.setMsg("ไม่มีความเปลี่ยนแปลง");
         return result;
     }
+
+    public SqlResult delete() {
+        SqlResult result = new SqlResult();
+        if (getStat() != OrderStat.Confirm && Global.user.isDeleteorder()) {
+            try {
+                ResultSet rs = SqlServer.execute("{call POS.dbo.deleteorder(?)}", new String[]{String.valueOf(id)});
+                if (rs != null && rs.next()) {
+                    result.setIden(rs.getInt("Iden"));
+                    if (result.getIden() < 0) result.setMsg("ไม่ได้รับคำตอบจาก server");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                result.setMsg("ไม่สามารถเชื่อมต่อกับ server");
+            }
+        }
+        return result;
+    }
+
 
     @Override
     public String getSearchString() {

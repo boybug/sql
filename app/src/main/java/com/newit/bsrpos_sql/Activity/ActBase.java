@@ -94,11 +94,7 @@ public class ActBase<T> extends AppCompatActivity {
         if (bar != null) bar.setTitle(title);
     }
 
-    public void MessageBox(String message) {
-        Toast.makeText(ActBase.this, message, Toast.LENGTH_LONG).show();
-    }
-
-    public void AddVoiceSearch(@IdRes int txtId, @IdRes int speakBtnId, @IdRes int clearBtnId, final List<T> items, final AdpCustom<T> adap) {
+    public void addVoiceSearch(@IdRes int txtId, @IdRes int speakBtnId, @IdRes int clearBtnId, final List<T> items, final AdpCustom<T> adap) {
         txt_search = (EditText) findViewById(txtId);
         ImageButton btn_search = (ImageButton) findViewById(speakBtnId);
         ImageButton btn_clear = (ImageButton) findViewById(clearBtnId);
@@ -187,6 +183,10 @@ public class ActBase<T> extends AppCompatActivity {
         return true;
     }
 
+    public void MessageBox(String message) {
+        Toast.makeText(ActBase.this, message, Toast.LENGTH_LONG).show();
+    }
+
     public void backPressed(Class nextActivity) {
         if (nextActivity == ActLogin.class) SqlServer.disconnect();
         Intent intent = new Intent(getApplicationContext(), nextActivity);
@@ -267,6 +267,4 @@ public class ActBase<T> extends AppCompatActivity {
     public void refresh() {
         MessageBox("no implementation.");
     }
-
-
 }

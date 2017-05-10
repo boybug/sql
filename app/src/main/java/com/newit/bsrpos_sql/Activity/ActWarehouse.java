@@ -54,7 +54,7 @@ public class ActWarehouse extends ActBase {
         });
         refresh();
 
-        AddVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, warehouses, adap);
+        addVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, warehouses, adap);
     }
 
     public void onBackPressed() {

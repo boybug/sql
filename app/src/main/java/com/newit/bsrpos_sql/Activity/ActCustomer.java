@@ -54,16 +54,17 @@ public class ActCustomer extends ActBase {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                boolean bypasscustomer = getIntent().getBooleanExtra("bypasscustomer", false);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("customer", customers.get(position));
-                Intent intent = new Intent(ActCustomer.this, ActCustomerDetail.class);
+                Intent intent = new Intent(ActCustomer.this, bypasscustomer ? ActOrderInput.class : ActCustomerDetail.class);
                 intent.putExtras(bundle);
                 ActCustomer.this.startActivity(intent);
             }
         });
 
         refresh();
-        AddVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, customers, adap);
+        addVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, customers, adap);
     }
 
     @Override

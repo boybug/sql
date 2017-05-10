@@ -16,11 +16,16 @@ public class SqlServer {
 
     private static void connect() {
 
+        final String connStrInternet = "jdbc:jtds:sqlserver://203.114.108.46:11433/pos";
+        final String connStrIntranet = "jdbc:jtds:sqlserver://192.168.10.13:11433/pos";
+        final String user = "TM";
+        final String password = "@TM2013!!!";
 
-        final String connStrInternet = "xx";
-        final String connStrIntranet = "xx";
-        final String user = "xx";
-        final String password = "xx!";
+
+//        final String connStrInternet = "xx";
+//        final String connStrIntranet = "xx";
+//        final String user = "xx";
+//        final String password = "xx!";
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -40,8 +45,10 @@ public class SqlServer {
             if (SqlServer.conn == null) SqlServer.connect();
             if (conn != null) {
                 CallableStatement stmt = conn.prepareCall(procedure, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-                for (int i = 0; i < params.length; i++) {
-                    stmt.setString(i + 1, params[i]);
+                if (params != null) {
+                    for (int i = 0; i < params.length; i++) {
+                        stmt.setString(i + 1, params[i]);
+                    }
                 }
                 stmt.execute();
                 return stmt.getResultSet();

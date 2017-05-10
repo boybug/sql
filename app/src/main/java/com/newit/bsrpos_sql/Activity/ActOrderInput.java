@@ -145,7 +145,7 @@ public class ActOrderInput extends ActBase {
             });
 
             refresh();
-            AddVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, products, adapProduct);
+            addVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, products, adapProduct);
         }
         //endregion
 

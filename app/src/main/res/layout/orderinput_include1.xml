@@ -53,11 +53,12 @@
                     android:layout_height="wrap_content"
                     android:layout_column="1">
 
+                    <!--todo: หลังจากเซฟแล้ว กล่องมันยืด-->
                     <TextView
                         android:id="@+id/orderinput_no"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.55"
+                        android:layout_weight="0.51"
                         android:gravity="center|left"
                         android:paddingLeft="10dp"
                         android:textColor="@color/colorFish" />
@@ -157,13 +158,13 @@
                         android:textStyle="bold" />
 
                     <Button
-                    android:id="@+id/bt_pay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center|right"
-                    android:background="@color/colorAccent"
-                    android:text="จ่ายเงิน"
-                    android:textColor="@color/colorWhite" />
+                        android:id="@+id/bt_pay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center|right"
+                        android:background="@color/colorAccent"
+                        android:text="จ่ายเงิน"
+                        android:textColor="@color/colorWhite" />
 
                 </LinearLayout>
 
