@@ -33,6 +33,8 @@ public class ActOrderInput extends ActBase {
     private Order order;
     private List<Product> products = new ArrayList<>();
     private AdpCustom<Product> adapProduct;
+    private int selectedIndex;
+    private AdpCustom<OrderItem> adapOrderItem;
 
     private TextView orderinput_no, orderinput_qty, orderinput_wgt, orderinput_amt, orderinput_listtitle, orderinput_cus;
 
@@ -71,7 +73,7 @@ public class ActOrderInput extends ActBase {
         //endregion
 
         //region ORDERITEM
-        final AdpCustom<OrderItem> adapOrderItem = new AdpCustom<OrderItem>(R.layout.listing_grid_orderitem, getLayoutInflater(), order.getItems()) {
+        adapOrderItem = new AdpCustom<OrderItem>(R.layout.listing_grid_orderitem, getLayoutInflater(), order.getItems()) {
             @Override
             protected void populateView(View v, OrderItem model) {
                 TextView orderitem_no = (TextView) v.findViewById(R.id.orderitem_no);
@@ -91,7 +93,9 @@ public class ActOrderInput extends ActBase {
                 bundle1.putSerializable("orderItem", order.getItems().get(position));
                 Intent intent = new Intent(ActOrderInput.this, ActOrderItemInput.class);
                 intent.putExtras(bundle1);
-                ActOrderInput.this.startActivity(intent);
+                selectedIndex = position;
+                ActOrderInput.this.startActivityForResult(intent, 3);
+
             }
         });
         listOrderItem.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -220,7 +224,7 @@ public class ActOrderInput extends ActBase {
                 bundle1.putSerializable("order", order);
                 Intent intent = new Intent(ActOrderInput.this, ActOrderInputPayment.class);
                 intent.putExtras(bundle1);
-                ActOrderInput.this.startActivityForResult(intent, 1);
+                ActOrderInput.this.startActivityForResult(intent, 2);
             }
         });
         //endregion
@@ -231,6 +235,22 @@ public class ActOrderInput extends ActBase {
         if (requestCode == 2) {
             if (data.getBooleanExtra("FINISH", false))
                 finish();
+        }
+        if (requestCode == 3) {
+            int delta = data.getIntExtra("DELTA", 0);
+            OrderItem oi = order.getItems().get(selectedIndex);
+            oi.addQty(delta);
+            adapOrderItem.notifyDataSetChanged();
+
+            for (Product p : products) {
+                if (p.equals(oi.getProduct())) {
+                    p.setStock(p.getStock() - delta);
+                    break;
+                }
+            }
+            adapProduct.notifyDataSetChanged();
+            ActOrderInput.this.redrawOrder();
+
         }
     }
 

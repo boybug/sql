@@ -20,7 +20,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".Activity.ActLogin"
-            android:noHistory="true" />
+            android:noHistory="true"
+            android:screenOrientation="portrait" />
         <activity android:name=".Activity.ActSplash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,20 +29,43 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.ActMain" />
+        <activity
+            android:name=".Activity.ActMain"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.ActWarehouse"
-            android:noHistory="true" />
-        <activity android:name=".Activity.ActOrder" />
-        <activity android:name=".Activity.ActCustomer" />
-        <activity android:name=".Activity.ActCustomerDetail" />
-        <activity android:name=".Activity.ActProduct" />
-        <activity android:name=".Activity.ActProductPrice" />
-        <activity android:name=".Activity.ActOrderInput" />
-        <activity android:name=".Activity.ActOrderInputPayment" />
-        <activity android:name=".Activity.ActOrderItemInput" />
-        <activity android:name=".Activity.ActUser" />
-        <activity android:name=".Activity.ActUserInput"></activity>
+            android:noHistory="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.ActOrder"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.ActCustomer"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.ActCustomerDetail"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.ActProduct"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.ActProductPrice"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.ActOrderInput"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.ActOrderInputPayment"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.ActOrderItemInput"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.ActUser"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.ActUserInput"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

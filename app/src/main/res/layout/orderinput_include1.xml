@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
@@ -20,6 +21,11 @@
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"></LinearLayout>
 
         <TableLayout
             android:layout_width="match_parent"
@@ -28,7 +34,6 @@
             android:stretchColumns="1">
 
             <TableRow android:id="@+id/tr_customer_new">
-
                 <include
                     layout="@layout/orderinput_include1_1"
                     android:layout_width="match_parent"
@@ -37,8 +42,7 @@
 
             </TableRow>
 
-            <TableRow android:id="@+id/tr_no">
-
+            <TableRow>
                 <include
                     layout="@layout/orderinput_include1_2"
                     android:layout_width="match_parent"
@@ -47,8 +51,7 @@
 
             </TableRow>
 
-            <TableRow android:id="@+id/tr_qty">
-
+            <TableRow>
                 <include
                     layout="@layout/orderinput_include1_3"
                     android:layout_width="match_parent"
@@ -56,6 +59,8 @@
                     android:layout_span="2" />
 
             </TableRow>
+
+
 
 
             <TableRow android:id="@+id/tr_item_head">
@@ -92,20 +97,13 @@
 
             </TableRow>
 
-            <TableRow android:id="@+id/tr_item_detail">
 
-                <ListView
-                    android:id="@+id/list_order_item"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_span="2" />
 
-            </TableRow>
 
-            <TableRow
-                android:id="@+id/tr_order_save"
-                android:paddingBottom="5dp"
-                android:visibility="visible">
+
+
+
+            <TableRow>
 
                 <include
                     layout="@layout/btn_save"

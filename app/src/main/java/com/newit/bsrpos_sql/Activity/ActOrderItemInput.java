@@ -1,5 +1,6 @@
 package com.newit.bsrpos_sql.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,7 +47,8 @@ public class ActOrderItemInput extends ActBase {
             orderiteminput_decr.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    addQty(-1, false);
+                    if (getQty() > 0)
+                        addQty(-1, false);
                 }
             });
 
@@ -66,8 +68,10 @@ public class ActOrderItemInput extends ActBase {
                     if (delta != 0) {
                         if (getStock() >= delta) {
                             item.setQty(getQty());
+                            Intent intent = new Intent();
+                            intent.putExtra("DELTA", delta);
+                            setResult(3, intent);
                             finish();
-                            //todo: เปลี่ยน ให้ activity นี้ return result เอา item นี้ return กลับไป (บันทุึกแบบไม่ลงเบส)
                         } else orderiteminput_qty.setError("สต็อกไม่พอ");
                     }
                 }
@@ -95,14 +99,13 @@ public class ActOrderItemInput extends ActBase {
     }
 
     private int getQty() {
-        if(orderiteminput_qty.length() == 0) orderiteminput_qty.setText("0");
+        if (orderiteminput_qty.length() == 0) orderiteminput_qty.setText("0");
         return Integer.parseInt(orderiteminput_qty.getText().toString());
     }
 
     private void setQty(int qty) {
         orderiteminput_qty.setText(String.valueOf(qty));
     }
-
 
     private float getAmount() {
         return Float.parseFloat(orderiteminput_amt.getText().toString());
@@ -111,7 +114,6 @@ public class ActOrderItemInput extends ActBase {
     private void setAmount(int amount) {
         orderiteminput_amt.setText(String.valueOf(amount));
     }
-
 
     private void addQty(int delta, boolean fromTextChangeListener) {
         if (getStock() >= delta) {
@@ -122,14 +124,12 @@ public class ActOrderItemInput extends ActBase {
         }
     }
 
-
     private void redraw(int qty, int stock, float amount, boolean fromTextChangeListener) {
         if (!fromTextChangeListener)
             orderiteminput_qty.setText(String.valueOf(qty));
         orderiteminput_stock.setText(String.valueOf(stock));
         orderiteminput_amt.setText(String.valueOf(amount));
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
