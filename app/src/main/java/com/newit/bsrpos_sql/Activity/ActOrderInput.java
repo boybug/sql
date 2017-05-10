@@ -1,5 +1,7 @@
 package com.newit.bsrpos_sql.Activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -72,14 +74,11 @@ public class ActOrderInput extends ActBase {
         final AdpCustom<OrderItem> adapOrderItem = new AdpCustom<OrderItem>(R.layout.listing_grid_orderitem, getLayoutInflater(), order.getItems()) {
             @Override
             protected void populateView(View v, OrderItem model) {
-
                 TextView orderitem_no = (TextView) v.findViewById(R.id.orderitem_no);
-                orderitem_no.setText(String.valueOf(model.getNo()));
-
                 TextView orderitem_desc = (TextView) v.findViewById(R.id.orderitem_desc);
-                orderitem_desc.setText(model.getProduct().getName());
-
                 TextView orderitem_qty = (TextView) v.findViewById(R.id.orderitem_qty);
+                orderitem_no.setText(String.valueOf(model.getNo()));
+                orderitem_desc.setText(model.getProduct().getName());
                 orderitem_qty.setText(String.valueOf(String.valueOf(model.getPrice()) + "x" + model.getQty()));
             }
         };
@@ -93,6 +92,51 @@ public class ActOrderInput extends ActBase {
                 Intent intent = new Intent(ActOrderInput.this, ActOrderItemInput.class);
                 intent.putExtras(bundle1);
                 ActOrderInput.this.startActivity(intent);
+            }
+        });
+        listOrderItem.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                final OrderItem item = order.getItems().get(position);
+                if (order.getStat() == OrderStat.Confirm)
+                    MessageBox("เอกสารยืนยันแล้วลบไม่ได้");
+                else {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(ActOrderInput.this);
+                    dialog.setTitle("ยืนยันการลบ");
+                    dialog.setIcon(R.mipmap.ic_launcher);
+                    dialog.setCancelable(true);
+                    dialog.setMessage("ท่านต้องการลบรายการนี้หรือไม่?");
+                    dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog12, int which) {
+                            //ย้ายไปพักไว้ก่อน
+                            order.getDeletingItems().add(item);
+                            //update qty 0 เพื่อดีดหัว
+                            int delta = -1 * item.getQty();
+                            item.addQty(delta);
+                            //update stock
+                            Product p = item.getProduct();
+                            p.setStock(p.getStock() - delta);
+                            //ลบออกจาก array
+                            order.getItems().remove(item);
+                            //rerun no
+                            for (int i = 1; i <= order.getItems().size(); i++)
+                                order.getItems().get(i - 1).setNo(i);
+                            //redraw
+                            adapOrderItem.notifyDataSetChanged();
+                            adapProduct.notifyDataSetChanged();
+                            redrawOrder();
+                        }
+                    });
+                    dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog1, int which) {
+                            dialog1.cancel();
+                        }
+                    });
+                    dialog.show();
+                }
+                return true;
             }
         });
         //endregion
@@ -159,6 +203,7 @@ public class ActOrderInput extends ActBase {
                 public void onClick(View v) {
                     SqlResult result = order.save();
                     ActOrderInput.this.redrawOrder();
+                    adapOrderItem.notifyDataSetChanged();
                     ActOrderInput.this.MessageBox(result.getMsg() == null ? "บันทึกสำเร็จ" : result.getMsg());
                 }
             });
@@ -184,7 +229,7 @@ public class ActOrderInput extends ActBase {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 2) {
-            if(data.getBooleanExtra("FINISH", false))
+            if (data.getBooleanExtra("FINISH", false))
                 finish();
         }
     }
@@ -223,6 +268,7 @@ public class ActOrderInput extends ActBase {
         products = Product.retrieve(products);
         if (adapProduct != null) adapProduct.notifyDataSetChanged();
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.base, menu);

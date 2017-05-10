@@ -92,6 +92,13 @@ public class OrderItem extends ModelBase implements Serializable {
         return no;
     }
 
+    public void setNo(int no) {
+        if (this.no != no) {
+            this.no = no;
+            updateRecordStat();
+        }
+    }
+
     public Product getProduct() {
         return product;
     }

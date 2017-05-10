@@ -20,6 +20,7 @@ public class Order extends ModelBase implements Serializable {
     private final String cus_name;
     private OrderStat stat;
     private List<OrderItem> items = new ArrayList<>();
+    private List<OrderItem> deletingItems = new ArrayList<>();
     private int qty;
     private float weight;
     private float amount;
@@ -223,6 +224,14 @@ public class Order extends ModelBase implements Serializable {
         }
     }
 
+    public List<OrderItem> getDeletingItems() {
+        return deletingItems;
+    }
+
+    public void setDeletingItems(List<OrderItem> deletingItems) {
+        this.deletingItems = deletingItems;
+    }
+
     public SqlResult save() {
         SqlResult result = new SqlResult();
         if (getRecordStat() != RecordStat.NULL) {
@@ -239,10 +248,18 @@ public class Order extends ModelBase implements Serializable {
                             setNo(rs.getString("order_no"));
                         }
                         setRecordStat(RecordStat.NULL);
+
+                        //loop to save orderitems
+                        for (OrderItem item : deletingItems) {
+                            item.getOrder().setId(this.getId());
+                            item.setRecordStat(RecordStat.D);
+                            item.save();
+                        }
                         for (OrderItem item : items) {
                             item.getOrder().setId(this.getId());
                             result = item.save();
                         }
+
                     } else result.setMsg("ไม่ได้รับคำตอบจาก server");
                 }
             } catch (SQLException e) {
