@@ -56,7 +56,7 @@ public class ActLogin extends ActBase {
                     try {
                         ResultSet rs = SqlServer.execute("{call POS.dbo.login(?,?)}", new String[]{username, password});
                         if (rs != null && rs.next() && rs.getInt("usr_Id") > 0) {
-                            Global.user = new User(rs.getInt("usr_Id"), rs.getString("login_name"), rs.getString("usr_name"), rs.getBoolean("admin"), rs.getBoolean("deleteorder"));
+                            Global.user = new User(rs.getInt("usr_Id"), rs.getString("login_name"), rs.getString("usr_name"), rs.getBoolean("admin"), rs.getBoolean("deleteorder"), rs.getString("password"));
                             loginPrefsEditor.apply();
                             rememberlogin();
                             Intent intent = new Intent(ActLogin.this, ActWarehouse.class);
