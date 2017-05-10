@@ -13,9 +13,12 @@ import com.newit.bsrpos_sql.R;
 
 public class ActOrderItemInput extends ActBase {
 
-    private TextView orderiteminput_desc, orderiteminput_stock, orderiteminput_wgt, orderiteminput_price, orderiteminput_amt;
+    private TextView orderiteminput_stock;
+    private TextView orderiteminput_amt;
     private EditText orderiteminput_qty;
     private OrderItem item;
+    private int oldQty, newQty;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,31 +26,35 @@ public class ActOrderItemInput extends ActBase {
         setContentView(R.layout.orderiteminput);
 
         if (validate()) {
-            orderiteminput_desc = (TextView) findViewById(R.id.orderiteminput_desc);
+            TextView orderiteminput_desc = (TextView) findViewById(R.id.orderiteminput_desc);
             orderiteminput_stock = (TextView) findViewById(R.id.orderiteminput_stock);
             orderiteminput_qty = (EditText) findViewById(R.id.orderiteminput_qty);
-            orderiteminput_wgt = (TextView) findViewById(R.id.orderiteminput_wgt);
-            orderiteminput_price = (TextView) findViewById(R.id.orderiteminput_price);
+            TextView orderiteminput_wgt = (TextView) findViewById(R.id.orderiteminput_wgt);
+            TextView orderiteminput_price = (TextView) findViewById(R.id.orderiteminput_price);
             orderiteminput_amt = (TextView) findViewById(R.id.orderiteminput_amt);
             Button orderiteminput_decr = (Button) findViewById(R.id.orderiteminput_decr);
             Button orderiteminput_incr = (Button) findViewById(R.id.orderiteminput_incr);
 
+            orderiteminput_desc.setText(item.getProduct().getName());
+            orderiteminput_wgt.setText(String.valueOf(item.getWeight()));
+            orderiteminput_price.setText(String.valueOf(item.getPrice()));
+
             orderiteminput_qty.setSelectAllOnFocus(true);
-            redraw();
+            redraw(item.getQty(), item.getProduct().getStock(), item.getAmount(), false);
+            oldQty = getQty();
 
             orderiteminput_decr.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    item.addQty(-1);
-                    ActOrderItemInput.this.redraw();
+                    addQty(-1, false);
                 }
             });
 
             orderiteminput_incr.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    item.addQty(1);
-                    ActOrderItemInput.this.redraw();
+                    if (getStock() >= 1)
+                        addQty(1, false);
                 }
             });
 
@@ -55,11 +62,16 @@ public class ActOrderItemInput extends ActBase {
             orderinput_save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    item.save();
+                    int delta = getQty() - oldQty;
+                    if (delta != 0) {
+                        if (getStock() >= delta) {
+                            addQty(delta, true);
+                            item.setQty(getQty());
+                            //todo: เปลี่ยน ให้ activity นี้ return result เอา item นี้ return กลับไป
+                        } else orderiteminput_qty.setError("สต็อกไม่พอ");
+                    }
                 }
             });
-
-
         }
     }
 
@@ -73,15 +85,50 @@ public class ActOrderItemInput extends ActBase {
         return false;
     }
 
-    private void redraw() {
-        orderiteminput_desc.setText(item.getProduct().getName());
-        orderiteminput_stock.setText(String.valueOf(item.getProduct().getStock()));
-        orderiteminput_qty.setText(String.valueOf(item.getQty()));
-        orderiteminput_wgt.setText(String.valueOf(item.getWeight()));
-        orderiteminput_price.setText(String.valueOf(item.getPrice()));
-        orderiteminput_amt.setText(String.valueOf(item.getAmount()));
-        orderiteminput_qty.clearFocus();
+
+    private int getStock() {
+        return Integer.parseInt(orderiteminput_stock.getText().toString());
     }
+
+    private void setStock(int stock) {
+        orderiteminput_stock.setText(String.valueOf(stock));
+    }
+
+    private int getQty() {
+        return Integer.parseInt(orderiteminput_qty.getText().toString());
+    }
+
+    private void setQty(int qty) {
+        orderiteminput_qty.setText(String.valueOf(qty));
+    }
+
+
+    private float getAmount() {
+        return Float.parseFloat(orderiteminput_amt.getText().toString());
+    }
+
+    private void setAmount(int amount) {
+        orderiteminput_amt.setText(String.valueOf(amount));
+    }
+
+
+    private void addQty(int delta, boolean fromTextChangeListener) {
+        if (getStock() >= delta) {
+            setStock(getStock() - delta);
+            if (!fromTextChangeListener)
+                setQty(getQty() + delta);
+            redraw(getQty(), getStock(), getQty() * item.getPrice(), fromTextChangeListener);
+        }
+    }
+
+
+    private void redraw(int qty, int stock, float amount, boolean fromTextChangeListener) {
+        if (!fromTextChangeListener)
+            orderiteminput_qty.setText(String.valueOf(qty));
+        orderiteminput_stock.setText(String.valueOf(stock));
+        orderiteminput_amt.setText(String.valueOf(amount));
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
