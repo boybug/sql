@@ -6,14 +6,19 @@
 
     <RadioGroup
         android:id="@+id/radio_group"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp">
 
         <RadioButton
             android:id="@+id/radio_paycash"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="สด"
             android:paddingLeft="5dp"
             android:checked="true"
@@ -21,16 +26,16 @@
 
         <RadioButton
             android:id="@+id/radio_paytranfer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:paddingLeft="5dp"
             android:text="โอน"
             style="@style/App_TextViewStyle"/>
 
         <RadioButton
             android:id="@+id/radio_paycredit"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:paddingLeft="5dp"
             android:text="บัตร"
             style="@style/App_TextViewStyle"/>
@@ -56,10 +61,15 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/radio_group"
-        android:lines="2" >
+        android:lines="2"
+
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp">
 
         <EditText
-            android:id="@+id/pay_remark"
+            android:id="@+id/orderiteminputpayment_remark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"

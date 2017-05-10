@@ -25,7 +25,7 @@ public class Order extends ModelBase implements Serializable {
     private float amount;
     private final int usr_id;
     private final String usr_name;
-    private String pay;
+    private OrderPay pay;
     private boolean ship;
     private String remark;
 
@@ -45,7 +45,7 @@ public class Order extends ModelBase implements Serializable {
     }
 
     private Order(int id, String no, String date, int cus_id, String cus_name, int wh_id, OrderStat stat, int qty, float weight,
-                  float amount, int usr_id, String usr_name, String pay, boolean ship, String remark) {
+                  float amount, int usr_id, String usr_name, OrderPay pay, boolean ship, String remark) {
         super(false);
         this.id = id;
         this.no = no;
@@ -72,7 +72,7 @@ public class Order extends ModelBase implements Serializable {
                 Order o = new Order(rs.getInt("id"), rs.getString("no"), rs.getString("order_date"),
                         rs.getInt("cus_id"), rs.getString("cus_name"), rs.getInt("wh_id"), OrderStat.valueOf(rs.getString("order_stat")),
                         rs.getInt("qty"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("usr_id"), rs.getString("usr_name"),
-                        rs.getString("pay"), rs.getBoolean("ship"), rs.getString("remark"));
+                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"));
                 orders.add(o);
             }
         } catch (SQLException e) {
@@ -189,12 +189,12 @@ public class Order extends ModelBase implements Serializable {
         return wh_id;
     }
 
-    public String getPay() {
+    public OrderPay getPay() {
         return pay;
     }
 
-    public void setPay(String pay) {
-        if (!Objects.equals(this.pay, pay)) {
+    public void setPay(OrderPay pay) {
+        if (this.pay != pay) {
             this.pay = pay;
             updateRecordStat();
         }

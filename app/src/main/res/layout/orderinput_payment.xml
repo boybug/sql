@@ -131,11 +131,7 @@
             </TableRow>
 
 
-            <TableRow android:id="@+id/tr_item_head"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginBottom="10dp">
+            <TableRow android:id="@+id/tr_item_head">
 
                 <LinearLayout
                     android:layout_width="match_parent"
