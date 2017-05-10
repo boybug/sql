@@ -36,10 +36,10 @@ public class ActOrderInputPayment extends ActBase {
         setContentView(R.layout.orderinput_payment);
 
         orderinput_cus = (TextView) findViewById(R.id.orderinput_cus);
-        orderiteminputpayment_no = (TextView) findViewById(R.id.orderiteminputpayment_no);
-        orderiteminputpayment_qty = (TextView) findViewById(R.id.orderiteminputpayment_qty);
-        orderiteminputpayment_wgt = (TextView) findViewById(R.id.orderiteminputpayment_wgt);
-        orderiteminputpayment_amt = (TextView) findViewById(R.id.orderiteminputpayment_amt);
+        orderiteminputpayment_no = (TextView) findViewById(R.id.orderinput_no);
+        orderiteminputpayment_qty = (TextView) findViewById(R.id.orderinput_qty);
+        orderiteminputpayment_wgt = (TextView) findViewById(R.id.orderinput_wgt);
+        orderiteminputpayment_amt = (TextView) findViewById(R.id.orderinput_amt);
         orderiteminputpayment_remark = (TextView) findViewById(R.id.orderiteminputpayment_remark);
 
         switch_payship = (Switch) findViewById(R.id.switch_payship);

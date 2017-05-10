@@ -37,102 +37,23 @@
 
             </TableRow>
 
-            <TableRow>
+            <TableRow android:id="@+id/tr_no">
 
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_column="0"
-                    android:layout_weight="0.03"
-                    android:gravity="center|right"
-                    android:paddingLeft="10dp"
-                    android:text="เลขที่ : " />
-
-                <LinearLayout
+                <include
+                    layout="@layout/orderinput_include1_2"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_column="1">
+                    android:layout_height="match_parent"
+                    android:layout_span="2" />
 
-                    <!--todo: หลังจากเซฟแล้ว กล่องมันยืด-->
-                    <TextView
-                        android:id="@+id/orderinput_no"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.5"
-                        android:gravity="center|left"
-                        android:paddingLeft="10dp"
-                        android:textColor="@color/colorFish" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center|right"
-                        android:paddingLeft="10dp"
-                        android:text="น้ำหนักรวม : " />
-
-                    <TextView
-                        android:id="@+id/orderinput_wgt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-
-                        android:enabled="false"
-                        android:gravity="center|right"
-                        android:paddingLeft="3dp"
-                        android:text="0.0"
-                        android:textColor="@color/colorBeef"
-                        android:textSize="20sp" />
-
-                </LinearLayout>
             </TableRow>
 
-            <TableRow>
+            <TableRow android:id="@+id/tr_qty">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_column="0"
-                    android:gravity="center|right"
-                    android:paddingLeft="10dp"
-                    android:text="จำนวน : " />
-
-                <LinearLayout
+                <include
+                    layout="@layout/orderinput_include1_3"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_column="1">
-
-                    <TextView
-                        android:id="@+id/orderinput_qty"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.5"
-                        android:enabled="false"
-                        android:gravity="center|left"
-                        android:paddingLeft="10dp"
-                        android:textColor="@color/colorBeef"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center|right"
-                        android:paddingLeft="10dp"
-                        android:text="ยอดขายรวม : " />
-
-                    <TextView
-                        android:id="@+id/orderinput_amt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-
-                        android:enabled="false"
-                        android:gravity="center|right"
-                        android:paddingLeft="3dp"
-                        android:text="0.0"
-                        android:textColor="@color/colorBeef"
-                        android:textSize="20sp" />
-                </LinearLayout>
-
+                    android:layout_height="match_parent"
+                    android:layout_span="2" />
 
             </TableRow>
 

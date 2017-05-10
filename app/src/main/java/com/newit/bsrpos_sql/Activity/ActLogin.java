@@ -36,9 +36,6 @@ public class ActLogin extends ActBase {
 
         Boolean saveLogin = loginPreferences.getBoolean("saveLogin", false);
 
-//        txt_username.setText("xclnc");
-//        txt_password.setText("xclnc");
-
         CheckBox login_local = (CheckBox) findViewById(R.id.login_local);
         Global.isLocal = login_local.isChecked();
 
@@ -61,6 +58,7 @@ public class ActLogin extends ActBase {
                         if (rs != null && rs.next() && rs.getInt("usr_Id") > 0) {
                             Global.user = new User(rs.getInt("usr_Id"), rs.getString("login_name"), rs.getString("usr_name"), rs.getBoolean("admin"), rs.getBoolean("deleteorder"));
                             loginPrefsEditor.apply();
+                            rememberlogin();
                             Intent intent = new Intent(ActLogin.this, ActWarehouse.class);
                             ActLogin.this.startActivity(intent);
                             ActLogin.this.finish();
@@ -85,6 +83,18 @@ public class ActLogin extends ActBase {
             isValid = false;
         }
         return isValid;
+    }
+
+    public void rememberlogin() {
+        if (saveLoginCheckBox.isChecked()) {
+            loginPrefsEditor.putBoolean("saveLogin", true);
+            loginPrefsEditor.putString("username", username);
+            loginPrefsEditor.putString("password", password);
+            loginPrefsEditor.commit();
+        } else {
+            loginPrefsEditor.clear();
+            loginPrefsEditor.commit();
+        }
     }
 
     public void onBackPressed() {

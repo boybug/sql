@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_column="0"
+            android:gravity="center|right"
+            android:paddingLeft="10dp"
+            android:text="จำนวน : " />
+
+        <TextView
+            android:id="@+id/orderinput_qty"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:enabled="false"
+            android:gravity="center|left"
+            android:paddingLeft="10dp"
+            android:textColor="@color/colorBeef"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center|right"
+            android:paddingLeft="10dp"
+            android:text="ยอดขายรวม : " />
+
+        <TextView
+            android:id="@+id/orderinput_amt"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:enabled="false"
+            android:gravity="center|right"
+            android:paddingLeft="3dp"
+            android:text="0.0"
+            android:textColor="@color/colorBeef"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+</RelativeLayout>

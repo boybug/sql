@@ -4,42 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!--todo: ฝากทำให้งดงาม-->
-    <!--<TextView-->
-    <!--android:id="@+id/userinput_login"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="ล้อกอิน" />-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/userinput_name"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="ชื่อ" />-->
-
-    <!--<CheckBox-->
-    <!--android:id="@+id/userinput_deleteorder"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="ลบบิล" />-->
-
-    <!--<CheckBox-->
-    <!--android:id="@+id/userinput_admin"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="แอดมิน" />-->
-
-    <!--<Button-->
-    <!--android:id="@+id/userinput_chngpwd"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="เปลี่ยนรหัสผ่าน" />-->
-
-    <!--<Button-->
-    <!--android:id="@+id/userinput_resetpwd"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="รีเซทรหัสผ่าน" />-->
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

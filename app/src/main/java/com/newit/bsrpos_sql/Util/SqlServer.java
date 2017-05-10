@@ -16,13 +16,13 @@ public class SqlServer {
 
     private static void connect() {
 
-        final String connStrInternet = "xx";
+        final String connStrInternet = "jdbc:jtds:sqlserver://203.114.108.46:11433/pos";
 
-        final String connStrIntranet = "xx";
+        final String connStrIntranet = "jdbc:jtds:sqlserver://192.168.10.13:11433/pos";
 
-        final String user = "xx";
+        final String user = "TM";
 
-        final String password = "xx";
+        final String password = "@TM2013!!!";
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
