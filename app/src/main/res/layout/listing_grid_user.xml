@@ -4,28 +4,104 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!--todo: ฝากทำให้งดงาม-->
-    <TextView
-        android:id="@+id/user_login"
+    <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="ล้อกอิน" />
+        android:orientation="vertical"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp"
+        android:stretchColumns="1">
 
-    <TextView
-        android:id="@+id/user_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="ชื่อ" />
+        <TableRow>
 
-    <TextView
-        android:id="@+id/user_deleteorder"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="ลบบิล" />
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_column="0"
+                android:gravity="center|right"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="ล็อกอิน :"
+                android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/user_admin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="แอดมิน" />
+            <TextView
+                android:id="@+id/user_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="center|left"
+                android:textColor="@color/colorFish" />
+
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_column="0"
+                android:gravity="center|right"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="ชื่อผู้ใช้ :"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_column="1"
+                android:gravity="center|left"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/colorPrimaryYellow" />
+
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_column="0"
+                android:gravity="center|right"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="ระดับ :"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/user_deleteorder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_column="1"
+                android:gravity="center|left" />
+
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_column="0"
+                android:gravity="center|right"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="สถานะ :"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/user_admin"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_column="1"
+                android:gravity="center|left" />
+
+        </TableRow>
+
+    </TableLayout>
+
 </LinearLayout>

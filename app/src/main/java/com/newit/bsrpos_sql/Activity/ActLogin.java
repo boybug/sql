@@ -36,8 +36,8 @@ public class ActLogin extends ActBase {
 
         Boolean saveLogin = loginPreferences.getBoolean("saveLogin", false);
 
-        txt_username.setText("xclnc");
-        txt_password.setText("xclnc");
+//        txt_username.setText("xclnc");
+//        txt_password.setText("xclnc");
 
         CheckBox login_local = (CheckBox) findViewById(R.id.login_local);
         Global.isLocal = login_local.isChecked();

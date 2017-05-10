@@ -50,9 +50,11 @@ public class ActOrderInputPayment extends ActBase {
 
 
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            order = (Order) bundle.getSerializable("order");
+        if (bundle == null) {
+            MessageBox("error");
+            finish();
         }
+        else order = (Order) bundle.getSerializable("order");
 
         radio_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override

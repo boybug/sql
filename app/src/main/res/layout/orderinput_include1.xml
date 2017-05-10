@@ -40,6 +40,7 @@
             <TableRow>
 
                 <TextView
+                    android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_column="0"
@@ -58,7 +59,7 @@
                         android:id="@+id/orderinput_no"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.51"
+                        android:layout_weight="0.5"
                         android:gravity="center|left"
                         android:paddingLeft="10dp"
                         android:textColor="@color/colorFish" />
@@ -91,7 +92,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_column="0"
-                    android:layout_weight="0.03"
                     android:gravity="center|right"
                     android:paddingLeft="10dp"
                     android:text="จำนวน : " />
@@ -113,6 +113,7 @@
                         android:textSize="20sp" />
 
                     <TextView
+                        android:id="@+id/textView2"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center|right"
