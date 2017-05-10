@@ -65,9 +65,9 @@ public class ActOrderItemInput extends ActBase {
                     int delta = getQty() - oldQty;
                     if (delta != 0) {
                         if (getStock() >= delta) {
-                            addQty(delta, true);
                             item.setQty(getQty());
-                            //todo: เปลี่ยน ให้ activity นี้ return result เอา item นี้ return กลับไป
+                            finish();
+                            //todo: เปลี่ยน ให้ activity นี้ return result เอา item นี้ return กลับไป (บันทุึกแบบไม่ลงเบส)
                         } else orderiteminput_qty.setError("สต็อกไม่พอ");
                     }
                 }
@@ -95,6 +95,7 @@ public class ActOrderItemInput extends ActBase {
     }
 
     private int getQty() {
+        if(orderiteminput_qty.length() == 0) orderiteminput_qty.setText("0");
         return Integer.parseInt(orderiteminput_qty.getText().toString());
     }
 
