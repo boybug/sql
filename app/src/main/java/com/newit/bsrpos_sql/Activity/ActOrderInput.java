@@ -194,8 +194,8 @@ public class ActOrderInput extends ActBase {
                             order.getItems().add(item);
                         }
                         item.addQty(1);
-                        listOrderItem.setSelection(order.getItems().indexOf(item));
                         adapOrderItem.notifyDataSetChanged();
+                        listOrderItem.setSelection(order.getItems().indexOf(item));
                         p.setStock(p.getStock() - 1);
                         ActOrderInput.this.redrawProduct(p.getStock(), view);
                         ActOrderInput.this.redrawOrder();

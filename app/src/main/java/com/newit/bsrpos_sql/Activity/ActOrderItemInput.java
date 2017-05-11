@@ -108,14 +108,6 @@ public class ActOrderItemInput extends ActBase {
         orderiteminput_qty.setText(String.valueOf(qty));
     }
 
-    private float getAmount() {
-        return Float.parseFloat(orderiteminput_amt.getText().toString());
-    }
-
-    private void setAmount(int amount) {
-        orderiteminput_amt.setText(String.valueOf(amount));
-    }
-
     private void addQty(int delta, boolean fromTextChangeListener) {
         if (getStock() >= delta) {
             setStock(getStock() - delta);
