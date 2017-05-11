@@ -142,13 +142,4 @@ public class ActOrderItemInput extends ActBase {
     @Override
     public void processFinish(ResultSet rs, int tag) {
     }
-
-    @Override
-    public void onBackPressed() {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("order", order);
-        Intent intent = new Intent(ActOrderItemInput.this, ActOrderInput.class);
-        intent.putExtras(bundle);
-        ActOrderItemInput.this.startActivity(intent);
-    }
 }
