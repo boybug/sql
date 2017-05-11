@@ -9,8 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.newit.bsrpos_sql.Model.Order;
 import com.newit.bsrpos_sql.Model.OrderItem;
-import com.newit.bsrpos_sql.Model.RecordStat;
 import com.newit.bsrpos_sql.R;
 
 import java.sql.ResultSet;
@@ -21,6 +21,7 @@ public class ActOrderItemInput extends ActBase {
     private TextView orderiteminput_amt;
     private EditText orderiteminput_qty;
     private OrderItem item;
+    private Order order;
     private int oldQty;
 
 
@@ -84,6 +85,7 @@ public class ActOrderItemInput extends ActBase {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             item = (OrderItem) bundle.getSerializable("orderItem");
+            order = (Order) item.getOrder();
             if (item != null)
                 return true;
         }
@@ -140,5 +142,14 @@ public class ActOrderItemInput extends ActBase {
 
     @Override
     public void processFinish(ResultSet rs, int tag) {
+    }
+
+    @Override
+    public void onBackPressed() {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("order", order);
+        Intent intent = new Intent(ActOrderItemInput.this, ActOrderInput.class);
+        intent.putExtras(bundle);
+        ActOrderItemInput.this.startActivity(intent);
     }
 }

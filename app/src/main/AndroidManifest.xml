@@ -21,7 +21,7 @@
         <activity
             android:name=".Activity.ActLogin"
             android:noHistory="true"
-            android:screenOrientation="portrait" />
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
         <activity android:name=".Activity.ActSplash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,41 +31,41 @@
         </activity>
         <activity
             android:name=".Activity.ActMain"
-            android:screenOrientation="portrait" />
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
         <activity
             android:name=".Activity.ActWarehouse"
             android:noHistory="true"
-            android:screenOrientation="portrait" />
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
         <activity
             android:name=".Activity.ActOrder"
-            android:screenOrientation="portrait" />
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
         <activity
             android:name=".Activity.ActCustomer"
-            android:screenOrientation="portrait" />
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
         <activity
             android:name=".Activity.ActCustomerDetail"
-            android:screenOrientation="portrait" />
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
         <activity
             android:name=".Activity.ActProduct"
-            android:screenOrientation="portrait" />
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
         <activity
             android:name=".Activity.ActProductPrice"
-            android:screenOrientation="portrait" />
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
         <activity
             android:name=".Activity.ActOrderInput"
-            android:screenOrientation="portrait" />
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
         <activity
             android:name=".Activity.ActOrderInputPayment"
-            android:screenOrientation="portrait" />
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
         <activity
             android:name=".Activity.ActOrderItemInput"
-            android:screenOrientation="portrait" />
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
         <activity
             android:name=".Activity.ActUser"
-            android:screenOrientation="portrait" />
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
         <activity
             android:name=".Activity.ActUserInput"
-            android:screenOrientation="portrait"></activity>
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
     </application>
 
 </manifest>

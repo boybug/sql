@@ -166,4 +166,13 @@ public class ActOrderInputPayment extends ActBase {
             }
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("order", order);
+        Intent intent = new Intent(ActOrderInputPayment.this, ActOrderInput.class);
+        intent.putExtras(bundle);
+        ActOrderInputPayment.this.startActivity(intent);
+    }
 }

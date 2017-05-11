@@ -33,6 +33,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ActOrderInput extends ActBase {
 
@@ -232,11 +233,17 @@ public class ActOrderInput extends ActBase {
         bt_pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle1 = new Bundle();
-                bundle1.putSerializable("order", order);
-                Intent intent = new Intent(ActOrderInput.this, ActOrderInputPayment.class);
-                intent.putExtras(bundle1);
-                ActOrderInput.this.startActivityForResult(intent, 2);
+                if (order.getItems().size() == 0) {
+                    MessageBox("ไม่มีรายการขาย ไม่สามารถจ่ายได้");
+                } else if (Objects.equals(order.getNo(), null) || order.getRecordStat() != RecordStat.NULL) {
+                    MessageBox("กรุณาบันทึกข้อมูลก่อนการจ่าย");
+                } else {
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putSerializable("order", order);
+                    Intent intent = new Intent(ActOrderInput.this, ActOrderInputPayment.class);
+                    intent.putExtras(bundle1);
+                    ActOrderInput.this.startActivityForResult(intent, 2);
+                }
             }
         });
         //endregion
