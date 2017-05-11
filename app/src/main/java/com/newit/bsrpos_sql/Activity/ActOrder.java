@@ -85,7 +85,6 @@ public class ActOrder extends ActBase {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("order", adap.getModels().get(position));
-                clearSearch();
                 Intent intent = new Intent(ActOrder.this, ActOrderInput.class);
                 intent.putExtras(bundle);
                 ActOrder.this.startActivity(intent);

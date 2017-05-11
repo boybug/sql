@@ -144,13 +144,9 @@ public abstract class ActBase<T> extends AppCompatActivity implements sqlCallbac
         btn_clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clearSearch();
+                txt_search.setText("");
             }
         });
-    }
-
-    public void clearSearch() {
-        txt_search.setText("");
     }
 
     public void SetTextSpan(String search, String name, TextView lab_name) {

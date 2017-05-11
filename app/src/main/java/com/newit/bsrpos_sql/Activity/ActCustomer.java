@@ -60,7 +60,6 @@ public class ActCustomer extends ActBase {
                 boolean bypasscustomer = getIntent().getBooleanExtra("bypasscustomer", false);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("customer", adap.getModels().get(position));
-                clearSearch();
                 Intent intent = new Intent(ActCustomer.this, bypasscustomer ? ActOrderInput.class : ActCustomerDetail.class);
                 intent.putExtras(bundle);
                 ActCustomer.this.startActivity(intent);
