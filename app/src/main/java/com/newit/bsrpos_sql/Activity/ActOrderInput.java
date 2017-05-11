@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -95,62 +96,64 @@ public class ActOrderInput extends ActBase {
         };
         final ListView listOrderItem = (ListView) findViewById(R.id.list_order_item);
         listOrderItem.setAdapter(adapOrderItem);
-        listOrderItem.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Bundle bundle1 = new Bundle();
-                bundle1.putSerializable("orderItem", order.getItems().get(position));
-                Intent intent = new Intent(ActOrderInput.this, ActOrderItemInput.class);
-                intent.putExtras(bundle1);
-                selectedIndex = position;
-                ActOrderInput.this.startActivityForResult(intent, 3);
-            }
-        });
-        listOrderItem.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                final OrderItem item = order.getItems().get(position);
-                if (order.getStat() == OrderStat.Confirm)
-                    MessageBox("เอกสารยืนยันแล้วลบไม่ได้");
-                else {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(ActOrderInput.this);
-                    dialog.setTitle("ยืนยันการลบ");
-                    dialog.setIcon(R.mipmap.ic_launcher);
-                    dialog.setCancelable(true);
-                    dialog.setMessage("ท่านต้องการลบรายการนี้หรือไม่?");
-                    dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog12, int which) {
-                            //ย้ายไปพักไว้ก่อน
-                            if (item.getId() > 0) order.getDeletingItems().add(item);
-                            //update qty 0 เพื่อดีดหัว
-                            int delta = -1 * item.getQty();
-                            item.addQty(delta);
-                            //update stock
-                            Product p = item.getProduct();
-                            p.setStock(p.getStock() - delta);
-                            //ลบออกจาก array
-                            order.getItems().remove(item);
-                            //rerun no
-                            for (int i = 1; i <= order.getItems().size(); i++)
-                                order.getItems().get(i - 1).setNo(i);
-                            //redraw
-                            adapOrderItem.notifyDataSetChanged();
-                            adapProduct.notifyDataSetChanged();
-                            redrawOrder();
-                        }
-                    });
-                    dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog1, int which) {
-                            dialog1.cancel();
-                        }
-                    });
-                    dialog.show();
+        if (order.getStat() == OrderStat.New) {
+            listOrderItem.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putSerializable("orderItem", order.getItems().get(position));
+                    Intent intent = new Intent(ActOrderInput.this, ActOrderItemInput.class);
+                    intent.putExtras(bundle1);
+                    selectedIndex = position;
+                    ActOrderInput.this.startActivityForResult(intent, 3);
                 }
-                return true;
-            }
-        });
+            });
+            listOrderItem.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    final OrderItem item = order.getItems().get(position);
+                    if (order.getStat() == OrderStat.Confirm)
+                        MessageBox("เอกสารยืนยันแล้วลบไม่ได้");
+                    else {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(ActOrderInput.this);
+                        dialog.setTitle("ยืนยันการลบ");
+                        dialog.setIcon(R.mipmap.ic_launcher);
+                        dialog.setCancelable(true);
+                        dialog.setMessage("ท่านต้องการลบรายการนี้หรือไม่?");
+                        dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog12, int which) {
+                                //ย้ายไปพักไว้ก่อน
+                                if (item.getId() > 0) order.getDeletingItems().add(item);
+                                //update qty 0 เพื่อดีดหัว
+                                int delta = -1 * item.getQty();
+                                item.addQty(delta);
+                                //update stock
+                                Product p = item.getProduct();
+                                p.setStock(p.getStock() - delta);
+                                //ลบออกจาก array
+                                order.getItems().remove(item);
+                                //rerun no
+                                for (int i = 1; i <= order.getItems().size(); i++)
+                                    order.getItems().get(i - 1).setNo(i);
+                                //redraw
+                                adapOrderItem.notifyDataSetChanged();
+                                adapProduct.notifyDataSetChanged();
+                                redrawOrder();
+                            }
+                        });
+                        dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog1, int which) {
+                                dialog1.cancel();
+                            }
+                        });
+                        dialog.show();
+                    }
+                    return true;
+                }
+            });
+        }
         //endregion
 
         //region PRODUCT
@@ -202,6 +205,9 @@ public class ActOrderInput extends ActBase {
 
             refresh();
             addVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, products, adapProduct);
+        } else {
+            DrawerLayout drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         }
         //endregion
 
