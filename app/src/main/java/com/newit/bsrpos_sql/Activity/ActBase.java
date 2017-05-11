@@ -44,7 +44,7 @@ import java.util.Locale;
 @SuppressLint("Registered")
 public abstract class ActBase<T> extends AppCompatActivity implements sqlCallback {
 
-    private EditText txt_search;
+    protected EditText txt_search;
     private ProgressDialog mProgressDialog;
     protected String searchString;
     private List<T> backup;
@@ -144,9 +144,13 @@ public abstract class ActBase<T> extends AppCompatActivity implements sqlCallbac
         btn_clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                txt_search.setText("");
+                clearSearch();
             }
         });
+    }
+
+    public void clearSearch() {
+        txt_search.setText("");
     }
 
     public void SetTextSpan(String search, String name, TextView lab_name) {

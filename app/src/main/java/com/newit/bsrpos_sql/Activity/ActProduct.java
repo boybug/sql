@@ -70,7 +70,8 @@ public class ActProduct extends ActBase {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("product", products.get(position));
+                bundle.putSerializable("product", adap.getModels().get(position));
+                clearSearch();
                 Intent intent = new Intent(ActProduct.this, ActProductPrice.class);
                 intent.putExtras(bundle);
                 ActProduct.this.startActivity(intent);

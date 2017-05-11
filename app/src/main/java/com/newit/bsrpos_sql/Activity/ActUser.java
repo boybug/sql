@@ -70,7 +70,7 @@ public class ActUser extends ActBase {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("user", users.get(position));
+                bundle.putSerializable("user", adap.getModels().get(position));
                 Intent intent = new Intent(ActUser.this, ActUserInput.class);
                 intent.putExtras(bundle);
                 ActUser.this.startActivity(intent);
@@ -80,7 +80,7 @@ public class ActUser extends ActBase {
             list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                    final User user = users.get(position);
+                    final User user = adap.getModels().get(position);
                     //todo : bug... เทียบแล้วไม่เคยเท่ากัน
                     if (user == Global.user)
                         MessageBox("ลบตัวเองไม่ได้");

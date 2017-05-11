@@ -51,4 +51,8 @@ public abstract class AdpCustom<T> extends BaseAdapter {
     public void setModels(List<T> models) {
         this.models = models;
     }
+
+    public List<T> getModels() {
+        return models;
+    }
 }

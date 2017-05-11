@@ -84,7 +84,8 @@ public class ActOrder extends ActBase {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("order", orders.get(position));
+                bundle.putSerializable("order", adap.getModels().get(position));
+                clearSearch();
                 Intent intent = new Intent(ActOrder.this, ActOrderInput.class);
                 intent.putExtras(bundle);
                 ActOrder.this.startActivity(intent);
@@ -94,7 +95,7 @@ public class ActOrder extends ActBase {
             list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                    final Order order = orders.get(position);
+                    final Order order = adap.getModels().get(position);
                     if (order.getStat() == OrderStat.Confirm)
                         MessageBox("เอกสารยืนยันแล้วลบไม่ได้");
                     else {

@@ -186,7 +186,7 @@ public class ActOrderInput extends ActBase {
             listProduct.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Product p = products.get(position);
+                    Product p = adapProduct.getModels().get(position);
                     if (p.getStock() > 0) {
                         OrderItem item = order.findItem(p);
                         if (item == null) {
