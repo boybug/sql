@@ -7,11 +7,15 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.Product;
 import com.newit.bsrpos_sql.Model.StepPrice;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
+import com.newit.bsrpos_sql.Util.SqlQuery;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +23,7 @@ public class ActProductPrice extends ActBase {
 
     private Product prod;
     private List<StepPrice> stepPrices = new ArrayList<>();
+    private AdpCustom<StepPrice> adap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +39,9 @@ public class ActProductPrice extends ActBase {
             productprice_stock.setText(String.valueOf(prod.getStock()));
             productprice_wgt.setText(String.valueOf(prod.getWeight()));
 
-            stepPrices = StepPrice.retrieve(stepPrices, prod.getId());
+            new SqlQuery(this, 1, "{call POS.dbo.getstepprice(?,?)}", new String[]{String.valueOf(prod.getId()), String.valueOf(Global.wh_Id)});
 
-            AdpCustom<StepPrice> adap = new AdpCustom<StepPrice>(R.layout.listing_grid_productprice, getLayoutInflater(), stepPrices) {
+            adap = new AdpCustom<StepPrice>(R.layout.listing_grid_productprice, getLayoutInflater(), stepPrices) {
                 @Override
                 protected void populateView(View v, StepPrice stepPrice) {
 
@@ -75,5 +80,17 @@ public class ActProductPrice extends ActBase {
             super.backPressed(ActLogin.class);
         }
         return true;
+    }
+
+    @Override
+    public void processFinish(ResultSet rs, int tag) throws SQLException {
+        if (tag == 1) {
+            stepPrices.clear();
+            while (rs != null && rs.next()) {
+                StepPrice sp = new StepPrice(rs.getInt("from"), rs.getInt("to"), rs.getFloat("price"));
+                stepPrices.add(sp);
+            }
+            if (adap != null) adap.notifyDataSetChanged();
+        }
     }
 }

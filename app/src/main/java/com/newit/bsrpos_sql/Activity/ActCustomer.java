@@ -14,7 +14,10 @@ import com.newit.bsrpos_sql.Model.Customer;
 import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
+import com.newit.bsrpos_sql.Util.SqlQuery;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,8 +77,7 @@ public class ActCustomer extends ActBase {
 
     @Override
     public void refresh() {
-        customers = Customer.retrieve(customers);
-        if (adap != null) adap.notifyDataSetChanged();
+        new SqlQuery(this, 1, "{call POS.dbo.getcus(?)}", new String[]{String.valueOf(Global.wh_Id)});
     }
 
     @Override
@@ -90,5 +92,17 @@ public class ActCustomer extends ActBase {
             super.backPressed(ActLogin.class);
         }
         return true;
+    }
+
+    @Override
+    public void processFinish(ResultSet rs, int tag) throws SQLException {
+        if (tag == 1) {
+            customers.clear();
+            while (rs != null && rs.next()) {
+                Customer c = new Customer(rs.getInt("cus_Id"), rs.getString("cus_name"), rs.getString("cus_addr"), rs.getString("cus_tel"), rs.getBoolean("cus_ship"));
+                customers.add(c);
+            }
+            if (adap != null) adap.notifyDataSetChanged();
+        }
     }
 }

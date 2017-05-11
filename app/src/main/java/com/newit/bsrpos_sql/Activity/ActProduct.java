@@ -15,7 +15,10 @@ import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.Product;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
+import com.newit.bsrpos_sql.Util.SqlQuery;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,7 +102,19 @@ public class ActProduct extends ActBase {
 
     @Override
     public void refresh() {
-        products = Product.retrieve(products);
-        if (adap != null) adap.notifyDataSetChanged();
+        new SqlQuery(this, 1, "{call POS.dbo.getproduct(?)}", new String[]{String.valueOf(Global.wh_Id)});
+
+    }
+
+    @Override
+    public void processFinish(ResultSet rs, int tag) throws SQLException {
+        if (tag == 1) {
+            products.clear();
+            while (rs != null && rs.next()) {
+                Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"), rs.getInt("stock"), rs.getFloat("weight"), rs.getString("color"), rs.getBoolean("stepprice"), rs.getFloat("price"), rs.getInt("uom_id"));
+                products.add(p);
+            }
+            if (adap != null) adap.notifyDataSetChanged();
+        }
     }
 }

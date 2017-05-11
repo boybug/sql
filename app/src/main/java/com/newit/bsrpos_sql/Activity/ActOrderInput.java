@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +25,10 @@ import com.newit.bsrpos_sql.Model.RecordStat;
 import com.newit.bsrpos_sql.Model.SqlResult;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
+import com.newit.bsrpos_sql.Util.SqlQuery;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +39,10 @@ public class ActOrderInput extends ActBase {
     private AdpCustom<Product> adapProduct;
     private int selectedIndex;
     private AdpCustom<OrderItem> adapOrderItem;
-
     private TextView orderinput_no, orderinput_qty, orderinput_wgt, orderinput_amt, orderinput_listtitle, orderinput_cus;
+
+    private final int spQueryOrderItem = 1;
+    private final int spQueryProduct = 2;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -44,6 +50,8 @@ public class ActOrderInput extends ActBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.orderinput);
 
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         //region ORDER
         orderinput_cus = (TextView) findViewById(R.id.orderinput_cus);
@@ -66,7 +74,7 @@ public class ActOrderInput extends ActBase {
             order = new Order(customer.getId(), customer.getName(), customer.isShip());
             setTitle("เปิดบิลใหม่@" + Global.wh_name);
         } else if (order != null) {
-            order = OrderItem.retrieve(order);
+            new SqlQuery(this, spQueryOrderItem, "{call POS.dbo.getorderitem(?)}", new String[]{String.valueOf(order.getId())});
             setTitle(order.getNo() + "@" + Global.wh_name);
         }
         redrawOrder();
@@ -95,7 +103,6 @@ public class ActOrderInput extends ActBase {
                 intent.putExtras(bundle1);
                 selectedIndex = position;
                 ActOrderInput.this.startActivityForResult(intent, 3);
-
             }
         });
         listOrderItem.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -114,7 +121,7 @@ public class ActOrderInput extends ActBase {
                         @Override
                         public void onClick(DialogInterface dialog12, int which) {
                             //ย้ายไปพักไว้ก่อน
-                            order.getDeletingItems().add(item);
+                            if (item.getId() > 0) order.getDeletingItems().add(item);
                             //update qty 0 เพื่อดีดหัว
                             int delta = -1 * item.getQty();
                             item.addQty(delta);
@@ -147,9 +154,7 @@ public class ActOrderInput extends ActBase {
 
         //region PRODUCT
         if (order.getStat() == OrderStat.New) {
-
             setSwipeRefresh(R.id.swipe_refresh, R.id.orderinput_product);
-
             adapProduct = new AdpCustom<Product>(R.layout.listing_grid_orderproduct, getLayoutInflater(), products) {
                 @Override
                 protected void populateView(View v, Product model) {
@@ -285,8 +290,8 @@ public class ActOrderInput extends ActBase {
 
     @Override
     public void refresh() {
-        products = Product.retrieve(products);
-        if (adapProduct != null) adapProduct.notifyDataSetChanged();
+        if (order.getStat() == OrderStat.New)
+            new SqlQuery(this, spQueryProduct, "{call POS.dbo.getproduct(?)}", new String[]{String.valueOf(Global.wh_Id)});
     }
 
     @Override
@@ -303,4 +308,23 @@ public class ActOrderInput extends ActBase {
         return true;
     }
 
+    @Override
+    public void processFinish(ResultSet rs, int tag) throws SQLException {
+        if (tag == spQueryOrderItem) {
+            order.getItems().clear();
+            while (rs != null && rs.next()) {
+                Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"), rs.getInt("stock"), rs.getFloat("weight"), rs.getString("color"), rs.getBoolean("stepprice"), rs.getFloat("price"), rs.getInt("uom_id"));
+                OrderItem item = new OrderItem(order, rs.getInt("id"), rs.getInt("no"), p, rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("uom_id"));
+                order.getItems().add(item);
+            }
+            adapOrderItem.notifyDataSetChanged();
+        } else if (tag == spQueryProduct) {
+            products.clear();
+            while (rs != null && rs.next()) {
+                Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"), rs.getInt("stock"), rs.getFloat("weight"), rs.getString("color"), rs.getBoolean("stepprice"), rs.getFloat("price"), rs.getInt("uom_id"));
+                products.add(p);
+            }
+            adapProduct.notifyDataSetChanged();
+        }
+    }
 }

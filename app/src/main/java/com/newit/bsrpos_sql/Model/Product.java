@@ -1,13 +1,6 @@
 package com.newit.bsrpos_sql.Model;
 
-import com.newit.bsrpos_sql.Util.SqlServer;
-
-import java.io.Serializable;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-
-public class Product extends ModelBase implements Serializable {
+public class Product extends ModelBase {
 
     private static final long serialVersionUID = 4L;
     private final int id;
@@ -19,7 +12,7 @@ public class Product extends ModelBase implements Serializable {
     private final float price;
     private final int uom_id;
 
-    private Product(int id, String name, int stock, float weight, String color, boolean stepPrice, float price, int uom_id) {
+    public Product(int id, String name, int stock, float weight, String color, boolean stepPrice, float price, int uom_id) {
         super(false);
         this.id = id;
         this.name = name;
@@ -30,33 +23,33 @@ public class Product extends ModelBase implements Serializable {
         this.price = price;
         this.uom_id = uom_id;
     }
-
-    public static List<Product> retrieve(List<Product> products) {
-        products.clear();
-        try {
-            ResultSet rs = SqlServer.execute("{call POS.dbo.getproduct(?)}", new String[]{String.valueOf(Global.wh_Id)});
-            while (rs != null && rs.next()) {
-                Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"), rs.getInt("stock"), rs.getFloat("weight"), rs.getString("color"), rs.getBoolean("stepprice"), rs.getFloat("price"), rs.getInt("uom_id"));
-                products.add(p);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return products;
-    }
-
-    public static Product retrieve(int prod_Id, int wh_Id, int uom_Id) {
-        Product p = null;
-        try {
-            ResultSet rs1 = SqlServer.execute("{call POS.dbo.getproductbyid(?,?,?)}", new String[]{String.valueOf(prod_Id), String.valueOf(wh_Id), String.valueOf(uom_Id)});
-            if (rs1 != null && rs1.next()) {
-                p = new Product(rs1.getInt("prod_Id"), rs1.getString("prod_name"), rs1.getInt("stock"), rs1.getFloat("weight"), rs1.getString("color"), rs1.getBoolean("stepprice"), rs1.getFloat("price"), rs1.getInt("uom_id"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return p;
-    }
+//
+//    public static List<Product> retrieve(List<Product> products) {
+//        products.clear();
+//        try {
+//            ResultSet rs = SqlServer.execute("{call POS.dbo.getproduct(?)}", new String[]{String.valueOf(Global.wh_Id)});
+//            while (rs != null && rs.next()) {
+//                Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"), rs.getInt("stock"), rs.getFloat("weight"), rs.getString("color"), rs.getBoolean("stepprice"), rs.getFloat("price"), rs.getInt("uom_id"));
+//                products.add(p);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return products;
+//    }
+//
+//    public static Product retrieve(int prod_Id, int wh_Id, int uom_Id) {
+//        Product p = null;
+//        try {
+//            ResultSet rs1 = SqlServer.execute("{call POS.dbo.getproductbyid(?,?,?)}", new String[]{String.valueOf(prod_Id), String.valueOf(wh_Id), String.valueOf(uom_Id)});
+//            if (rs1 != null && rs1.next()) {
+//                p = new Product(rs1.getInt("prod_Id"), rs1.getString("prod_name"), rs1.getInt("stock"), rs1.getFloat("weight"), rs1.getString("color"), rs1.getBoolean("stepprice"), rs1.getFloat("price"), rs1.getInt("uom_id"));
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return p;
+//    }
 
     public int getId() {
         return id;

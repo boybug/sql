@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.newit.bsrpos_sql.Model.Customer;
 import com.newit.bsrpos_sql.R;
 
+import java.sql.ResultSet;
+
 public class ActCustomerDetail extends ActBase {
 
     private Customer customer;
@@ -79,5 +81,10 @@ public class ActCustomerDetail extends ActBase {
             super.backPressed(ActLogin.class);
         }
         return true;
+    }
+
+    @Override
+    public void processFinish(ResultSet rs, int tag) {
+
     }
 }

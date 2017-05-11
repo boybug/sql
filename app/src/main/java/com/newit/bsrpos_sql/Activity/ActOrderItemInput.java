@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.newit.bsrpos_sql.Model.OrderItem;
 import com.newit.bsrpos_sql.R;
 
+import java.sql.ResultSet;
+
 public class ActOrderItemInput extends ActBase {
 
     private TextView orderiteminput_stock;
@@ -143,5 +145,10 @@ public class ActOrderItemInput extends ActBase {
             super.backPressed(ActLogin.class);
         }
         return true;
+    }
+
+    @Override
+    public void processFinish(ResultSet rs, int tag) {
+
     }
 }

@@ -18,13 +18,20 @@ import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.SqlResult;
 import com.newit.bsrpos_sql.Model.User;
 import com.newit.bsrpos_sql.R;
+import com.newit.bsrpos_sql.Util.SqlQuery;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Objects;
 
 public class ActUserInput extends ActBase {
 
     private User user;
     private CheckBox userinput_deleteorder;
+    private final int spChngPwd = 1;
+    private final int spResetPwd = 2;
+    private final int spUpdateDeleteOrder = 3;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +66,6 @@ public class ActUserInput extends ActBase {
         });
 
         if (Global.user.isAdmin() && !isself) {
-
             userinput_resetpwd.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -70,8 +76,8 @@ public class ActUserInput extends ActBase {
                     dialog.setMessage("คุณต้องการรีเซ็ตรหัสผ่านใช่หรือไม่");
                     dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            SqlResult result = user.change(user.getPassword(), user.getLogin());
-                            ActUserInput.this.MessageBox(result.getMsg() == null ? "รีเซ็ตรหัสผ่านสำเร็จ" : result.getMsg());
+                            showProgressDialog();
+                            new SqlQuery(ActUserInput.this, spResetPwd, "{call POS.dbo.chngpasword(?,?,?)}", new String[]{user.getLogin(), user.getPassword(), user.getLogin()});
                         }
                     });
                     dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
@@ -94,13 +100,14 @@ public class ActUserInput extends ActBase {
                     dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             user.setDeleteorder(true);
-                            SqlResult result = user.setuser();
-                            ActUserInput.this.MessageBox(result.getMsg() == null ? "เปลี่ยนระดับการลบบิลสำเร็จ" : result.getMsg());
+                            showProgressDialog();
+                            new SqlQuery(ActUserInput.this, spUpdateDeleteOrder, "{call POS.dbo.setuser(?,?)}", new String[]{user.getLogin(), user.isDeleteorder() ? "1" : "0"});
                         }
                     });
                     dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            if (userinput_deleteorder.isChecked()) userinput_deleteorder.setChecked(false);
+                            if (userinput_deleteorder.isChecked())
+                                userinput_deleteorder.setChecked(false);
                             else userinput_deleteorder.setChecked(true);
                             dialog.cancel();
                         }
@@ -146,16 +153,36 @@ public class ActUserInput extends ActBase {
                         String oldpass = old_password.getText().toString();
                         String newpass = new_password.getText().toString();
                         String confirmpass = confirm_password.getText().toString();
-                        if (!TextUtils.isEmpty(oldpass) && !TextUtils.isEmpty(newpass) && !TextUtils.isEmpty(confirmpass)) {
-                            if (Objects.equals(newpass, confirmpass)) {
-                                SqlResult result = user.change(oldpass, confirmpass);
-                                ActUserInput.this.MessageBox(result.getMsg() == null ? "บันทึกรหัสผ่านสำเร็จ" : result.getMsg());
-                            }
-
+                        if (!TextUtils.isEmpty(oldpass) && !TextUtils.isEmpty(newpass) && !TextUtils.isEmpty(confirmpass) && Objects.equals(newpass, confirmpass)) {
+                            showProgressDialog();
+                            new SqlQuery(ActUserInput.this, spChngPwd, "{call POS.dbo.chngpasword(?,?,?)}", new String[]{user.getLogin(), String.valueOf(oldpass), String.valueOf(newpass)});
                         }
                     }
                 });
         builder.setNegativeButton(getString(android.R.string.cancel), null);
         builder.show();
+    }
+
+    @Override
+    public void processFinish(ResultSet rs, int tag) throws SQLException {
+        if (tag == spChngPwd) {
+            hideProgressDialog();
+            if (rs != null && rs.next()) {
+                SqlResult result = new SqlResult(rs);
+                MessageBox(result.getMsg() == null ? "เปลี่ยนรหัสผ่านสำเร็จ" : result.getMsg());
+            }
+        } else if (tag == spResetPwd) {
+            hideProgressDialog();
+            if (rs != null && rs.next()) {
+                SqlResult result = new SqlResult(rs);
+                MessageBox(result.getMsg() == null ? "รีเซทรหัสผ่านสำเร็จ" : result.getMsg());
+            }
+        } else if (tag == spUpdateDeleteOrder) {
+            hideProgressDialog();
+            if (rs != null && rs.next()) {
+                SqlResult result = new SqlResult(rs);
+                MessageBox(result.getMsg() == null ? "เปลี่ยนระดับการลบบิลสำเร็จ" : result.getMsg());
+            }
+        }
     }
 }

@@ -15,11 +15,15 @@ import android.widget.TextView;
 
 import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.Order;
+import com.newit.bsrpos_sql.Model.OrderPay;
 import com.newit.bsrpos_sql.Model.OrderStat;
 import com.newit.bsrpos_sql.Model.SqlResult;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
+import com.newit.bsrpos_sql.Util.SqlQuery;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +31,8 @@ public class ActOrder extends ActBase {
 
     private List<Order> orders = new ArrayList<>();
     private AdpCustom<Order> adap;
+    private final int spQuery = 1;
+    private final int spDelete = 2;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -100,9 +106,7 @@ public class ActOrder extends ActBase {
                         dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog12, int which) {
-                                SqlResult result = order.delete();
-                                MessageBox(result.getMsg() == null ? "ลบเอกสารแล้ว" : result.getMsg());
-                                refresh();
+                                new SqlQuery(ActOrder.this, spDelete, "{call POS.dbo.deleteorder(?)}", new String[]{String.valueOf(order.getId())});
                             }
                         });
                         dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
@@ -140,8 +144,7 @@ public class ActOrder extends ActBase {
 
     @Override
     public void refresh() {
-        orders = Order.retrieve(orders);
-        if (adap != null) adap.notifyDataSetChanged();
+        new SqlQuery(this, spQuery, "{call POS.dbo.getorder(?,?)}", new String[]{String.valueOf(Global.wh_Id), String.valueOf(Global.user.getId())});
     }
 
     @Override
@@ -156,5 +159,26 @@ public class ActOrder extends ActBase {
             super.backPressed(ActLogin.class);
         }
         return true;
+    }
+
+    @Override
+    public void processFinish(ResultSet rs, int tag) throws SQLException {
+        if (tag == spQuery) {
+            orders.clear();
+            while (rs != null && rs.next()) {
+                Order o = new Order(rs.getInt("id"), rs.getString("no"), rs.getString("order_date"),
+                        rs.getInt("cus_id"), rs.getString("cus_name"), rs.getInt("wh_id"), OrderStat.valueOf(rs.getString("order_stat")),
+                        rs.getInt("qty"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("usr_id"), rs.getString("usr_name"),
+                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"));
+                orders.add(o);
+            }
+            if (adap != null) adap.notifyDataSetChanged();
+        } else if (tag == spDelete) {
+            if (rs != null && rs.next()) {
+                SqlResult result = new SqlResult(rs);
+                MessageBox(result.getMsg() == null ? "ลบเอกสารแล้ว" : result.getMsg());
+                refresh();
+            }
+        }
     }
 }

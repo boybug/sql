@@ -1,8 +1,7 @@
 package com.newit.bsrpos_sql.Model;
 
-import com.newit.bsrpos_sql.Util.SqlServer;
+import com.newit.bsrpos_sql.Util.SqlQuery;
 
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -10,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-public class Order extends ModelBase implements Serializable {
+public class Order extends ModelBase {
     private static final long serialVersionUID = 2L;
     private int id;
     private String no;
@@ -46,8 +45,8 @@ public class Order extends ModelBase implements Serializable {
         this.pay = OrderPay.Cash;
     }
 
-    private Order(int id, String no, String date, int cus_id, String cus_name, int wh_id, OrderStat stat, int qty, float weight,
-                  float amount, int usr_id, String usr_name, OrderPay pay, boolean ship, String remark) {
+    public Order(int id, String no, String date, int cus_id, String cus_name, int wh_id, OrderStat stat, int qty, float weight,
+                 float amount, int usr_id, String usr_name, OrderPay pay, boolean ship, String remark) {
         super(false);
         this.id = id;
         this.no = no;
@@ -64,23 +63,6 @@ public class Order extends ModelBase implements Serializable {
         this.pay = pay;
         this.ship = ship;
         this.remark = remark;
-    }
-
-    public static List<Order> retrieve(List<Order> orders) {
-        orders.clear();
-        try {
-            ResultSet rs = SqlServer.execute("{call POS.dbo.getorder(?,?)}", new String[]{String.valueOf(Global.wh_Id), String.valueOf(Global.user.getId())});
-            while (rs != null && rs.next()) {
-                Order o = new Order(rs.getInt("id"), rs.getString("no"), rs.getString("order_date"),
-                        rs.getInt("cus_id"), rs.getString("cus_name"), rs.getInt("wh_id"), OrderStat.valueOf(rs.getString("order_stat")),
-                        rs.getInt("qty"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("usr_id"), rs.getString("usr_name"),
-                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"));
-                orders.add(o);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return orders;
     }
 
     public String getNo() {
@@ -232,13 +214,27 @@ public class Order extends ModelBase implements Serializable {
         this.deletingItems = deletingItems;
     }
 
+    @Override
+    public String getSearchString() {
+        return cus_name;
+    }
+
+    public OrderItem findItem(int id) {
+        for (OrderItem item : items) {
+            if (item.getId() == id)
+                return item;
+        }
+        return null;
+    }
+
+
     public SqlResult save() {
         SqlResult result = new SqlResult();
         if (getRecordStat() != RecordStat.NULL) {
             try {
                 String[] params = {String.valueOf(id), String.valueOf(cus_id), String.valueOf(stat), String.valueOf(wh_id), String.valueOf(usr_id),
                         String.valueOf(qty), String.valueOf(amount), String.valueOf(weight), String.valueOf(getRecordStat()), this.ship ? "1" : "0"};
-                ResultSet rs = SqlServer.execute("{call POS.dbo.setorder(?,?,?,?,?,?,?,?,?,?)}", params);
+                ResultSet rs = SqlQuery.executeWait("{call POS.dbo.setorder(?,?,?,?,?,?,?,?,?,?)}", params);
                 if (rs != null && rs.next()) {
                     result.setIden(rs.getInt("Iden"));
                     result.setMsg(rs.getString("Msg"));
@@ -253,7 +249,7 @@ public class Order extends ModelBase implements Serializable {
                         for (OrderItem item : deletingItems) {
                             item.getOrder().setId(this.getId());
                             item.setRecordStat(RecordStat.D);
-                            item.save();
+                            result = item.delete();
                         }
                         for (OrderItem item : items) {
                             item.getOrder().setId(this.getId());
@@ -268,46 +264,5 @@ public class Order extends ModelBase implements Serializable {
             }
         } else result.setMsg("ไม่มีความเปลี่ยนแปลง");
         return result;
-    }
-
-    public SqlResult delete() {
-        SqlResult result = new SqlResult();
-        if (getStat() != OrderStat.Confirm && Global.user.isDeleteorder()) {
-            try {
-                ResultSet rs = SqlServer.execute("{call POS.dbo.deleteorder(?)}", new String[]{String.valueOf(id)});
-                if (rs != null && rs.next()) {
-                    result.setIden(rs.getInt("Iden"));
-                    if (result.getIden() < 0) result.setMsg("ไม่ได้รับคำตอบจาก server");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                result.setMsg("ไม่สามารถเชื่อมต่อกับ server");
-            }
-        }
-        return result;
-    }
-
-    public SqlResult updatepay() {
-        SqlResult result = new SqlResult();
-        try {
-            String[] params = {String.valueOf(id), this.ship ? "1" : "0", String.valueOf(pay), String.valueOf(remark)};
-            ResultSet rs = SqlServer.execute("{call POS.dbo.setorderpay(?,?,?,?)}", params);
-            if (rs != null && rs.next()) {
-                result.setIden(rs.getInt("Iden"));
-                result.setMsg(rs.getString("Msg"));
-                if (result.getIden() > 0) {
-                    setRecordStat(RecordStat.NULL);
-                } else result.setMsg("ไม่ได้รับคำตอบจาก server");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            result.setMsg("ไม่สามารถเชื่อมต่อกับ server");
-        }
-        return result;
-    }
-
-    @Override
-    public String getSearchString() {
-        return cus_name;
     }
 }

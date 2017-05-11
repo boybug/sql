@@ -33,7 +33,8 @@ import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.ModelBase;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
-import com.newit.bsrpos_sql.Util.SqlServer;
+import com.newit.bsrpos_sql.Util.SqlConnect;
+import com.newit.bsrpos_sql.Util.sqlCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,7 @@ import java.util.Locale;
 
 
 @SuppressLint("Registered")
-public class ActBase<T> extends AppCompatActivity {
+public abstract class ActBase<T> extends AppCompatActivity implements sqlCallback {
 
     private EditText txt_search;
     private ProgressDialog mProgressDialog;
@@ -188,7 +189,7 @@ public class ActBase<T> extends AppCompatActivity {
     }
 
     public void backPressed(Class nextActivity) {
-        if (nextActivity == ActLogin.class) SqlServer.disconnect();
+        if (nextActivity == ActLogin.class) SqlConnect.disconnect();
         Intent intent = new Intent(getApplicationContext(), nextActivity);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -204,7 +205,7 @@ public class ActBase<T> extends AppCompatActivity {
         dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog12, int which) {
-                if (nextActivity == ActLogin.class) SqlServer.disconnect();
+                if (nextActivity == ActLogin.class) SqlConnect.disconnect();
                 Intent intent = new Intent(ActBase.this.getApplicationContext(), nextActivity);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 ActBase.this.startActivity(intent);

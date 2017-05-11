@@ -6,6 +6,8 @@ import android.os.Handler;
 
 import com.newit.bsrpos_sql.R;
 
+import java.sql.ResultSet;
+
 public class ActSplash extends ActBase {
 
     private Handler handler;
@@ -41,5 +43,10 @@ public class ActSplash extends ActBase {
         super.onPause();
         handler.removeCallbacks(runnable);
         time = delay_time - (System.currentTimeMillis() - time);
+    }
+
+    @Override
+    public void processFinish(ResultSet rs, int tag) {
+
     }
 }

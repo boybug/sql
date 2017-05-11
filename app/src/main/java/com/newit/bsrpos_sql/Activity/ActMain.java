@@ -12,6 +12,8 @@ import com.newit.bsrpos_sql.Model.Menu;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpMenu;
 
+import java.sql.ResultSet;
+
 public class ActMain extends ActBase {
 
     @Override
@@ -53,6 +55,11 @@ public class ActMain extends ActBase {
             finish();
         }
         return true;
+    }
+
+    @Override
+    public void processFinish(ResultSet rs, int tag) {
+
     }
 }
 

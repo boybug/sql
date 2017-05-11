@@ -1,14 +1,13 @@
 package com.newit.bsrpos_sql.Model;
 
-import com.newit.bsrpos_sql.Util.SqlServer;
+import com.newit.bsrpos_sql.Util.SqlQuery;
 
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderItem extends ModelBase implements Serializable {
+public class OrderItem extends ModelBase {
     private static final long serialVersionUID = 3L;
     private Order order;
     private int id;
@@ -31,7 +30,7 @@ public class OrderItem extends ModelBase implements Serializable {
         initialization(order, no, product);
     }
 
-    private OrderItem(Order order, int id, int no, Product product, int qty, float price, float weight, float amount, int uom_id) {
+    public OrderItem(Order order, int id, int no, Product product, int qty, float price, float weight, float amount, int uom_id) {
         super(false);
         this.id = id;
         this.qty = qty;
@@ -40,21 +39,6 @@ public class OrderItem extends ModelBase implements Serializable {
         this.amount = amount;
         this.uom_id = uom_id;
         initialization(order, no, product);
-    }
-
-    public static Order retrieve(Order order) {
-        order.getItems().clear();
-        try {
-            ResultSet rs = SqlServer.execute("{call POS.dbo.getorderitem(?)}", new String[]{String.valueOf(order.getId())});
-            while (rs != null && rs.next()) {
-                Product p = Product.retrieve(rs.getInt("prod_id"), order.getWh_id(), rs.getInt("uom_id"));
-                OrderItem item = new OrderItem(order, rs.getInt("id"), rs.getInt("no"), p, rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("uom_id"));
-                order.getItems().add(item);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return order;
     }
 
     private void initialization(Order order, int no, Product product) {
@@ -66,7 +50,7 @@ public class OrderItem extends ModelBase implements Serializable {
         //price
         if (order.getStat() == OrderStat.New && product.isStepPrice()) {
             try {
-                ResultSet rs = SqlServer.execute("{call POS.dbo.getstepprice(?,?)}", new String[]{String.valueOf(product.getId()), String.valueOf(Global.wh_Id)});
+                ResultSet rs = SqlQuery.executeWait("{call POS.dbo.getstepprice(?,?)}", new String[]{String.valueOf(product.getId()), String.valueOf(Global.wh_Id)});
                 while (rs != null && rs.next()) {
                     StepPrice p = new StepPrice(rs.getInt("from"), rs.getInt("to"), rs.getFloat("price"));
                     prices.add(p);
@@ -195,7 +179,28 @@ public class OrderItem extends ModelBase implements Serializable {
                 String[] params = {String.valueOf(order.getId()), String.valueOf(id), String.valueOf(no), String.valueOf(product.getId()),
                         String.valueOf(qty), String.valueOf(price), String.valueOf(amount), String.valueOf(weight), String.valueOf(uom_id),
                         String.valueOf(getRecordStat())};
-                ResultSet rs = SqlServer.execute("{call POS.dbo.setorderitem(?,?,?,?,?,?,?,?,?,?)}", params);
+                ResultSet rs = SqlQuery.executeWait("{call POS.dbo.setorderitem(?,?,?,?,?,?,?,?,?,?)}", params);
+                if (rs != null && rs.next()) {
+                    result.setIden(rs.getInt("Iden"));
+                    result.setMsg(rs.getString("Msg"));
+                    if (result.getIden() > 0) {
+                        setId(result.getIden());
+                        setRecordStat(RecordStat.NULL);
+                    } else result.setMsg("ไม่ได้รับคำตอบจาก server");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                result.setMsg("ไม่สามารถเชื่อมต่อกับ server");
+            }
+        }
+        return result;
+    }
+
+    public SqlResult delete() {
+        SqlResult result = new SqlResult();
+        if (getRecordStat() != RecordStat.NULL) {
+            try {
+                ResultSet rs = SqlQuery.executeWait("{call POS.dbo.deleteorderitem(?)}", new String[]{String.valueOf(id)});
                 if (rs != null && rs.next()) {
                     result.setIden(rs.getInt("Iden"));
                     result.setMsg(rs.getString("Msg"));

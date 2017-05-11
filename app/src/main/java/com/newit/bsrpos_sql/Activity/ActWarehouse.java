@@ -13,7 +13,10 @@ import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.Warehouse;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
+import com.newit.bsrpos_sql.Util.SqlQuery;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,8 +68,7 @@ public class ActWarehouse extends ActBase {
 
     @Override
     public void refresh() {
-        warehouses = Warehouse.retrieve(warehouses);
-        if (adap != null) adap.notifyDataSetChanged();
+        new SqlQuery(this, 1, "{call POS.dbo.getwh(?)}", new String[]{String.valueOf(Global.user.getId())});
     }
 
     @Override
@@ -81,5 +83,17 @@ public class ActWarehouse extends ActBase {
             super.backPressed(ActLogin.class);
         }
         return true;
+    }
+
+    @Override
+    public void processFinish(ResultSet rs, int tag) throws SQLException {
+        if (tag == 1) {
+            warehouses.clear();
+            while (rs != null && rs.next()) {
+                Warehouse w = new Warehouse(rs.getInt("wh_Id"), rs.getString("wh_name"));
+                warehouses.add(w);
+            }
+            if (adap != null) adap.notifyDataSetChanged();
+        }
     }
 }

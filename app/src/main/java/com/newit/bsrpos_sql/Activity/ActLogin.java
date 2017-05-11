@@ -11,7 +11,7 @@ import android.widget.EditText;
 import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.User;
 import com.newit.bsrpos_sql.R;
-import com.newit.bsrpos_sql.Util.SqlServer;
+import com.newit.bsrpos_sql.Util.SqlQuery;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,6 +21,7 @@ public class ActLogin extends ActBase {
     private EditText txt_username, txt_password;
     private String username, password;
     private CheckBox saveLoginCheckBox;
+    private final int spLogin = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,24 +53,13 @@ public class ActLogin extends ActBase {
 
                 username = txt_username.getText().toString();
                 password = txt_password.getText().toString();
+
                 if (ActLogin.this.Validate()) {
-                    try {
-                        ResultSet rs = SqlServer.execute("{call POS.dbo.login(?,?)}", new String[]{username, password});
-                        if (rs != null && rs.next() && rs.getInt("usr_Id") > 0) {
-                            Global.user = new User(rs.getInt("usr_Id"), rs.getString("login_name"), rs.getString("usr_name"), rs.getBoolean("admin"), rs.getBoolean("deleteorder"), rs.getString("password"));
-                            loginPrefsEditor.apply();
-                            rememberlogin();
-                            Intent intent = new Intent(ActLogin.this, ActWarehouse.class);
-                            ActLogin.this.startActivity(intent);
-                            ActLogin.this.finish();
-                        } else
-                            ActLogin.this.MessageBox("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
+                    new SqlQuery(ActLogin.this, spLogin, "{call POS.dbo.login(?,?)}", new String[]{username, password});
                 }
             }
         });
+
     }
 
     private boolean Validate() {
@@ -104,5 +94,24 @@ public class ActLogin extends ActBase {
         }
         finishAffinity();
         moveTaskToBack(true);
+    }
+
+    @Override
+    public void processFinish(ResultSet rs, int tag) {
+        try {
+            if (tag == this.spLogin) {
+                if (rs != null && rs.next() && rs.getInt("usr_Id") > 0) {
+                    Global.user = new User(rs.getInt("usr_Id"), rs.getString("login_name"), rs.getString("usr_name"), rs.getBoolean("admin"), rs.getBoolean("deleteorder"), rs.getString("password"));
+                    loginPrefsEditor.apply();
+                    rememberlogin();
+                    Intent intent = new Intent(ActLogin.this, ActWarehouse.class);
+                    ActLogin.this.startActivity(intent);
+                    ActLogin.this.finish();
+                } else
+                    ActLogin.this.MessageBox("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

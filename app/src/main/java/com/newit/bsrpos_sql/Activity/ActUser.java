@@ -16,7 +16,10 @@ import com.newit.bsrpos_sql.Model.SqlResult;
 import com.newit.bsrpos_sql.Model.User;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
+import com.newit.bsrpos_sql.Util.SqlQuery;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +27,8 @@ public class ActUser extends ActBase {
 
     private List<User> users = new ArrayList<>();
     private AdpCustom<User> adap;
+    private final int spQuery = 1;
+    private final int spDelete = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,9 +93,7 @@ public class ActUser extends ActBase {
                         dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog12, int which) {
-                                SqlResult result = user.delete();
-                                MessageBox(result.getMsg() == null ? "ลบเอกสารแล้ว" : result.getMsg());
-                                refresh();
+                                new SqlQuery(ActUser.this, spDelete, "{call POS.dbo.deleteuser(?,?)}", new String[]{user.getLogin(), String.valueOf(user.getId())});
                             }
                         });
                         dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
@@ -105,16 +108,13 @@ public class ActUser extends ActBase {
                 }
             });
         }
-
-
         refresh();
         addVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, users, adap);
     }
 
     @Override
     public void refresh() {
-        users = User.retrieve(users);
-        if (adap != null) adap.notifyDataSetChanged();
+        new SqlQuery(this, spQuery, "{call POS.dbo.getuser(?,?)}", new String[]{Global.user.getLogin(), String.valueOf(Global.user.isAdmin())});
     }
 
     @Override
@@ -129,5 +129,23 @@ public class ActUser extends ActBase {
             super.backPressed(ActLogin.class);
         }
         return true;
+    }
+
+    @Override
+    public void processFinish(ResultSet rs, int tag) throws SQLException {
+        if (tag == spQuery) {
+            users.clear();
+            while (rs != null && rs.next()) {
+                User user = new User(rs.getInt("usr_Id"), rs.getString("login_name"), rs.getString("usr_name"), rs.getBoolean("admin"), rs.getBoolean("deleteorder"), rs.getString("password"));
+                users.add(user);
+            }
+            if (adap != null) adap.notifyDataSetChanged();
+        } else if (tag == spDelete) {
+            if (rs != null && rs.next()) {
+                SqlResult result = new SqlResult(rs);
+                MessageBox(result.getMsg() == null ? "ลบผู้ใช้แล้ว" : result.getMsg());
+                refresh();
+            }
+        }
     }
 }

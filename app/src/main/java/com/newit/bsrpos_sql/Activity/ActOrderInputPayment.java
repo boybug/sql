@@ -20,10 +20,15 @@ import com.newit.bsrpos_sql.Model.OrderPay;
 import com.newit.bsrpos_sql.Model.OrderStat;
 import com.newit.bsrpos_sql.Model.SqlResult;
 import com.newit.bsrpos_sql.R;
+import com.newit.bsrpos_sql.Util.SqlQuery;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class ActOrderInputPayment extends ActBase {
 
     private Order order;
+    private final int spUpdate = 1;
 
     private TextView orderiteminputpayment_no, orderiteminputpayment_qty, orderiteminputpayment_wgt,
             orderiteminputpayment_amt, orderinput_cus, orderiteminputpayment_remark;
@@ -53,8 +58,7 @@ public class ActOrderInputPayment extends ActBase {
         if (bundle == null) {
             MessageBox("error");
             finish();
-        }
-        else order = (Order) bundle.getSerializable("order");
+        } else order = (Order) bundle.getSerializable("order");
 
         radio_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -87,6 +91,7 @@ public class ActOrderInputPayment extends ActBase {
             @Override
             public void onClick(View v) {
                 if (order.getStat() == OrderStat.Confirm) MessageBox("เอกสารได้ถูกยืนยันไปแล้ว.");
+                else if (order.getItems().size() == 0) MessageBox("ไม่มีรายการสินค้า");
                 else {
                     android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(ActOrderInputPayment.this);
                     dialog.setTitle("ยืนยันเอกสาร");
@@ -96,14 +101,8 @@ public class ActOrderInputPayment extends ActBase {
                     dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             order.setRemark(orderiteminputpayment_remark.getText().toString());
-                            SqlResult result = order.updatepay();
-                            if (result.getMsg() == null) {
-                                Intent intent = new Intent();
-                                intent.putExtra("FINISH",true);
-                                setResult(2,intent);
-                                backPressed(ActOrder.class);
-                            }
-                            else MessageBox(result.getMsg());
+                            String[] params = {String.valueOf(order.getId()), order.isShip() ? "1" : "0", String.valueOf(order.getPay()), String.valueOf(order.getRemark())};
+                            new SqlQuery(ActOrderInputPayment.this, spUpdate, "{call POS.dbo.setorderpay(?,?,?,?)}", params);
                         }
                     });
                     dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
@@ -151,5 +150,20 @@ public class ActOrderInputPayment extends ActBase {
             super.backPressed(ActLogin.class);
         }
         return true;
+    }
+
+    @Override
+    public void processFinish(ResultSet rs, int tag) throws SQLException {
+        if (tag == spUpdate) {
+            if (rs != null && rs.next()) {
+                SqlResult result = new SqlResult(rs);
+                if (result.getMsg() == null) {
+                    Intent intent = new Intent();
+                    intent.putExtra("FINISH", true);
+                    setResult(2, intent);
+                    backPressed(ActOrder.class);
+                } else MessageBox(result.getMsg());
+            }
+        }
     }
 }
