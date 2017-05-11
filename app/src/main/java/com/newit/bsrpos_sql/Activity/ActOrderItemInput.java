@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.newit.bsrpos_sql.Model.OrderItem;
+import com.newit.bsrpos_sql.Model.RecordStat;
 import com.newit.bsrpos_sql.R;
 
 import java.sql.ResultSet;
@@ -20,7 +21,7 @@ public class ActOrderItemInput extends ActBase {
     private TextView orderiteminput_amt;
     private EditText orderiteminput_qty;
     private OrderItem item;
-    private int oldQty, newQty;
+    private int oldQty;
 
 
     @Override
@@ -67,15 +68,13 @@ public class ActOrderItemInput extends ActBase {
                 @Override
                 public void onClick(View v) {
                     int delta = getQty() - oldQty;
-                    if (delta != 0) {
-                        if (getStock() >= delta) {
-                            item.setQty(getQty());
-                            Intent intent = new Intent();
-                            intent.putExtra("DELTA", delta);
-                            setResult(3, intent);
-                            finish();
-                        } else orderiteminput_qty.setError("สต็อกไม่พอ");
-                    }
+                    if (getStock() >= delta) {
+                        item.setQty(getQty());
+                        Intent intent = new Intent();
+                        intent.putExtra("DELTA", delta);
+                        setResult(3, intent);
+                        finish();
+                    } else orderiteminput_qty.setError("สต็อกไม่พอ");
                 }
             });
         }
@@ -149,6 +148,5 @@ public class ActOrderItemInput extends ActBase {
 
     @Override
     public void processFinish(ResultSet rs, int tag) {
-
     }
 }

@@ -1,5 +1,6 @@
 package com.newit.bsrpos_sql.Activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -241,7 +242,7 @@ public class ActOrderInput extends ActBase {
             if (data.getBooleanExtra("FINISH", false))
                 finish();
         }
-        if (requestCode == 3) {
+        if (requestCode == 3 && resultCode == Activity.RESULT_OK) {
             int delta = data.getIntExtra("DELTA", 0);
             OrderItem oi = order.getItems().get(selectedIndex);
             oi.addQty(delta);
@@ -318,6 +319,7 @@ public class ActOrderInput extends ActBase {
                 order.getItems().add(item);
             }
             adapOrderItem.notifyDataSetChanged();
+            redrawOrder();
         } else if (tag == spQueryProduct) {
             products.clear();
             while (rs != null && rs.next()) {
