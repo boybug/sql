@@ -13,10 +13,10 @@ public class SqlConnect {
 
     public static Connection connect() {
         if (conn == null) {
-            final String connStrInternet = "jdbc:jtds:sqlserver://203.114.108.46:11433/pos";
-            final String connStrIntranet = "jdbc:jtds:sqlserver://192.168.10.13:11433/pos";
-            final String user = "TM";
-            final String password = "@TM2013!!!";
+            final String connStrInternet = "xx";
+            final String connStrIntranet = "xx";
+            final String user = "xx";
+            final String password = "xx";
 
             DriverManager.setLoginTimeout(10);
             try {
