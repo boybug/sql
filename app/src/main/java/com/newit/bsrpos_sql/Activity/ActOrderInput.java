@@ -255,7 +255,7 @@ public class ActOrderInput extends ActBase {
             if (data.getBooleanExtra("FINISH", false))
                 finish();
         }
-        if (requestCode == 3 && resultCode == Activity.RESULT_OK) {
+        else if (requestCode == 3 && resultCode == Activity.RESULT_OK) {
             int delta = data.getIntExtra("DELTA", 0);
             OrderItem oi = order.getItems().get(selectedIndex);
             oi.addQty(delta);
@@ -269,7 +269,6 @@ public class ActOrderInput extends ActBase {
             }
             adapProduct.notifyDataSetChanged();
             ActOrderInput.this.redrawOrder();
-
         }
     }
 

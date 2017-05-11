@@ -81,8 +81,7 @@ public class ActUser extends ActBase {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                     final User user = adap.getModels().get(position);
-                    //todo : bug... เทียบแล้วไม่เคยเท่ากัน
-                    if (user == Global.user)
+                    if (user.getId() == Global.user.getId())
                         MessageBox("ลบตัวเองไม่ได้");
                     else {
                         AlertDialog.Builder dialog = new AlertDialog.Builder(ActUser.this);

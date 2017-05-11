@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.newit.bsrpos_sql.Model.Order;
 import com.newit.bsrpos_sql.Model.OrderItem;
 import com.newit.bsrpos_sql.R;
 
@@ -22,9 +21,7 @@ public class ActOrderItemInput extends ActBase {
     private TextView orderiteminput_amt;
     private EditText orderiteminput_qty;
     private OrderItem item;
-    private Order order;
     private int oldQty;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +81,6 @@ public class ActOrderItemInput extends ActBase {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             item = (OrderItem) bundle.getSerializable("orderItem");
-            order = (Order) item.getOrder();
             if (item != null)
                 return true;
         }
@@ -96,10 +92,6 @@ public class ActOrderItemInput extends ActBase {
         return Integer.parseInt(orderiteminput_stock.getText().toString());
     }
 
-    private void setStock(int stock) {
-        orderiteminput_stock.setText(String.valueOf(stock));
-    }
-
     private int getQty() {
         if (orderiteminput_qty.length() == 0) orderiteminput_qty.setText("0");
         return Integer.parseInt(orderiteminput_qty.getText().toString());
@@ -107,15 +99,6 @@ public class ActOrderItemInput extends ActBase {
 
     private void setQty(int qty) {
         orderiteminput_qty.setText(String.valueOf(qty));
-    }
-
-    private void addQty(int delta, boolean fromTextChangeListener) {
-        if (getStock() >= delta) {
-            setStock(getStock() - delta);
-            if (!fromTextChangeListener)
-                setQty(getQty() + delta);
-            redraw(getQty(), getStock() + getQty(), getQty() * item.getPrice(), fromTextChangeListener);
-        }
     }
 
     private void redraw(int qty, int stock, float amount, boolean fromTextChangeListener) {
