@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.support.annotation.IdRes;
@@ -197,7 +198,7 @@ public abstract class ActBase<T> extends AppCompatActivity implements sqlCallbac
     }
 
     public void backPressed(final Class nextActivity, String title, String message) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        AlertDialog.Builder dialog = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert) : new AlertDialog.Builder(this);
         dialog.setTitle(title);
         dialog.setIcon(R.mipmap.ic_launcher);
         dialog.setCancelable(true);

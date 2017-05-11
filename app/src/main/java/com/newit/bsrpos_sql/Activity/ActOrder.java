@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.Menu;
@@ -98,7 +99,7 @@ public class ActOrder extends ActBase {
                     if (order.getStat() == OrderStat.Confirm)
                         MessageBox("เอกสารยืนยันแล้วลบไม่ได้");
                     else {
-                        AlertDialog.Builder dialog = new AlertDialog.Builder(ActOrder.this);
+                        AlertDialog.Builder dialog = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new AlertDialog.Builder(ActOrder.this, android.R.style.Theme_Material_Light_Dialog_Alert) : new AlertDialog.Builder(ActOrder.this);
                         dialog.setTitle("ยืนยันการลบ");
                         dialog.setIcon(R.mipmap.ic_launcher);
                         dialog.setCancelable(true);

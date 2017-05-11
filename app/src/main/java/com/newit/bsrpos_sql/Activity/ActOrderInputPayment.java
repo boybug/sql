@@ -4,8 +4,10 @@ package com.newit.bsrpos_sql.Activity;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -94,7 +96,7 @@ public class ActOrderInputPayment extends ActBase {
                 if (order.getStat() == OrderStat.Confirm) MessageBox("เอกสารได้ถูกยืนยันไปแล้ว.");
                 else if (order.getItems().size() == 0) MessageBox("ไม่มีรายการสินค้า");
                 else {
-                    android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(ActOrderInputPayment.this);
+                    AlertDialog.Builder dialog = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new AlertDialog.Builder(ActOrderInputPayment.this, android.R.style.Theme_Material_Light_Dialog_Alert) : new AlertDialog.Builder(ActOrderInputPayment.this);
                     dialog.setTitle("ยืนยันเอกสาร");
                     dialog.setIcon(R.mipmap.ic_launcher);
                     dialog.setCancelable(true);
@@ -168,12 +170,4 @@ public class ActOrderInputPayment extends ActBase {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("order", order);
-        Intent intent = new Intent(ActOrderInputPayment.this, ActOrderInput.class);
-        intent.putExtras(bundle);
-        ActOrderInputPayment.this.startActivity(intent);
-    }
 }

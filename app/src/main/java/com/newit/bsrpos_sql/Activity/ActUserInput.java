@@ -1,6 +1,7 @@
 package com.newit.bsrpos_sql.Activity;
 
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -64,11 +65,12 @@ public class ActUserInput extends ActBase {
             }
         });
 
-        if (Global.user.isAdmin() && !isself) {
+        if (Global.user.isAdmin()) {
+            if(user.getId() != Global.user.getId()) userinput_chngpwd.setVisibility(View.GONE);
             userinput_resetpwd.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(ActUserInput.this);
+                    AlertDialog.Builder dialog = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new AlertDialog.Builder(ActUserInput.this, android.R.style.Theme_Material_Light_Dialog_Alert) : new AlertDialog.Builder(ActUserInput.this);
                     dialog.setTitle("รีเซ็ตรหัสผ่าน");
                     dialog.setIcon(R.mipmap.ic_launcher);
                     dialog.setCancelable(true);
@@ -91,7 +93,7 @@ public class ActUserInput extends ActBase {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     //todo: เปลี่ยนสิทธิการลบ order ของคนอื่น ยืนยันแล้ว update deleteorder
-                    android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(ActUserInput.this);
+                    AlertDialog.Builder dialog = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new AlertDialog.Builder(ActUserInput.this, android.R.style.Theme_Material_Light_Dialog_Alert) : new AlertDialog.Builder(ActUserInput.this);
                     dialog.setTitle("อนุญาต");
                     dialog.setIcon(R.mipmap.ic_launcher);
                     dialog.setCancelable(true);
@@ -117,6 +119,7 @@ public class ActUserInput extends ActBase {
         } else {
             userinput_resetpwd.setVisibility(View.GONE);
             userinput_deleteorder.setEnabled(false);
+            userinput_chngpwd.setVisibility(View.VISIBLE);
         }
     }
 
@@ -135,17 +138,16 @@ public class ActUserInput extends ActBase {
     }
 
     private void showDialogPassword() {
-        AlertDialog.Builder builder =
-                new AlertDialog.Builder(ActUserInput.this);
+        AlertDialog.Builder dialog = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new AlertDialog.Builder(ActUserInput.this, android.R.style.Theme_Material_Light_Dialog_Alert) : new AlertDialog.Builder(ActUserInput.this);
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog, null);
 
         final EditText old_password = (EditText) view.findViewById(R.id.old_password);
         final EditText new_password = (EditText) view.findViewById(R.id.new_password);
         final EditText confirm_password = (EditText) view.findViewById(R.id.confirm_password);
-        builder.setView(view);
+        dialog.setView(view);
 
-        builder.setPositiveButton(getString(android.R.string.ok),
+        dialog.setPositiveButton(getString(android.R.string.ok),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -158,8 +160,8 @@ public class ActUserInput extends ActBase {
                         }
                     }
                 });
-        builder.setNegativeButton(getString(android.R.string.cancel), null);
-        builder.show();
+        dialog.setNegativeButton(getString(android.R.string.cancel), null);
+        dialog.show();
     }
 
     @Override

@@ -1,9 +1,10 @@
 package com.newit.bsrpos_sql.Activity;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -84,7 +85,7 @@ public class ActUser extends ActBase {
                     if (user.getId() == Global.user.getId())
                         MessageBox("ลบตัวเองไม่ได้");
                     else {
-                        AlertDialog.Builder dialog = new AlertDialog.Builder(ActUser.this);
+                        AlertDialog.Builder dialog = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new android.support.v7.app.AlertDialog.Builder(ActUser.this, android.R.style.Theme_Material_Light_Dialog_Alert) : new android.support.v7.app.AlertDialog.Builder(ActUser.this);
                         dialog.setTitle("ยืนยันการลบ");
                         dialog.setIcon(R.mipmap.ic_launcher);
                         dialog.setCancelable(true);
