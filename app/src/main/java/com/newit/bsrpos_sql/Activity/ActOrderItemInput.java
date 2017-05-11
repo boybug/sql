@@ -1,5 +1,6 @@
 package com.newit.bsrpos_sql.Activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -52,15 +53,14 @@ public class ActOrderItemInput extends ActBase {
                 @Override
                 public void onClick(View v) {
                     if (getQty() > 0)
-                        addQty(-1, false);
+                        setQty(getQty() - 1);
                 }
             });
 
             orderiteminput_incr.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (getStock() >= 1)
-                        addQty(1, false);
+                    setQty(getQty() + 1);
                 }
             });
 
@@ -68,12 +68,11 @@ public class ActOrderItemInput extends ActBase {
             orderinput_save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int delta = getQty() - oldQty;
-                    if (getStock() >= delta) {
+                    if (getStock() >= getQty()) {
                         item.setQty(getQty());
                         Intent intent = new Intent();
-                        intent.putExtra("DELTA", delta);
-                        setResult(3, intent);
+                        intent.putExtra("DELTA", getQty() - oldQty);
+                        setResult(Activity.RESULT_OK, intent);
                         finish();
                     } else orderiteminput_qty.setError("สต็อกไม่พอ");
                 }
@@ -115,7 +114,7 @@ public class ActOrderItemInput extends ActBase {
             setStock(getStock() - delta);
             if (!fromTextChangeListener)
                 setQty(getQty() + delta);
-            redraw(getQty(), getStock(), getQty() * item.getPrice(), fromTextChangeListener);
+            redraw(getQty(), getStock() + getQty(), getQty() * item.getPrice(), fromTextChangeListener);
         }
     }
 
