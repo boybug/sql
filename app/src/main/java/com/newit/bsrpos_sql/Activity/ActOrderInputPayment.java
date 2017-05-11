@@ -1,6 +1,7 @@
 package com.newit.bsrpos_sql.Activity;
 
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -160,7 +161,7 @@ public class ActOrderInputPayment extends ActBase {
                 if (result.getMsg() == null) {
                     Intent intent = new Intent();
                     intent.putExtra("FINISH", true);
-                    setResult(2, intent);
+                    setResult(Activity.RESULT_OK, intent);
                     backPressed(ActOrder.class);
                 } else MessageBox(result.getMsg());
             }
