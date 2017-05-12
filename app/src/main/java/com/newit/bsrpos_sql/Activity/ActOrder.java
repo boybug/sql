@@ -131,7 +131,6 @@ public class ActOrder extends ActBase {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ActOrder.this, ActCustomer.class);
-                intent.putExtra("bypasscustomer", true);
                 ActOrder.this.startActivity(intent);
                 ActOrder.this.finish();
             }

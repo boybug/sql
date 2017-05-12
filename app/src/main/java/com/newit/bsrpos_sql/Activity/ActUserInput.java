@@ -45,7 +45,6 @@ public class ActUserInput extends ActBase {
         }
 
         user = (User) (bundle != null ? bundle.getSerializable("user") : null);
-        boolean isself = user.getId() == Global.user.getId();
 
         Button userinput_chngpwd = (Button) findViewById(R.id.userinput_chngpwd);
         Button userinput_resetpwd = (Button) findViewById(R.id.userinput_resetpwd);

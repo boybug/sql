@@ -164,7 +164,6 @@ public abstract class ActBase<T> extends AppCompatActivity implements sqlCallbac
         }
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

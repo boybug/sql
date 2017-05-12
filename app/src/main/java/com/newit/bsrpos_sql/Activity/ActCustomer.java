@@ -49,7 +49,6 @@ public class ActCustomer extends ActBase {
                 cus_tel.setText(cus.getTel());
 
                 if (searchString != null) SetTextSpan(searchString, cus.getName(), cus_name);
-
             }
         };
         ListView list = (ListView) findViewById(R.id.listing_list);
@@ -57,10 +56,9 @@ public class ActCustomer extends ActBase {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                boolean bypasscustomer = getIntent().getBooleanExtra("bypasscustomer", false);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("customer", adap.getModels().get(position));
-                Intent intent = new Intent(ActCustomer.this, bypasscustomer ? ActOrderInput.class : ActCustomerDetail.class);
+                Intent intent = new Intent(ActCustomer.this, ActCustomerDetail.class);
                 intent.putExtras(bundle);
                 ActCustomer.this.startActivity(intent);
             }
