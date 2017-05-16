@@ -136,7 +136,7 @@ public class ActUser extends ActBase {
         if (tag == spQuery) {
             users.clear();
             while (rs != null && rs.next()) {
-                User user = new User(rs.getInt("usr_Id"), rs.getString("login_name"), rs.getString("usr_name"), rs.getBoolean("admin"), rs.getBoolean("deleteorder"), rs.getString("password"));
+                User user = new User(rs.getInt("usr_Id"), rs.getString("login_name"), rs.getString("usr_name"), rs.getBoolean("admin"), rs.getBoolean("deleteorder"), rs.getString("password"), rs.getString("email"));
                 users.add(user);
             }
             if (adap != null) adap.notifyDataSetChanged();

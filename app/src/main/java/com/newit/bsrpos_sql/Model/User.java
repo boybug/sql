@@ -9,8 +9,9 @@ public class User extends ModelBase {
     private boolean admin;
     private boolean deleteorder;
     private String password;
+    private String email;
 
-    public User(int id, String login, String name, boolean admin, boolean deleteorder, String password) {
+    public User(int id, String login, String name, boolean admin, boolean deleteorder, String password, String email) {
         super(false);
         this.id = id;
         this.login = login;
@@ -18,6 +19,7 @@ public class User extends ModelBase {
         this.deleteorder = deleteorder;
         this.admin = admin;
         this.password = password;
+        this.email = email;
     }
 
     public int getId() {
@@ -51,5 +53,9 @@ public class User extends ModelBase {
     @Override
     public String getSearchString() {
         return name;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }

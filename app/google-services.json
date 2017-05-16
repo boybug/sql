@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "355356318505-5qfohfcld0aqqp718llcs822k5mbt5aq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.newit.bsrpos_sql",
+            "certificate_hash": "3190ea7634120fb21ab1df817c91e2824b4aee9d"
+          }
+        },
+        {
           "client_id": "355356318505-lu7q0r5tg0lg6e14lirppeb3igaun2lt.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

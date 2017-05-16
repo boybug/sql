@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -74,8 +75,14 @@ public class ActLogin extends ActBase {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (!task.isSuccessful()) {
-                                hideProgressDialog();
-                                MessageBox("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+                                mAuth.createUserWithEmailAndPassword(username, password)
+                                        .addOnCompleteListener(ActLogin.this, new OnCompleteListener<AuthResult>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                                if (task.isSuccessful()) processLogin();
+                                                else hideProgressDialog();
+                                            }
+                                        });
                             } else {
                                 processLogin();
                             }
@@ -110,8 +117,8 @@ public class ActLogin extends ActBase {
             txt_username.setError("ต้องกรอก");
             isValid = false;
         }
-        if (password.equals("")) {
-            txt_password.setError("ต้องกรอก");
+        if (password.equals("") || password.length() < 6) {
+            txt_password.setError("ต้องกรอกมากกว่า 6 หลัก");
             isValid = false;
         }
         return isValid;
@@ -143,7 +150,7 @@ public class ActLogin extends ActBase {
         try {
             if (tag == this.spLogin) {
                 if (rs != null && rs.next() && rs.getInt("usr_Id") > 0) {
-                    Global.user = new User(rs.getInt("usr_Id"), rs.getString("login_name"), rs.getString("usr_name"), rs.getBoolean("admin"), rs.getBoolean("deleteorder"), rs.getString("password"));
+                    Global.user = new User(rs.getInt("usr_Id"), rs.getString("login_name"), rs.getString("usr_name"), rs.getBoolean("admin"), rs.getBoolean("deleteorder"), rs.getString("password"), rs.getString("email"));
                     loginPrefsEditor.apply();
                     rememberlogin();
                     hideProgressDialog();
