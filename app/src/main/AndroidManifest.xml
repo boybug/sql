@@ -20,8 +20,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".Activity.ActLogin"
-            android:noHistory="true"
-            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode"
+            android:noHistory="true" />
         <activity android:name=".Activity.ActSplash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,8 +34,8 @@
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
         <activity
             android:name=".Activity.ActWarehouse"
-            android:noHistory="true"
-            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode"
+            android:noHistory="true" />
         <activity
             android:name=".Activity.ActOrder"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
@@ -66,6 +66,7 @@
         <activity
             android:name=".Activity.ActUserInput"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
+        <activity android:name=".Activity.ActPrintDialog"></activity>
     </application>
 
 </manifest>

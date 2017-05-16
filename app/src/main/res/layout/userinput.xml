@@ -117,4 +117,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="รีเซทรหัสผ่าน" />
+
+    <Button
+        android:id="@+id/userinput_print"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="print" />
 </LinearLayout>

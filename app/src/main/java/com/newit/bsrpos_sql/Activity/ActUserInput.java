@@ -1,12 +1,14 @@
 package com.newit.bsrpos_sql.Activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +31,7 @@ import com.newit.bsrpos_sql.Model.User;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.SqlQuery;
 
+import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
@@ -134,6 +137,20 @@ public class ActUserInput extends ActBase {
             userinput_deleteorder.setEnabled(false);
             userinput_chngpwd.setVisibility(View.VISIBLE);
         }
+
+
+        Button userinput_print = (Button) findViewById(R.id.userinput_print);
+        userinput_print.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/xyz.pdf");
+                Intent printIntent = new Intent(ActUserInput.this, ActPrintDialog.class);
+                printIntent.setDataAndType(Uri.fromFile(file), "application/pdf");
+                printIntent.putExtra("title", "Android print demo");
+                startActivity(printIntent);
+            }
+        });
+
     }
 
     private void PassResetViaEmail(final String login, final String oldpassword, final String newpassword) {

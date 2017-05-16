@@ -37,7 +37,6 @@ public abstract class AdpCustom<T> extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         if (view == null && layout > 0) {
-            //todo: ถ้าปกติ ให้เรียกแบบนี้ ถ้า ซ่อน ให้เรียกอีกแบบ
             view = inflater.inflate(layout, viewGroup, false);
         }
         T model = models.get(i);
