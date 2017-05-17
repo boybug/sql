@@ -1,10 +1,7 @@
 package com.newit.bsrpos_sql.Activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -72,20 +69,24 @@ public class ActLogin extends ActBase {
                 showProgressDialog();
                 username = txt_username.getText().toString();
                 password = txt_password.getText().toString();
-
-                if (ActLogin.this.Validate()) {
+                if (!Global.isNetworkAvailable(getApplicationContext())) {
+                    hideProgressDialog();
+                    MessageBox("ไม่มีสัญญาณเน็ทเวิร์ค");
+                } else if (ActLogin.this.Validate()) {
                     mAuth.signInWithEmailAndPassword(username, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (!task.isSuccessful()) {
-                                mAuth.createUserWithEmailAndPassword(username, password)
-                                        .addOnCompleteListener(ActLogin.this, new OnCompleteListener<AuthResult>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                                if (task.isSuccessful()) processLogin();
-                                                else hideProgressDialog();
-                                            }
-                                        });
+                                mAuth.createUserWithEmailAndPassword(username, password).addOnCompleteListener(ActLogin.this, new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if (task.isSuccessful()) processLogin();
+                                        else {
+                                            hideProgressDialog();
+                                            MessageBox("ไม่สามารถสร้างผู้ใช้ใหม่ได้");
+                                        }
+                                    }
+                                });
                             } else {
                                 processLogin();
                             }
@@ -101,18 +102,17 @@ public class ActLogin extends ActBase {
         refTB.orderByChild("name").equalTo("dev").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    DataSnapshot value = dataSnapshot.getChildren().iterator().next();
-                    Global.database = value.getValue(Database.class);
-                    String appversion = ActLogin.this.getVersion(getApplicationContext());
-                    String latestversion = Global.database.getAppversion();
-                    if (Objects.equals(latestversion, appversion)) {
-                        new SqlQuery(ActLogin.this, spLogin, "{call POS.dbo.loginbyemail(?,?)}", new String[]{username, password});
-                    } else {
-                        hideProgressDialog();
-                        MessageBox("เวอร์ชั่นของคุณเป็น " + appversion + " กรุณาอัพเกรดเป็นเวอร์ชั่นใหม่สุด " + latestversion);
-                        mAuth.signOut();
-                    }
+                DataSnapshot value = dataSnapshot.getChildren().iterator().next();
+                Global.database = value.getValue(Database.class);
+                String appversion = Global.getVersion(getApplicationContext());
+                String latestversion = Global.database.getAppversion();
+
+                if (!Objects.equals(latestversion, appversion)) {
+                    hideProgressDialog();
+                    MessageBox("เวอร์ชั่นของคุณเป็น " + appversion + " กรุณาอัพเกรดเป็นเวอร์ชั่นใหม่สุด " + latestversion);
+                    mAuth.signOut();
+                } else {
+                    new SqlQuery(ActLogin.this, spLogin, "{call POS.dbo.loginbyemail(?,?)}", new String[]{username, password});
                 }
             }
 
@@ -175,15 +175,6 @@ public class ActLogin extends ActBase {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-    }
-
-    public String getVersion(Context context) {
-        try {
-            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-            return pInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            return null;
         }
     }
 }

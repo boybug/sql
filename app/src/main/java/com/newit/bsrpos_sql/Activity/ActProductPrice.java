@@ -36,7 +36,7 @@ public class ActProductPrice extends ActBase {
             TextView productprice_wgt = (TextView) findViewById(R.id.productprice_wgt);
 
             productprice_name.setText(prod.getName());
-            productprice_stock.setText(String.valueOf(prod.getStock()));
+            productprice_stock.setText(String.valueOf(prod.getRemaining()));
             productprice_wgt.setText(String.valueOf(prod.getWeight()));
 
             new SqlQuery(this, 1, "{call POS.dbo.getstepprice(?,?)}", new String[]{String.valueOf(prod.getId()), String.valueOf(Global.wh_Id)});

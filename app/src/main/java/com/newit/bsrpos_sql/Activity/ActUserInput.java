@@ -1,11 +1,8 @@
 package com.newit.bsrpos_sql.Activity;
 
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -31,7 +28,6 @@ import com.newit.bsrpos_sql.Model.User;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.SqlQuery;
 
-import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
@@ -137,46 +133,33 @@ public class ActUserInput extends ActBase {
             userinput_deleteorder.setEnabled(false);
             userinput_chngpwd.setVisibility(View.VISIBLE);
         }
-
-
-        Button userinput_print = (Button) findViewById(R.id.userinput_print);
-        userinput_print.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/xyz.pdf");
-                Intent printIntent = new Intent(ActUserInput.this, ActPrintDialog.class);
-                printIntent.setDataAndType(Uri.fromFile(file), "application/pdf");
-                printIntent.putExtra("title", "Android print demo");
-                startActivity(printIntent);
-            }
-        });
-
     }
 
     private void PassResetViaEmail(final String login, final String oldpassword, final String newpassword) {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         AuthCredential credential = EmailAuthProvider.getCredential(login, oldpassword);
-        user.reauthenticate(credential)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            user.updatePassword(newpassword).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        MessageBox("Password updated");
-                                    } else {
-                                        MessageBox("Error password not updated");
-                                    }
+        if (user != null) {
+            user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        user.updatePassword(newpassword).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    MessageBox("รีเซทรหัสผ่านแล้ว");
+                                } else {
+                                    MessageBox("ผิดพลาด ไม่สามารถรีเซทรหัสผ่าน");
                                 }
-                            });
-                        } else {
-                            MessageBox("Error auth failed");
-                        }
+                            }
+                        });
+                    } else {
+                        MessageBox("ผิดพลาด รหัสผ่านไม่ตรงกัน");
                     }
-                });
+                }
+            });
+        }
     }
 
 

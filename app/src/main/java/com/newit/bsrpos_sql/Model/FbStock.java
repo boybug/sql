@@ -1,8 +1,13 @@
 package com.newit.bsrpos_sql.Model;
 
-public class FbStock {
+import com.google.firebase.database.Exclude;
+
+import java.io.Serializable;
+
+public class FbStock implements Serializable {
     private int prod_id;
     private int reserve;
+    private String key;
 
     public FbStock() {
     }
@@ -21,5 +26,15 @@ public class FbStock {
 
     public void setReserve(int reserve) {
         this.reserve = reserve;
+    }
+
+    @Exclude
+    public String getKey() {
+        return key;
+    }
+
+    @Exclude
+    public void setKey(String key) {
+        this.key = key;
     }
 }

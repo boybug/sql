@@ -10,6 +10,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.newit.bsrpos_sql.Model.OrderItem;
 import com.newit.bsrpos_sql.R;
 
@@ -22,6 +27,8 @@ public class ActOrderItemInput extends ActBase {
     private EditText orderiteminput_qty;
     private OrderItem item;
     private int oldQty;
+    private DatabaseReference fb;
+    private ValueEventListener fbStockListner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +36,8 @@ public class ActOrderItemInput extends ActBase {
         setContentView(R.layout.orderiteminput);
 
         if (validate()) {
+            fb = FirebaseDatabase.getInstance().getReference().child("fbstock").child(item.getProduct().getFbstock().getKey()).child("reserve");
+
             TextView orderiteminput_desc = (TextView) findViewById(R.id.orderiteminput_desc);
             orderiteminput_stock = (TextView) findViewById(R.id.orderiteminput_stock);
             orderiteminput_qty = (EditText) findViewById(R.id.orderiteminput_qty);
@@ -43,7 +52,10 @@ public class ActOrderItemInput extends ActBase {
             orderiteminput_price.setText(String.valueOf(item.getPrice()));
 
             orderiteminput_qty.setSelectAllOnFocus(true);
-            redraw(item.getQty(), item.getProduct().getStock(), item.getAmount(), false);
+            orderiteminput_qty.setText(String.valueOf(item.getQty()));
+            orderiteminput_stock.setText(String.valueOf(item.getProduct().getRemaining()));
+            orderiteminput_amt.setText(String.valueOf(item.getAmount()));
+
             oldQty = getQty();
 
             orderiteminput_decr.setOnClickListener(new View.OnClickListener() {
@@ -70,10 +82,25 @@ public class ActOrderItemInput extends ActBase {
                         Intent intent = new Intent();
                         intent.putExtra("DELTA", getQty() - oldQty);
                         setResult(Activity.RESULT_OK, intent);
+                        fb.setValue(item.getProduct().getFbstock().getReserve() + getQty() - oldQty);
                         finish();
                     } else orderiteminput_qty.setError("สต็อกไม่พอ");
                 }
             });
+
+
+            fbStockListner = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    item.getProduct().getFbstock().setReserve(dataSnapshot.getValue(Integer.class));
+                    orderiteminput_stock.setText(String.valueOf(item.getProduct().getRemaining()));
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            };
+            fb.addValueEventListener(fbStockListner);
         }
     }
 
@@ -87,7 +114,6 @@ public class ActOrderItemInput extends ActBase {
         return false;
     }
 
-
     private int getStock() {
         return Integer.parseInt(orderiteminput_stock.getText().toString());
     }
@@ -99,13 +125,6 @@ public class ActOrderItemInput extends ActBase {
 
     private void setQty(int qty) {
         orderiteminput_qty.setText(String.valueOf(qty));
-    }
-
-    private void redraw(int qty, int stock, float amount, boolean fromTextChangeListener) {
-        if (!fromTextChangeListener)
-            orderiteminput_qty.setText(String.valueOf(qty));
-        orderiteminput_stock.setText(String.valueOf(stock));
-        orderiteminput_amt.setText(String.valueOf(amount));
     }
 
     @Override

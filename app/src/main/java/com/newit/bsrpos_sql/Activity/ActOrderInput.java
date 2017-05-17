@@ -55,7 +55,8 @@ public class ActOrderInput extends ActBase {
     private final int spQueryOrderItem = 1;
     private final int spQueryProduct = 2;
 
-    private boolean sqlfinished = false, fbfinished = false;
+    DatabaseReference fb = FirebaseDatabase.getInstance().getReference().child("fbstock");
+    private ChildEventListener fbStockListner;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -137,11 +138,10 @@ public class ActOrderInput extends ActBase {
                                 //ย้ายไปพักไว้ก่อน
                                 if (item.getId() > 0) order.getDeletingItems().add(item);
                                 //update qty 0 เพื่อดีดหัว
-                                int delta = -1 * item.getQty();
-                                item.addQty(delta);
+                                item.addQty(-1 * item.getQty());
                                 //update stock
-                                Product p = item.getProduct();
-                                p.setStock(p.getStock() - delta);
+                                FbStock f = item.getProduct().getFbstock();
+                                fb.child(f.getKey()).child("reserve").setValue(f.getReserve() - item.getQty());
                                 //ลบออกจาก array
                                 order.getItems().remove(item);
                                 //rerun no
@@ -189,7 +189,7 @@ public class ActOrderInput extends ActBase {
                     }
                     if (searchString != null)
                         SetTextSpan(searchString, model.getName(), orderproduct_name);
-                    redrawProduct(model.getStock(), v);
+                    redrawProduct(model.getRemaining(), v);
                 }
             };
             ListView listProduct = (ListView) findViewById(R.id.orderinput_product);
@@ -198,7 +198,7 @@ public class ActOrderInput extends ActBase {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Product p = adapProduct.getModels().get(position);
-                    if (p.getStock() > 0) {
+                    if (p.getRemaining() > 0) {
                         OrderItem item = order.findItem(p);
                         if (item == null) {
                             item = new OrderItem(order, order.getItems().size() + 1, p);
@@ -207,47 +207,25 @@ public class ActOrderInput extends ActBase {
                         item.addQty(1);
                         adapOrderItem.notifyDataSetChanged();
                         listOrderItem.setSelection(order.getItems().indexOf(item));
-                        p.setStock(p.getStock() - 1);
-                        ActOrderInput.this.redrawProduct(p.getStock(), view);
+                        if (p.getFbstock() == null) {
+                            FbStock fbStock = new FbStock();
+                            fbStock.setReserve(1);
+                            fbStock.setProd_id(p.getId());
+                            String key = fb.push().getKey();
+                            fb.child(key).setValue(fbStock);
+                        } else {
+                            FbStock f = p.getFbstock();
+                            f.setReserve(f.getReserve() + 1);
+                            fb.child(p.getFbstock().getKey()).child("reserve").setValue(f.getReserve());
+                        }
+                        ActOrderInput.this.redrawProduct(p.getRemaining(), view);
                         ActOrderInput.this.redrawOrder();
                     }
                 }
             });
-
             refresh();
             addVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, products, adapProduct);
 
-            DatabaseReference refTB = FirebaseDatabase.getInstance().getReference().child("fbstock");
-            refTB.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    fbStocks.add(dataSnapshot.getValue(FbStock.class));
-                }
-
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    FbStock temp = dataSnapshot.getValue(FbStock.class);
-                    for (FbStock stk : fbStocks) {
-                        if (stk.getProd_id() == temp.getProd_id()) {
-                            stk.setReserve(temp.getReserve());
-                            break;
-                        }
-                    }
-                }
-
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-                    fbStocks.remove(dataSnapshot.getValue(FbStock.class));
-                }
-
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
         } else {
             DrawerLayout drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -289,6 +267,54 @@ public class ActOrderInput extends ActBase {
             }
         });
         //endregion
+
+        //region Firebase
+        fbStockListner = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                FbStock fbStock = dataSnapshot.getValue(FbStock.class);
+                fbStock.setKey(dataSnapshot.getKey());
+                fbStocks.add(fbStock);
+                mergeList(fbStock);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                FbStock fbStock = dataSnapshot.getValue(FbStock.class);
+                fbStock.setKey(dataSnapshot.getKey());
+                for (FbStock f : fbStocks) {
+                    if (Objects.equals(f.getKey(), fbStock.getKey())) {
+                        f.setReserve(fbStock.getReserve());
+                        mergeList(fbStock);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                FbStock fbStock = dataSnapshot.getValue(FbStock.class);
+                fbStock.setKey(dataSnapshot.getKey());
+                for (FbStock f : fbStocks) {
+                    if (Objects.equals(f.getKey(), fbStock.getKey())) {
+                        fbStocks.remove(f);
+                        //todo : ติดไว้ก่อนรอ ฝั่ง erp เสร็จ
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+        fb.addChildEventListener(fbStockListner);
+
+        //endregion
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -300,11 +326,12 @@ public class ActOrderInput extends ActBase {
             int delta = data.getIntExtra("DELTA", 0);
             OrderItem oi = order.getItems().get(selectedIndex);
             oi.addQty(delta);
+
             adapOrderItem.notifyDataSetChanged();
 
             for (Product p : products) {
-                if (p.equals(oi.getProduct())) {
-                    p.setStock(p.getStock() - delta);
+                if (p.getId() == oi.getProduct().getId()) {
+                    p.addReserve(delta);
                     break;
                 }
             }
@@ -369,6 +396,7 @@ public class ActOrderInput extends ActBase {
             order.getItems().clear();
             while (rs != null && rs.next()) {
                 Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"), rs.getInt("stock"), rs.getFloat("weight"), rs.getString("color"), rs.getBoolean("stepprice"), rs.getFloat("price"), rs.getInt("uom_id"));
+                updateFbStock(p);
                 OrderItem item = new OrderItem(order, rs.getInt("id"), rs.getInt("no"), p, rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("uom_id"));
                 order.getItems().add(item);
             }
@@ -378,9 +406,36 @@ public class ActOrderInput extends ActBase {
             products.clear();
             while (rs != null && rs.next()) {
                 Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"), rs.getInt("stock"), rs.getFloat("weight"), rs.getString("color"), rs.getBoolean("stepprice"), rs.getFloat("price"), rs.getInt("uom_id"));
+                updateFbStock(p);
                 products.add(p);
             }
             adapProduct.notifyDataSetChanged();
         }
     }
+
+    private void updateFbStock(Product p) {
+        for (FbStock f : fbStocks) {
+            if (f.getProd_id() == p.getId()) {
+                p.setFbstock(f);
+                break;
+            }
+        }
+    }
+
+    public void mergeList(FbStock fbstock) {
+        for (Product p : products) {
+            if (p.getId() == fbstock.getProd_id()) {
+                p.setFbstock(fbstock);
+                adapProduct.notifyDataSetChanged();
+                break;
+            }
+        }
+        for (OrderItem i : order.getItems()) {
+            if (i.getProduct() != null && i.getProduct().getId() == fbstock.getProd_id()) {
+                i.getProduct().setFbstock(fbstock);
+                break;
+            }
+        }
+    }
+
 }
