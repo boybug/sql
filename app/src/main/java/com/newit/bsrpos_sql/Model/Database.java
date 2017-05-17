@@ -8,6 +8,7 @@ public class Database {
     private String user;
     private String ip_lan;
     private String ip_wan;
+    private String appversion;
 
     public Database() {
     }
@@ -66,5 +67,13 @@ public class Database {
 
     public void setIp_wan(String ip_wan) {
         this.ip_wan = ip_wan;
+    }
+
+    public String getAppversion() {
+        return appversion;
+    }
+
+    public void setAppversion(String appversion) {
+        this.appversion = appversion;
     }
 }

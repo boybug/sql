@@ -1,7 +1,6 @@
 package com.newit.bsrpos_sql.Util;
 
 import android.os.AsyncTask;
-import android.os.StrictMode;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;

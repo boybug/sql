@@ -1,14 +1,16 @@
 package com.newit.bsrpos_sql.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -27,6 +29,7 @@ import com.newit.bsrpos_sql.Util.SqlQuery;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 
 public class ActLogin extends ActBase {
     private SharedPreferences.Editor loginPrefsEditor;
@@ -98,10 +101,18 @@ public class ActLogin extends ActBase {
         refTB.orderByChild("name").equalTo("dev").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists() == true) {
+                if (dataSnapshot.exists()) {
                     DataSnapshot value = dataSnapshot.getChildren().iterator().next();
                     Global.database = value.getValue(Database.class);
-                    new SqlQuery(ActLogin.this, spLogin, "{call POS.dbo.loginbyemail(?,?)}", new String[]{username, password});
+                    String appversion = ActLogin.this.getVersion(getApplicationContext());
+                    String latestversion = Global.database.getAppversion();
+                    if (Objects.equals(latestversion, appversion)) {
+                        new SqlQuery(ActLogin.this, spLogin, "{call POS.dbo.loginbyemail(?,?)}", new String[]{username, password});
+                    } else {
+                        hideProgressDialog();
+                        MessageBox("เวอร์ชั่นของคุณเป็น " + appversion + " กรุณาอัพเกรดเป็นเวอร์ชั่นใหม่สุด " + latestversion);
+                        mAuth.signOut();
+                    }
                 }
             }
 
@@ -164,6 +175,15 @@ public class ActLogin extends ActBase {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public String getVersion(Context context) {
+        try {
+            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+            return pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            return null;
         }
     }
 }

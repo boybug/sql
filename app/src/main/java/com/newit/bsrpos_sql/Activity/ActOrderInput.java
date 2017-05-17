@@ -18,7 +18,13 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.newit.bsrpos_sql.Model.Customer;
+import com.newit.bsrpos_sql.Model.FbStock;
 import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.Order;
 import com.newit.bsrpos_sql.Model.OrderItem;
@@ -40,6 +46,7 @@ public class ActOrderInput extends ActBase {
 
     private Order order;
     private List<Product> products = new ArrayList<>();
+    private List<FbStock> fbStocks = new ArrayList<>();
     private AdpCustom<Product> adapProduct;
     private int selectedIndex;
     private AdpCustom<OrderItem> adapOrderItem;
@@ -47,6 +54,8 @@ public class ActOrderInput extends ActBase {
 
     private final int spQueryOrderItem = 1;
     private final int spQueryProduct = 2;
+
+    private boolean sqlfinished = false, fbfinished = false;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -207,6 +216,38 @@ public class ActOrderInput extends ActBase {
 
             refresh();
             addVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, products, adapProduct);
+
+            DatabaseReference refTB = FirebaseDatabase.getInstance().getReference().child("fbstock");
+            refTB.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    fbStocks.add(dataSnapshot.getValue(FbStock.class));
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    FbStock temp = dataSnapshot.getValue(FbStock.class);
+                    for (FbStock stk : fbStocks) {
+                        if (stk.getProd_id() == temp.getProd_id()) {
+                            stk.setReserve(temp.getReserve());
+                            break;
+                        }
+                    }
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    fbStocks.remove(dataSnapshot.getValue(FbStock.class));
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
         } else {
             DrawerLayout drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -255,8 +296,7 @@ public class ActOrderInput extends ActBase {
         if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
             if (data.getBooleanExtra("FINISH", false))
                 finish();
-        }
-        else if (requestCode == 3 && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == 3 && resultCode == Activity.RESULT_OK) {
             int delta = data.getIntExtra("DELTA", 0);
             OrderItem oi = order.getItems().get(selectedIndex);
             oi.addQty(delta);
@@ -304,8 +344,9 @@ public class ActOrderInput extends ActBase {
 
     @Override
     public void refresh() {
-        if (order.getStat() == OrderStat.New)
+        if (order.getStat() == OrderStat.New) {
             new SqlQuery(this, spQueryProduct, "{call POS.dbo.getproduct(?)}", new String[]{String.valueOf(Global.wh_Id)});
+        }
     }
 
     @Override
