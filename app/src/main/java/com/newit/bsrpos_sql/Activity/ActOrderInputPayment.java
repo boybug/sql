@@ -144,7 +144,7 @@ public class ActOrderInputPayment extends ActBase {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.contextmenu, menu);
+        getMenuInflater().inflate(R.menu.base_print, menu);
         return true;
     }
 
@@ -152,6 +152,12 @@ public class ActOrderInputPayment extends ActBase {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.nav_logout) {
             super.backPressed(ActLogin.class);
+        }else if(item.getItemId() == R.id.nav_Print){
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("order", order);
+            Intent intent = new Intent(ActOrderInputPayment.this, ActOrderPrint.class);
+            intent.putExtras(bundle);
+            ActOrderInputPayment.this.startActivity(intent);
         }
         return true;
     }
