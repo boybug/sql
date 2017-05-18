@@ -7,6 +7,12 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.newit.bsrpos_sql.Model.FbStock;
 import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.Product;
 import com.newit.bsrpos_sql.Model.StepPrice;
@@ -24,6 +30,9 @@ public class ActProductPrice extends ActBase {
     private Product prod;
     private List<StepPrice> stepPrices = new ArrayList<>();
     private AdpCustom<StepPrice> adap;
+    private Query fb;
+    private ChildEventListener fbStockListner;
+    private TextView productprice_stock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +40,10 @@ public class ActProductPrice extends ActBase {
         setContentView(R.layout.productprice);
 
         if (validate()) {
+            fb = FirebaseDatabase.getInstance().getReference().child("fbstock");
+
             TextView productprice_name = (TextView) findViewById(R.id.productprice_name);
-            TextView productprice_stock = (TextView) findViewById(R.id.productprice_stock);
+            productprice_stock = (TextView) findViewById(R.id.productprice_stock);
             TextView productprice_wgt = (TextView) findViewById(R.id.productprice_wgt);
 
             productprice_name.setText(prod.getName());
@@ -55,6 +66,40 @@ public class ActProductPrice extends ActBase {
 
             ListView list = (ListView) findViewById(R.id.productprice_list_price);
             list.setAdapter(adap);
+
+            fbStockListner = new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    redraw(dataSnapshot);
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    redraw(dataSnapshot);
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            };
+
+            fb.addChildEventListener(fbStockListner);
+        }
+    }
+
+    private void redraw(DataSnapshot dataSnapshot) {
+        FbStock f = dataSnapshot.getValue(FbStock.class);
+        if (f.getWh_id() == prod.getWh_Id() && f.getProd_id() == prod.getId()) {
+            prod.setFbstock(f);
+            productprice_stock.setText(String.valueOf(prod.getRemaining()));
         }
     }
 
@@ -70,7 +115,7 @@ public class ActProductPrice extends ActBase {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.base, menu);
+        getMenuInflater().inflate(R.menu.contextmenu, menu);
         return true;
     }
 

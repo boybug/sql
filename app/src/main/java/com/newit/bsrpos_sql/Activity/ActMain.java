@@ -42,7 +42,7 @@ public class ActMain extends ActBase {
 
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
-        getMenuInflater().inflate(R.menu.base, menu);
+        getMenuInflater().inflate(R.menu.contextmenu, menu);
         return true;
     }
 

@@ -56,7 +56,6 @@ public class ActOrderInput extends ActBase {
     private final int spQueryProduct = 2;
 
     DatabaseReference fb = FirebaseDatabase.getInstance().getReference().child("fbstock");
-    private ChildEventListener fbStockListner;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -211,6 +210,7 @@ public class ActOrderInput extends ActBase {
                             FbStock fbStock = new FbStock();
                             fbStock.setReserve(1);
                             fbStock.setProd_id(p.getId());
+                            fbStock.setWh_id(p.getWh_Id());
                             String key = fb.push().getKey();
                             fb.child(key).setValue(fbStock);
                         } else {
@@ -269,7 +269,7 @@ public class ActOrderInput extends ActBase {
         //endregion
 
         //region Firebase
-        fbStockListner = new ChildEventListener() {
+        ChildEventListener fbStockListner = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 FbStock fbStock = dataSnapshot.getValue(FbStock.class);
@@ -378,7 +378,7 @@ public class ActOrderInput extends ActBase {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.base, menu);
+        getMenuInflater().inflate(R.menu.contextmenu, menu);
         return true;
     }
 
@@ -415,7 +415,7 @@ public class ActOrderInput extends ActBase {
 
     private void updateFbStock(Product p) {
         for (FbStock f : fbStocks) {
-            if (f.getProd_id() == p.getId()) {
+            if (f.getProd_id() == p.getId() && f.getWh_id() == p.getWh_Id()) {
                 p.setFbstock(f);
                 break;
             }
@@ -424,21 +424,21 @@ public class ActOrderInput extends ActBase {
 
     public void mergeList(FbStock fbstock) {
         for (Product p : products) {
-            if (p.getId() == fbstock.getProd_id()) {
+            if (p.getId() == fbstock.getProd_id() && p.getWh_Id() == fbstock.getWh_id()) {
                 p.setFbstock(fbstock);
                 adapProduct.notifyDataSetChanged();
                 break;
             }
         }
         for (OrderItem i : order.getItems()) {
-            if (i.getProduct() != null && i.getProduct().getId() == fbstock.getProd_id()) {
+            if (i.getProduct() != null && i.getProduct().getId() == fbstock.getProd_id() && i.getWh_Id() == fbstock.getWh_id()) {
                 i.getProduct().setFbstock(fbstock);
                 break;
             }
         }
         if (txt_search.getText().toString().length() > 0) {
             for (Product p : adapProduct.getModels()) {
-                if (p.getId() == fbstock.getProd_id()) {
+                if (p.getId() == fbstock.getProd_id() && p.getWh_Id() == fbstock.getWh_id()) {
                     p.setFbstock(fbstock);
                     adapProduct.notifyDataSetChanged();
                     break;
