@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group>
+        <item
+            android:id="@+id/nav_chngwhgrp"
+            android:icon="@android:drawable/ic_menu_set_as"
+            android:title="เปลี่ยนสาขา" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_custom_add"
+            android:title="ออกจากระบบ" />
+
+    </group>
+
+</menu>
