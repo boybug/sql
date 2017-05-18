@@ -11,9 +11,10 @@ public class Product extends ModelBase {
     private final boolean stepPrice;
     private final float price;
     private final int uom_id;
+    private final int wh_Id;
     private FbStock fbstock;
 
-    public Product(int id, String name, int stock, float weight, String color, boolean stepPrice, float price, int uom_id) {
+    public Product(int id, String name, int stock, float weight, String color, boolean stepPrice, float price, int uom_id, int wh_Id) {
         super(false);
         this.id = id;
         this.name = name;
@@ -23,6 +24,7 @@ public class Product extends ModelBase {
         this.stepPrice = stepPrice;
         this.price = price;
         this.uom_id = uom_id;
+        this.wh_Id = wh_Id;
     }
 
     public int getId() {
@@ -59,6 +61,10 @@ public class Product extends ModelBase {
 
     public int getUom_id() {
         return uom_id;
+    }
+
+    public int getWh_Id() {
+        return wh_Id;
     }
 
     @Override

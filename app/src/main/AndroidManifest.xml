@@ -33,7 +33,7 @@
             android:name=".Activity.ActMain"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
         <activity
-            android:name=".Activity.ActWarehouse"
+            android:name=".Activity.ActWhGrp"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode"
             android:noHistory="true" />
         <activity

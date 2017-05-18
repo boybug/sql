@@ -112,7 +112,7 @@ public class ActLogin extends ActBase {
                     MessageBox("เวอร์ชั่นของคุณเป็น " + appversion + " กรุณาอัพเกรดเป็นเวอร์ชั่นใหม่สุด " + latestversion);
                     mAuth.signOut();
                 } else {
-                    new SqlQuery(ActLogin.this, spLogin, "{call POS.dbo.loginbyemail(?,?)}", new String[]{username, password});
+                    new SqlQuery(ActLogin.this, spLogin, "{call " + Global.database.getPrefix() + "loginbyemail(?,?)}", new String[]{username, password});
                 }
             }
 
@@ -165,7 +165,7 @@ public class ActLogin extends ActBase {
                     loginPrefsEditor.apply();
                     rememberlogin();
                     hideProgressDialog();
-                    Intent intent = new Intent(ActLogin.this, ActWarehouse.class);
+                    Intent intent = new Intent(ActLogin.this, ActWhGrp.class);
                     ActLogin.this.startActivity(intent);
                     ActLogin.this.finish();
                 } else {

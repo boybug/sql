@@ -9,8 +9,8 @@ import android.net.NetworkInfo;
 public class Global {
     public static final int speechCode = 100;
     public static User user;
-    public static int wh_Id = -1;
-    public static String wh_name = "";
+    public static int wh_Grp_Id = -1;
+    public static String wh_grp_name = "";
     public static boolean isLocal = false;
     public static Database database;
 

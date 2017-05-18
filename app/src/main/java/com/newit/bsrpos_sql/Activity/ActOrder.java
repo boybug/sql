@@ -41,7 +41,7 @@ public class ActOrder extends ActBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.listing);
 
-        setTitle("รายการบิลขาย@" + Global.wh_name);
+        setTitle("รายการบิลขาย@" + Global.wh_grp_name);
         setSwipeRefresh(R.id.swipe_refresh, R.id.listing_list);
 
         adap = new AdpCustom<Order>(R.layout.listing_grid_order, getLayoutInflater(), orders) {
@@ -107,7 +107,7 @@ public class ActOrder extends ActBase {
                         dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog12, int which) {
-                                new SqlQuery(ActOrder.this, spDelete, "{call POS.dbo.deleteorder(?)}", new String[]{String.valueOf(order.getId())});
+                                new SqlQuery(ActOrder.this, spDelete, "{call " + Global.database.getPrefix() + "deleteorder(?)}", new String[]{String.valueOf(order.getId())});
                             }
                         });
                         dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
@@ -144,7 +144,7 @@ public class ActOrder extends ActBase {
 
     @Override
     public void refresh() {
-        new SqlQuery(this, spQuery, "{call POS.dbo.getorder(?,?)}", new String[]{String.valueOf(Global.wh_Id), String.valueOf(Global.user.getId())});
+        new SqlQuery(this, spQuery, "{call " + Global.database.getPrefix() + "getorder(?,?)}", new String[]{String.valueOf(Global.wh_Grp_Id), String.valueOf(Global.user.getId())});
     }
 
     @Override
@@ -167,7 +167,7 @@ public class ActOrder extends ActBase {
             orders.clear();
             while (rs != null && rs.next()) {
                 Order o = new Order(rs.getInt("id"), rs.getString("no"), rs.getString("order_date"),
-                        rs.getInt("cus_id"), rs.getString("cus_name"), rs.getInt("wh_id"), OrderStat.valueOf(rs.getString("order_stat")),
+                        rs.getInt("cus_id"), rs.getString("cus_name"), rs.getInt("wh_grp_id"), OrderStat.valueOf(rs.getString("order_stat")),
                         rs.getInt("qty"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("usr_id"), rs.getString("usr_name"),
                         OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"));
                 orders.add(o);

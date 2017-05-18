@@ -87,7 +87,7 @@ public class ActUserInput extends ActBase {
                     dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             showProgressDialog();
-                            new SqlQuery(ActUserInput.this, spResetPwd, "{call POS.dbo.chngpasword(?,?,?)}", new String[]{user.getLogin(), user.getPassword(), "123456"});
+                            new SqlQuery(ActUserInput.this, spResetPwd, "{call " + Global.database.getPrefix() + "chngpasword(?,?,?)}", new String[]{user.getLogin(), user.getPassword(), "123456"});
                         }
                     });
                     dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
@@ -110,7 +110,7 @@ public class ActUserInput extends ActBase {
                     dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             showProgressDialog();
-                            new SqlQuery(ActUserInput.this, spUpdateDeleteOrder, "{call POS.dbo.chnguserdetail(?,?)}", new String[]{user.getLogin(), userinput_deleteorder.isChecked() ? "1" : "0"});
+                            new SqlQuery(ActUserInput.this, spUpdateDeleteOrder, "{call " + Global.database.getPrefix() + "chnguserdetail(?,?)}", new String[]{user.getLogin(), userinput_deleteorder.isChecked() ? "1" : "0"});
                         }
                     });
                     dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
@@ -198,7 +198,7 @@ public class ActUserInput extends ActBase {
                             MessageBox("รหัสผ่าน 6 หลักขึ้นไป");
                         } else if (!TextUtils.isEmpty(oldpass) && !TextUtils.isEmpty(newpass) && !TextUtils.isEmpty(confirmpass) && Objects.equals(newpass, confirmpass)) {
                             showProgressDialog();
-                            new SqlQuery(ActUserInput.this, spChngPwd, "{call POS.dbo.chngpasword(?,?,?)}", new String[]{user.getLogin(), String.valueOf(oldpass), String.valueOf(newpass)});
+                            new SqlQuery(ActUserInput.this, spChngPwd, "{call " + Global.database.getPrefix() + "chngpasword(?,?,?)}", new String[]{user.getLogin(), String.valueOf(oldpass), String.valueOf(newpass)});
 
                         }
                     }

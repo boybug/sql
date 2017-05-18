@@ -10,7 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.newit.bsrpos_sql.Model.Global;
-import com.newit.bsrpos_sql.Model.Warehouse;
+import com.newit.bsrpos_sql.Model.WhGrp;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
 import com.newit.bsrpos_sql.Util.SqlQuery;
@@ -20,10 +20,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActWarehouse extends ActBase {
+public class ActWhGrp extends ActBase {
 
-    private List<Warehouse> warehouses = new ArrayList<>();
-    private AdpCustom<Warehouse> adap;
+    private List<WhGrp> whGrps = new ArrayList<>();
+    private AdpCustom<WhGrp> adap;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -35,13 +35,13 @@ public class ActWarehouse extends ActBase {
         setTitle("โปรดเลือกคลัง");
         setSwipeRefresh(R.id.swipe_refresh, R.id.listing_list);
 
-        adap = new AdpCustom<Warehouse>(R.layout.listing_grid_wh, getLayoutInflater(), warehouses) {
+        adap = new AdpCustom<WhGrp>(R.layout.listing_grid_whgrp, getLayoutInflater(), whGrps) {
             @Override
-            protected void populateView(View v, Warehouse wh) {
-                TextView wh_name = (TextView) v.findViewById(R.id.wh_name);
-                wh_name.setText(wh.getName());
+            protected void populateView(View v, WhGrp wh) {
+                TextView wh_grp_name = (TextView) v.findViewById(R.id.wh_grp_name);
+                wh_grp_name.setText(wh.getName());
 
-                if (searchString != null) SetTextSpan(searchString, wh.getName(), wh_name);
+                if (searchString != null) SetTextSpan(searchString, wh.getName(), wh_grp_name);
             }
         };
         ListView list = (ListView) findViewById(R.id.listing_list);
@@ -49,17 +49,17 @@ public class ActWarehouse extends ActBase {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Warehouse warehouse = adap.getItem(position);
-                Global.wh_Id = warehouse.getId();
-                Global.wh_name = warehouse.getName();
-                Intent intent = new Intent(ActWarehouse.this, ActMain.class);
-                ActWarehouse.this.startActivity(intent);
-                ActWarehouse.this.finish();
+                WhGrp whGrp = adap.getItem(position);
+                Global.wh_Grp_Id = whGrp.getId();
+                Global.wh_grp_name = whGrp.getName();
+                Intent intent = new Intent(ActWhGrp.this, ActMain.class);
+                ActWhGrp.this.startActivity(intent);
+                ActWhGrp.this.finish();
             }
         });
         refresh();
 
-        addVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, warehouses, adap);
+        addVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, whGrps, adap);
     }
 
     public void onBackPressed() {
@@ -68,7 +68,7 @@ public class ActWarehouse extends ActBase {
 
     @Override
     public void refresh() {
-        new SqlQuery(this, 1, "{call POS.dbo.getwh(?)}", new String[]{String.valueOf(Global.user.getId())});
+        new SqlQuery(this, 1, "{call " + Global.database.getPrefix() + "getwhgrp(?)}", new String[]{String.valueOf(Global.user.getId())});
     }
 
     @Override
@@ -88,10 +88,10 @@ public class ActWarehouse extends ActBase {
     @Override
     public void processFinish(ResultSet rs, int tag) throws SQLException {
         if (tag == 1) {
-            warehouses.clear();
+            whGrps.clear();
             while (rs != null && rs.next()) {
-                Warehouse w = new Warehouse(rs.getInt("wh_Id"), rs.getString("wh_name"));
-                warehouses.add(w);
+                WhGrp w = new WhGrp(rs.getInt("wh_Grp_Id"), rs.getString("wh_grp_name"));
+                whGrps.add(w);
             }
             if (adap != null) adap.notifyDataSetChanged();
         }

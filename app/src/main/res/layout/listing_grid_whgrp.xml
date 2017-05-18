@@ -17,7 +17,7 @@
         <TableRow>
 
             <TextView
-                android:id="@+id/wh_name"
+                android:id="@+id/wh_grp_name"
                 android:layout_width="wrap_content"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_span="2"

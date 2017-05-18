@@ -76,4 +76,8 @@ public class Database {
     public void setAppversion(String appversion) {
         this.appversion = appversion;
     }
+
+    public String getPrefix() {
+        return db + "." + appversion.replace('.', '_') + ".";
+    }
 }

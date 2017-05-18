@@ -34,7 +34,7 @@ public class ActProduct extends ActBase {
         setContentView(R.layout.listing);
 
         hideFloatButton(R.id.fab);
-        setTitle("รายการสินค้า@" + Global.wh_name);
+        setTitle("รายการสินค้า@" + Global.wh_grp_name);
         setSwipeRefresh(R.id.swipe_refresh, R.id.listing_list);
 
         adap = new AdpCustom<Product>(R.layout.listing_grid_product, getLayoutInflater(), products) {
@@ -102,7 +102,7 @@ public class ActProduct extends ActBase {
 
     @Override
     public void refresh() {
-        new SqlQuery(this, 1, "{call POS.dbo.getproduct(?)}", new String[]{String.valueOf(Global.wh_Id)});
+        new SqlQuery(this, 1, "{call " + Global.database.getPrefix() + "getproduct(?)}", new String[]{String.valueOf(Global.wh_Grp_Id)});
 
     }
 
@@ -111,7 +111,7 @@ public class ActProduct extends ActBase {
         if (tag == 1) {
             products.clear();
             while (rs != null && rs.next()) {
-                Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"), rs.getInt("stock"), rs.getFloat("weight"), rs.getString("color"), rs.getBoolean("stepprice"), rs.getFloat("price"), rs.getInt("uom_id"));
+                Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"), rs.getInt("stock"), rs.getFloat("weight"), rs.getString("color"), rs.getBoolean("stepprice"), rs.getFloat("price"), rs.getInt("uom_id"), rs.getInt("wh_Id"));
                 products.add(p);
             }
             if (adap != null) adap.notifyDataSetChanged();

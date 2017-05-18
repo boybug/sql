@@ -18,6 +18,7 @@ public class OrderItem extends ModelBase {
     private float weight;
     private float amount;
     private final int uom_id;
+    private int wh_Id;
     private List<StepPrice> prices = new ArrayList<>();
 
     public OrderItem(Order order, int no, Product product) {
@@ -30,7 +31,7 @@ public class OrderItem extends ModelBase {
         initialization(order, no, product);
     }
 
-    public OrderItem(Order order, int id, int no, Product product, int qty, float price, float weight, float amount, int uom_id) {
+    public OrderItem(Order order, int id, int no, Product product, int qty, float price, float weight, float amount, int uom_id, int wh_Id) {
         super(false);
         this.id = id;
         this.qty = qty;
@@ -38,6 +39,7 @@ public class OrderItem extends ModelBase {
         this.weight = weight;
         this.amount = amount;
         this.uom_id = uom_id;
+        this.wh_Id = wh_Id;
         initialization(order, no, product);
     }
 
@@ -50,7 +52,7 @@ public class OrderItem extends ModelBase {
         //price
         if (order.getStat() == OrderStat.New && product.isStepPrice()) {
             try {
-                ResultSet rs = SqlQuery.executeWait("{call POS.dbo.getstepprice(?,?)}", new String[]{String.valueOf(product.getId()), String.valueOf(Global.wh_Id)});
+                ResultSet rs = SqlQuery.executeWait("{call " + Global.database.getPrefix() + "getstepprice(?,?)}", new String[]{String.valueOf(product.getId()), String.valueOf(product.getWh_Id())});
                 while (rs != null && rs.next()) {
                     StepPrice p = new StepPrice(rs.getInt("from"), rs.getInt("to"), rs.getFloat("price"));
                     prices.add(p);
@@ -138,6 +140,10 @@ public class OrderItem extends ModelBase {
         }
     }
 
+    public int getWh_Id() {
+        return wh_Id;
+    }
+
     public Order getOrder() {
         return order;
     }
@@ -178,8 +184,8 @@ public class OrderItem extends ModelBase {
             try {
                 String[] params = {String.valueOf(order.getId()), String.valueOf(id), String.valueOf(no), String.valueOf(product.getId()),
                         String.valueOf(qty), String.valueOf(price), String.valueOf(amount), String.valueOf(weight), String.valueOf(uom_id),
-                        String.valueOf(getRecordStat())};
-                ResultSet rs = SqlQuery.executeWait("{call POS.dbo.setorderitem(?,?,?,?,?,?,?,?,?,?)}", params);
+                        String.valueOf(getRecordStat()), String.valueOf(product.getWh_Id())};
+                ResultSet rs = SqlQuery.executeWait("{call " + Global.database.getPrefix() + "setorderitem(?,?,?,?,?,?,?,?,?,?,?)}", params);
                 if (rs != null && rs.next()) {
                     result.setIden(rs.getInt("Iden"));
                     result.setMsg(rs.getString("Msg"));
@@ -200,7 +206,7 @@ public class OrderItem extends ModelBase {
         SqlResult result = new SqlResult();
         if (getRecordStat() != RecordStat.NULL) {
             try {
-                ResultSet rs = SqlQuery.executeWait("{call POS.dbo.deleteorderitem(?)}", new String[]{String.valueOf(id)});
+                ResultSet rs = SqlQuery.executeWait("{call " + Global.database.getPrefix() + "deleteorderitem(?)}", new String[]{String.valueOf(id)});
                 if (rs != null && rs.next()) {
                     result.setIden(rs.getInt("Iden"));
                     result.setMsg(rs.getString("Msg"));

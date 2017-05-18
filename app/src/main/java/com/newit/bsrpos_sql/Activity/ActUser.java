@@ -93,7 +93,7 @@ public class ActUser extends ActBase {
                         dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog12, int which) {
-                                new SqlQuery(ActUser.this, spDelete, "{call POS.dbo.deleteuser(?,?)}", new String[]{user.getLogin(), String.valueOf(user.getId())});
+                                new SqlQuery(ActUser.this, spDelete, "{call " + Global.database.getPrefix() + "deleteuser(?,?)}", new String[]{user.getLogin(), String.valueOf(user.getId())});
                             }
                         });
                         dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
@@ -114,7 +114,7 @@ public class ActUser extends ActBase {
 
     @Override
     public void refresh() {
-        new SqlQuery(this, spQuery, "{call POS.dbo.getuser(?,?)}", new String[]{Global.user.getLogin(), String.valueOf(Global.user.isAdmin())});
+        new SqlQuery(this, spQuery, "{call " + Global.database.getPrefix() + "getuser(?,?)}", new String[]{Global.user.getLogin(), String.valueOf(Global.user.isAdmin())});
     }
 
     @Override

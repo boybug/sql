@@ -86,10 +86,10 @@ public class ActOrderInput extends ActBase {
 
         if (order == null && customer != null) {
             order = new Order(customer.getId(), customer.getName(), customer.isShip());
-            setTitle("เปิดบิลใหม่@" + Global.wh_name);
+            setTitle("เปิดบิลใหม่@" + Global.wh_grp_name);
         } else if (order != null) {
-            new SqlQuery(this, spQueryOrderItem, "{call POS.dbo.getorderitem(?)}", new String[]{String.valueOf(order.getId())});
-            setTitle(order.getNo() + "@" + Global.wh_name);
+            new SqlQuery(this, spQueryOrderItem, "{call " + Global.database.getPrefix() + "getorderitem(?)}", new String[]{String.valueOf(order.getId())});
+            setTitle(order.getNo() + "@" + Global.wh_grp_name);
         }
         redrawOrder();
         //endregion
@@ -372,7 +372,7 @@ public class ActOrderInput extends ActBase {
     @Override
     public void refresh() {
         if (order.getStat() == OrderStat.New) {
-            new SqlQuery(this, spQueryProduct, "{call POS.dbo.getproduct(?)}", new String[]{String.valueOf(Global.wh_Id)});
+            new SqlQuery(this, spQueryProduct, "{call " + Global.database.getPrefix() + "getproduct(?)}", new String[]{String.valueOf(Global.wh_Grp_Id)});
         }
     }
 
@@ -395,9 +395,9 @@ public class ActOrderInput extends ActBase {
         if (tag == spQueryOrderItem) {
             order.getItems().clear();
             while (rs != null && rs.next()) {
-                Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"), rs.getInt("stock"), rs.getFloat("weight"), rs.getString("color"), rs.getBoolean("stepprice"), rs.getFloat("price"), rs.getInt("uom_id"));
+                Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"), rs.getInt("stock"), rs.getFloat("weight"), rs.getString("color"), rs.getBoolean("stepprice"), rs.getFloat("price"), rs.getInt("uom_id"), rs.getInt("wh_Id"));
                 updateFbStock(p);
-                OrderItem item = new OrderItem(order, rs.getInt("id"), rs.getInt("no"), p, rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("uom_id"));
+                OrderItem item = new OrderItem(order, rs.getInt("id"), rs.getInt("no"), p, rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("uom_id"), rs.getInt("wh_Id"));
                 order.getItems().add(item);
             }
             adapOrderItem.notifyDataSetChanged();
@@ -405,7 +405,7 @@ public class ActOrderInput extends ActBase {
         } else if (tag == spQueryProduct) {
             products.clear();
             while (rs != null && rs.next()) {
-                Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"), rs.getInt("stock"), rs.getFloat("weight"), rs.getString("color"), rs.getBoolean("stepprice"), rs.getFloat("price"), rs.getInt("uom_id"));
+                Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"), rs.getInt("stock"), rs.getFloat("weight"), rs.getString("color"), rs.getBoolean("stepprice"), rs.getFloat("price"), rs.getInt("uom_id"), rs.getInt("wh_Id"));
                 updateFbStock(p);
                 products.add(p);
             }

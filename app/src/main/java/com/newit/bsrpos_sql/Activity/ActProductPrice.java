@@ -39,7 +39,7 @@ public class ActProductPrice extends ActBase {
             productprice_stock.setText(String.valueOf(prod.getRemaining()));
             productprice_wgt.setText(String.valueOf(prod.getWeight()));
 
-            new SqlQuery(this, 1, "{call POS.dbo.getstepprice(?,?)}", new String[]{String.valueOf(prod.getId()), String.valueOf(Global.wh_Id)});
+            new SqlQuery(this, 1, "{call " + Global.database.getPrefix() + "getstepprice(?,?)}", new String[]{String.valueOf(prod.getId()), String.valueOf(prod.getWh_Id())});
 
             adap = new AdpCustom<StepPrice>(R.layout.listing_grid_productprice, getLayoutInflater(), stepPrices) {
                 @Override

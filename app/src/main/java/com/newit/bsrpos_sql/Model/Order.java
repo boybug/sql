@@ -14,7 +14,7 @@ public class Order extends ModelBase {
     private int id;
     private String no;
     private final String date;
-    private final int wh_id;
+    private final int wh_grp_Id;
     private final int cus_id;
     private final String cus_name;
     private OrderStat stat;
@@ -40,12 +40,12 @@ public class Order extends ModelBase {
         usr_id = Global.user.getId();
         usr_name = Global.user.getName();
         stat = OrderStat.New;
-        wh_id = Global.wh_Id;
+        wh_grp_Id = Global.wh_Grp_Id;
         this.ship = ship;
         this.pay = OrderPay.Cash;
     }
 
-    public Order(int id, String no, String date, int cus_id, String cus_name, int wh_id, OrderStat stat, int qty, float weight,
+    public Order(int id, String no, String date, int cus_id, String cus_name, int wh_grp_Id, OrderStat stat, int qty, float weight,
                  float amount, int usr_id, String usr_name, OrderPay pay, boolean ship, String remark) {
         super(false);
         this.id = id;
@@ -53,7 +53,7 @@ public class Order extends ModelBase {
         this.date = date;
         this.cus_id = cus_id;
         this.cus_name = cus_name;
-        this.wh_id = wh_id;
+        this.wh_grp_Id = wh_grp_Id;
         this.stat = stat;
         this.qty = qty;
         this.weight = weight;
@@ -169,8 +169,8 @@ public class Order extends ModelBase {
         return null;
     }
 
-    public int getWh_id() {
-        return wh_id;
+    public int getWh_grp_Id() {
+        return wh_grp_Id;
     }
 
     public OrderPay getPay() {
@@ -232,9 +232,9 @@ public class Order extends ModelBase {
         SqlResult result = new SqlResult();
         if (getRecordStat() != RecordStat.NULL) {
             try {
-                String[] params = {String.valueOf(id), String.valueOf(cus_id), String.valueOf(stat), String.valueOf(wh_id), String.valueOf(usr_id),
+                String[] params = {String.valueOf(id), String.valueOf(cus_id), String.valueOf(stat), String.valueOf(wh_grp_Id), String.valueOf(usr_id),
                         String.valueOf(qty), String.valueOf(amount), String.valueOf(weight), String.valueOf(getRecordStat()), this.ship ? "1" : "0"};
-                ResultSet rs = SqlQuery.executeWait("{call POS.dbo.setorder(?,?,?,?,?,?,?,?,?,?)}", params);
+                ResultSet rs = SqlQuery.executeWait("{call " + Global.database.getPrefix() + "setorder(?,?,?,?,?,?,?,?,?,?)}", params);
                 if (rs != null && rs.next()) {
                     result.setIden(rs.getInt("Iden"));
                     result.setMsg(rs.getString("Msg"));
