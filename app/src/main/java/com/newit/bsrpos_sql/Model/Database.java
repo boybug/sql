@@ -78,6 +78,6 @@ public class Database {
     }
 
     public String getPrefix() {
-        return db + "." + appversion.replace('.', '_') + ".";
+        return db + ".V" + appversion.replace('.', '_') + ".";
     }
 }
