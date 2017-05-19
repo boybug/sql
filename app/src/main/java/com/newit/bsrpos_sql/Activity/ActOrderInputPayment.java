@@ -159,6 +159,7 @@ public class ActOrderInputPayment extends ActBase {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.base_print, menu);
         this.menu = menu;
+        menu.clear();
         return true;
     }
 
