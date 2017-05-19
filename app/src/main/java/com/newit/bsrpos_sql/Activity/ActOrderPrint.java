@@ -1,5 +1,6 @@
 package com.newit.bsrpos_sql.Activity;
 
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -7,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.pdf.PdfDocument;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.ParcelFileDescriptor;
@@ -16,14 +18,20 @@ import android.print.PrintDocumentAdapter;
 import android.print.PrintDocumentInfo;
 import android.print.PrintManager;
 import android.print.pdf.PrintedPdfDocument;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.newit.bsrpos_sql.Model.Order;
 import com.newit.bsrpos_sql.Model.OrderItem;
+import com.newit.bsrpos_sql.Model.OrderPay;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
 
@@ -38,15 +46,38 @@ public class ActOrderPrint extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        Window window = this.getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorWhite));
+            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.colorWhite));
+        }
         setContentView(R.layout.order_print);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
             finish();
         } else order = (Order) bundle.getSerializable("order");
+
+        TextView textno = (TextView) findViewById(R.id.textno);
+        TextView textdate = (TextView) findViewById(R.id.textdate);
+        CheckBox checkpos = (CheckBox) findViewById(R.id.checkpos);
+        CheckBox checkship = (CheckBox) findViewById(R.id.checkship);
+        CheckBox checkcash = (CheckBox) findViewById(R.id.checkcash);
+        CheckBox checktrans = (CheckBox) findViewById(R.id.checktrans);
+        CheckBox checkcredit = (CheckBox) findViewById(R.id.checkcredit);
+        TextView textsum = (TextView) findViewById(R.id.textsum);
+
+        textno.setText("เลขที่ " + order.getNo());
+        textdate.setText("วันที่ " + order.getDate());
+        textsum.setText("รวม " + String.valueOf(order.getAmount()));
+        checkpos.setChecked(true);
+        checkship.setChecked(order.isShip());
+        checkcash.setChecked(order.getPay() == OrderPay.Cash);
+        checktrans.setChecked(order.getPay() == OrderPay.Transfer);
+        checkcredit.setChecked(order.getPay() == OrderPay.Credit);
+
 
         adapOrderItem = new AdpCustom<OrderItem>(R.layout.listing_grid_orderitem_print, getLayoutInflater(), order.getItems()) {
             @Override
@@ -63,19 +94,20 @@ public class ActOrderPrint extends Activity {
         mylist.setAdapter(adapOrderItem);
         HelperList.getListViewSize(mylist);
 
-
-//        printPDF();
-
-
+        Button textcom = (Button) findViewById(R.id.textcom);
+        textcom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                printPDF();
+            }
+        });
     }
 
     public void printPDF() {
-
         PrintManager printManager = (PrintManager) getSystemService(PRINT_SERVICE);
         printManager.print("print_any_view_job_name", new ViewPrintAdapter(this,
-                findViewById(R.id.relativeLayout)), null);
+                findViewById(R.id.relativeLayoutprint)), null);
     }
-
 
     public class ViewPrintAdapter extends PrintDocumentAdapter {
 
@@ -158,3 +190,4 @@ public class ActOrderPrint extends Activity {
     }
 
 }
+

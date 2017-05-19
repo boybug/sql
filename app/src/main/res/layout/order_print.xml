@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/relativeLayout"
+    android:id="@+id/relativeLayoutprint"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
     tools:context=".Activity.ActOrderPrint">
 
 
         <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             tools:context=".Activity.ActOrderPrint"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true">
@@ -27,13 +28,15 @@
                     android:layout_height="match_parent">
 
 
-                    <TextView
+                    <Button
                         android:id="@+id/textcom"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_span="2"
                         android:gravity="center"
                         android:paddingTop="5dp"
+                        android:background="@color/colorWhite"
+                        android:textColor="@color/colorDark"
                         android:text="บริษัท บุญศิริโฟรเซ่นโปรดักส์ จำกัด" />
                 </TableRow>
 
@@ -96,17 +99,17 @@
 
 
                         <CheckBox
-                            android:id="@+id/checkBox1"
+                            android:id="@+id/checkpos"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.02"
                             android:text="หน้าร้าน" />
 
                         <CheckBox
-                            android:id="@+id/checkBox2"
+                            android:id="@+id/checkship"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.11"
+                            android:layout_weight="0.13"
                             android:text="จัดส่ง" />
                     </LinearLayout>
 
@@ -122,21 +125,21 @@
 
 
                         <CheckBox
-                            android:id="@+id/checkBox3"
+                            android:id="@+id/checkcash"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="เงินสด" />
 
                         <CheckBox
-                            android:id="@+id/checkBox4"
+                            android:id="@+id/checktrans"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="เงินโอน" />
 
                         <CheckBox
-                            android:id="@+id/checkBox5"
+                            android:id="@+id/checkcredit"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -202,7 +205,7 @@
                         android:id="@+id/mylist"
                         style="@style/Widget.AppCompat.ListView.Menu"
                         android:layout_width="match_parent"
-                        android:layout_height="780dp"
+                        android:layout_height="wrap_content"
                         android:scrollbars="none|horizontal|vertical" />
                 </LinearLayout>
 
@@ -218,6 +221,7 @@
                         android:layout_height="wrap_content"
                         android:layout_span="2"
                         android:gravity="right"
+                        android:textSize="20dp"
                         android:text="รวม" />
                 </TableRow>
 
