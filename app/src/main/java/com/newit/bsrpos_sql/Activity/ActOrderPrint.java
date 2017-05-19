@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.newit.bsrpos_sql.Model.Order;
 import com.newit.bsrpos_sql.Model.OrderItem;
@@ -42,17 +43,14 @@ public class ActOrderPrint extends Activity {
 
     private Order order;
     private AdpCustom<OrderItem> adapOrderItem;
+    ViewPrintAdapter adep;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Window window = this.getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorWhite));
-            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.colorWhite));
-        }
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         setContentView(R.layout.order_print);
 
         Bundle bundle = getIntent().getExtras();
@@ -78,7 +76,6 @@ public class ActOrderPrint extends Activity {
         checktrans.setChecked(order.getPay() == OrderPay.Transfer);
         checkcredit.setChecked(order.getPay() == OrderPay.Credit);
 
-
         adapOrderItem = new AdpCustom<OrderItem>(R.layout.listing_grid_orderitem_print, getLayoutInflater(), order.getItems()) {
             @Override
             protected void populateView(View v, OrderItem model) {
@@ -94,99 +91,10 @@ public class ActOrderPrint extends Activity {
         mylist.setAdapter(adapOrderItem);
         HelperList.getListViewSize(mylist);
 
-        Button textcom = (Button) findViewById(R.id.textcom);
-        textcom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                printPDF();
-            }
-        });
-    }
-
-    public void printPDF() {
+        adep = new ViewPrintAdapter(ActOrderPrint.this, findViewById(R.id.relativeLayoutprint));
         PrintManager printManager = (PrintManager) getSystemService(PRINT_SERVICE);
-        printManager.print("print_any_view_job_name", new ViewPrintAdapter(this,
-                findViewById(R.id.relativeLayoutprint)), null);
-    }
+        printManager.print("print_any_view_job_name", adep, null);
 
-    public class ViewPrintAdapter extends PrintDocumentAdapter {
-
-        private PrintedPdfDocument mDocument;
-        private Context mContext;
-        private View mView;
-
-        public ViewPrintAdapter(Context context, View view) {
-            mContext = context;
-            mView = view;
-            mView = findViewById(android.R.id.content).getRootView();
-            mView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-            mView.layout(0, 0, mView.getMeasuredWidth(), mView.getMeasuredHeight());
-        }
-
-        @Override
-        public void onLayout(PrintAttributes oldAttributes, PrintAttributes newAttributes,
-                             CancellationSignal cancellationSignal,
-                             LayoutResultCallback callback, Bundle extras) {
-
-            mDocument = new PrintedPdfDocument(mContext, newAttributes);
-
-            if (cancellationSignal.isCanceled()) {
-                callback.onLayoutCancelled();
-                return;
-            }
-
-            PrintDocumentInfo.Builder builder = new PrintDocumentInfo
-                    .Builder("print_output.pdf")
-                    .setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
-                    .setPageCount(1);
-
-            PrintDocumentInfo info = builder.build();
-            callback.onLayoutFinished(info, true);
-        }
-
-        @Override
-        public void onWrite(PageRange[] pages, ParcelFileDescriptor destination,
-                            CancellationSignal cancellationSignal,
-                            WriteResultCallback callback) {
-
-            // Start the page
-            PdfDocument.Page page = mDocument.startPage(0);
-            // Create a bitmap and put it a canvas for the view to draw to. Make it the size of the view
-            Bitmap bitmap = Bitmap.createBitmap(mView.getMeasuredWidth(), mView.getMeasuredHeight(),
-                    Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-
-            mView.draw(canvas);
-            // create a Rect with the view's dimensions.
-            Rect src = new Rect(0, 0, mView.getMeasuredWidth(), mView.getMeasuredHeight());
-            // get the page canvas and measure it.
-            Canvas pageCanvas = page.getCanvas();
-            float pageWidth = pageCanvas.getWidth();
-            float pageHeight = pageCanvas.getHeight();
-            // how can we fit the Rect src onto this page while maintaining aspect ratio?
-            float scale = Math.min(pageWidth/src.width(), pageHeight/src.height());
-            float left = pageWidth / 2 - src.width() * scale / 2;
-            float top = pageHeight / 2 - src.height() * scale / 2;
-            float right = pageWidth / 2 + src.width() * scale / 2;
-            float bottom = pageHeight / 2 + src.height() * scale / 2;
-            RectF dst = new RectF(left, top, right, bottom);
-
-            pageCanvas.drawBitmap(bitmap, src, dst, null);
-            mDocument.finishPage(page);
-
-            try {
-                mDocument.writeTo(new FileOutputStream(
-                        destination.getFileDescriptor()));
-            } catch (IOException e) {
-                callback.onWriteFailed(e.toString());
-                return;
-            } finally {
-                mDocument.close();
-                mDocument = null;
-            }
-            callback.onWriteFinished(new PageRange[]{new PageRange(0, 0)});
-        }
     }
 
 }
