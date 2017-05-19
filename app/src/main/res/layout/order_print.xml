@@ -286,7 +286,7 @@
                             android:layout_weight="1"
 
                             android:gravity="left"
-                            android:text="ฝ่ายขาย......................." />
+                            android:text="ฝ่ายขาย...................." />
 
                     </LinearLayout>
                 </TableRow>

@@ -2,42 +2,19 @@ package com.newit.bsrpos_sql.Activity;
 
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.pdf.PdfDocument;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.CancellationSignal;
-import android.os.ParcelFileDescriptor;
-import android.print.PageRange;
-import android.print.PrintAttributes;
-import android.print.PrintDocumentAdapter;
-import android.print.PrintDocumentInfo;
 import android.print.PrintManager;
-import android.print.pdf.PrintedPdfDocument;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.newit.bsrpos_sql.Model.Order;
 import com.newit.bsrpos_sql.Model.OrderItem;
 import com.newit.bsrpos_sql.Model.OrderPay;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 public class ActOrderPrint extends Activity {
 
@@ -93,7 +70,7 @@ public class ActOrderPrint extends Activity {
 
         adep = new ViewPrintAdapter(ActOrderPrint.this, findViewById(R.id.relativeLayoutprint));
         PrintManager printManager = (PrintManager) getSystemService(PRINT_SERVICE);
-        printManager.print("print_any_view_job_name", adep, null);
+        printManager.print("ใบแจ้งหนี้ขาย", adep, null);
 
     }
 
