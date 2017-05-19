@@ -28,8 +28,8 @@ class ViewPrintAdapter extends PrintDocumentAdapter {
     private Context mContext;
     private View mView;
 
-    public ViewPrintAdapter(ActOrderPrint actOrderPrint, View viewById) {
-        mContext = actOrderPrint;
+    public ViewPrintAdapter(ActInvoicePrint actInvoicePrint, View viewById) {
+        mContext = actInvoicePrint;
         mView = viewById;
         mView = mView.getRootView();
     }
