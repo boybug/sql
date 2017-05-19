@@ -4,12 +4,14 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="vertical">
-    <TableRow android:layout_width="match_parent"
+
+    <TableRow
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
 
         <TextView
-            android:id="@+id/orderitem_no"
+            android:id="@+id/invoiceitem_no"
             style="@style/App_TextViewStyle"
             android:layout_width="wrap_content"
             android:gravity="right"
@@ -17,7 +19,7 @@
             android:text="No." />
 
         <TextView
-            android:id="@+id/orderitem_desc"
+            android:id="@+id/invoiceitem_desc"
             style="@style/App_TextViewStyle"
             android:layout_width="wrap_content"
             android:layout_weight="1"
@@ -28,7 +30,7 @@
 
 
         <TextView
-            android:id="@+id/orderitem_qty"
+            android:id="@+id/invoiceitem_qty"
             style="@style/App_TextViewStyle"
             android:layout_width="wrap_content"
             android:gravity="right"

@@ -14,7 +14,7 @@
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
-        android:label="ขายหน้าร้านบุญศิริ (On Premise)"
+        android:label="ขายหน้าร้านบุญศิริ"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -67,7 +67,7 @@
             android:name=".Activity.ActUserInput"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
         <activity
-            android:name=".Activity.ActOrderPrint"
+            android:name=".Activity.ActInvoicePrint"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
     </application>
 

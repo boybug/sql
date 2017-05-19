@@ -1,7 +1,6 @@
 package com.newit.bsrpos_sql.Activity;
 
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -19,6 +18,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.newit.bsrpos_sql.Model.Global;
+import com.newit.bsrpos_sql.Model.Invoice;
 import com.newit.bsrpos_sql.Model.Order;
 import com.newit.bsrpos_sql.Model.OrderPay;
 import com.newit.bsrpos_sql.Model.OrderStat;
@@ -28,16 +28,20 @@ import com.newit.bsrpos_sql.Util.SqlQuery;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ActOrderInputPayment extends ActBase {
 
     private Order order;
     private final int spUpdate = 1;
+    private final int spGetInvoice = 2;
+    private List<Invoice> invoices = new ArrayList<>();
 
-    private TextView orderiteminputpayment_no, orderiteminputpayment_qty, orderiteminputpayment_wgt,
-            orderiteminputpayment_amt, orderinput_cus, orderiteminputpayment_remark;
+    private TextView orderiteminputpayment_no, orderiteminputpayment_qty, orderiteminputpayment_wgt, orderiteminputpayment_amt, orderinput_cus, orderiteminputpayment_remark;
     private RadioButton radio_paycash, radio_paytranfer, radio_paycredit;
     private Switch switch_payship;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +67,8 @@ public class ActOrderInputPayment extends ActBase {
             MessageBox("error");
             finish();
         } else order = (Order) bundle.getSerializable("order");
+
+        getInvoices();
 
         radio_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -122,6 +128,13 @@ public class ActOrderInputPayment extends ActBase {
         //endregion
     }
 
+    private void getInvoices() {
+        if (order.getStat() == OrderStat.Confirm) {
+            invoices.clear();
+            new SqlQuery(ActOrderInputPayment.this, spGetInvoice, "{call " + Global.database.getPrefix() + "getinvoice(?)}", new String[]{String.valueOf(order.getId())});
+        }
+    }
+
     private void redrawOrder() {
         orderinput_cus.setText(order.getCus_name());
         orderiteminputpayment_no.setText(order.getNo());
@@ -145,6 +158,7 @@ public class ActOrderInputPayment extends ActBase {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.base_print, menu);
+        this.menu = menu;
         return true;
     }
 
@@ -152,10 +166,10 @@ public class ActOrderInputPayment extends ActBase {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.nav_logout) {
             super.backPressed(ActLogin.class);
-        }else if(item.getItemId() == R.id.nav_Print){
+        } else {
             Bundle bundle = new Bundle();
-            bundle.putSerializable("order", order);
-            Intent intent = new Intent(ActOrderInputPayment.this, ActOrderPrint.class);
+            bundle.putSerializable("invoice", invoices.get(item.getItemId()));
+            Intent intent = new Intent(ActOrderInputPayment.this, ActInvoicePrint.class);
             intent.putExtras(bundle);
             ActOrderInputPayment.this.startActivity(intent);
         }
@@ -168,13 +182,22 @@ public class ActOrderInputPayment extends ActBase {
             if (rs != null && rs.next()) {
                 SqlResult result = new SqlResult(rs);
                 if (result.getMsg() == null) {
-                    Intent intent = new Intent();
-                    intent.putExtra("FINISH", true);
-                    setResult(Activity.RESULT_OK, intent);
-                    backPressed(ActOrder.class);
+                    getInvoices();
                 } else MessageBox(result.getMsg());
             }
+        } else if (tag == spGetInvoice) {
+            while (rs != null && rs.next()) {
+                Invoice i = new Invoice(rs.getInt("id"), rs.getString("no"), rs.getString("invoice_date"), rs.getString("cus_name"),
+                        rs.getInt("qty"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getString("usr_name"),
+                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"));
+                invoices.add(i);
+            }
+            menu.clear();
+            for (int i = 0; i < invoices.size(); i++) {
+                menu.add(0, i, Menu.NONE, "พิมพ์ใบเสร็จ: " + invoices.get(i).getNo());
+            }
         }
+
     }
 
 }

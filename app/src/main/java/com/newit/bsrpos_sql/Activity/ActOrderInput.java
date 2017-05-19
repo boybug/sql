@@ -436,15 +436,16 @@ public class ActOrderInput extends ActBase {
                 break;
             }
         }
-        if (txt_search.getText().toString().length() > 0) {
-            for (Product p : adapProduct.getModels()) {
-                if (p.getId() == fbstock.getProd_id() && p.getWh_Id() == fbstock.getWh_id()) {
-                    p.setFbstock(fbstock);
-                    adapProduct.notifyDataSetChanged();
-                    break;
+        if (order.getStat() == OrderStat.New) {
+            if (txt_search.getText().toString().length() > 0) {
+                for (Product p : adapProduct.getModels()) {
+                    if (p.getId() == fbstock.getProd_id() && p.getWh_Id() == fbstock.getWh_id()) {
+                        p.setFbstock(fbstock);
+                        adapProduct.notifyDataSetChanged();
+                        break;
+                    }
                 }
             }
         }
     }
-
 }
