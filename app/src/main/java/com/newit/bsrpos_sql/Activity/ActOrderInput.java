@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,6 +56,7 @@ public class ActOrderInput extends ActBase {
     private final int spQueryOrderItem = 1;
     private final int spQueryProduct = 2;
 
+    private DrawerLayout drawer;
     DatabaseReference fb = FirebaseDatabase.getInstance().getReference().child("fbstock");
 
     @SuppressWarnings("unchecked")
@@ -65,6 +67,8 @@ public class ActOrderInput extends ActBase {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         //region ORDER
         orderinput_cus = (TextView) findViewById(R.id.orderinput_cus);
@@ -249,21 +253,17 @@ public class ActOrderInput extends ActBase {
         } else bt_cmd_save.setEnabled(false);
         //endregion
 
-        //region PAY
-        Button bt_pay = (Button) findViewById(R.id.bt_pay);
-        bt_pay.setOnClickListener(new View.OnClickListener() {
+        //region add_item
+        Button bt_add_item = (Button) findViewById(R.id.bt_add_item);
+        bt_add_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (order.getItems().size() == 0) {
-                    MessageBox("ไม่มีรายการขาย ไม่สามารถจ่ายได้");
-                } else if (Objects.equals(order.getNo(), null) || order.getRecordStat() != RecordStat.NULL) {
-                    MessageBox("กรุณาบันทึกข้อมูลก่อนการจ่าย");
-                } else {
-                    Bundle bundle1 = new Bundle();
-                    bundle1.putSerializable("order", order);
-                    Intent intent = new Intent(ActOrderInput.this, ActOrderInputPayment.class);
-                    intent.putExtras(bundle1);
-                    ActOrderInput.this.startActivityForResult(intent, 2);
+                if (order.getStat() != OrderStat.Confirm) {
+                    if (drawer.isDrawerOpen(GravityCompat.START)) {
+                        drawer.closeDrawer(GravityCompat.START);
+                    } else {
+                        drawer.openDrawer(GravityCompat.START);
+                    }
                 }
             }
         });
@@ -380,6 +380,7 @@ public class ActOrderInput extends ActBase {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.contextmenu, menu);
+        menu.add(0, 1, Menu.NONE, "จ่ายเงิน");
         return true;
     }
 
@@ -387,6 +388,20 @@ public class ActOrderInput extends ActBase {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.nav_logout) {
             super.backPressed(ActLogin.class);
+        } else if (item.getItemId() == R.id.nav_chngwhgrp) {
+            // TODO: chngewhgrp
+        } else {
+            if (order.getItems().size() == 0) {
+                MessageBox("ไม่มีรายการขาย ไม่สามารถจ่ายได้");
+            } else if (Objects.equals(order.getNo(), null) || order.getRecordStat() != RecordStat.NULL) {
+                MessageBox("กรุณาบันทึกข้อมูลก่อนการจ่าย");
+            } else {
+                Bundle bundle1 = new Bundle();
+                bundle1.putSerializable("order", order);
+                Intent intent = new Intent(ActOrderInput.this, ActOrderInputPayment.class);
+                intent.putExtras(bundle1);
+                ActOrderInput.this.startActivityForResult(intent, 2);
+            }
         }
         return true;
     }

@@ -19,16 +19,13 @@ import android.view.View;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-/**
- * Created by Rachapan on 5/19/2017.
- */
 
 class ViewPrintAdapter extends PrintDocumentAdapter {
     private PrintedPdfDocument mDocument;
     private Context mContext;
     private View mView;
 
-    public ViewPrintAdapter(ActInvoicePrint actInvoicePrint, View viewById) {
+    ViewPrintAdapter(ActInvoicePrint actInvoicePrint, View viewById) {
         mContext = actInvoicePrint;
         mView = viewById;
         mView = mView.getRootView();
@@ -74,10 +71,10 @@ class ViewPrintAdapter extends PrintDocumentAdapter {
         float pageHeight = pageCanvas.getHeight();
         // how can we fit the Rect src onto this page while maintaining aspect ratio?
         float scale = Math.min(pageWidth/src.width(), pageHeight/src.height());
-        float left = pageWidth / 2 - src.width() * scale / 2;
-        float top = pageHeight / 2 - src.height() * scale / 2;
-        float right = pageWidth / 2 + src.width() * scale / 2;
-        float bottom = pageHeight / 2 + src.height() * scale / 2;
+        float left = (float) (pageWidth / 2 - src.width() * scale / 2.3);
+        float top = (float) (pageHeight / 2 - src.height() * scale / 2.3);
+        float right = (float) (pageWidth / 2 + src.width() * scale / 2.3);
+        float bottom = (float) (pageHeight / 2 + src.height() * scale / 2.3);
         RectF dst = new RectF(left, top, right, bottom);
 
         pageCanvas.drawBitmap(bitmap, src, dst, null);

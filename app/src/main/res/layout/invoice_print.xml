@@ -4,6 +4,7 @@
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
     tools:context=".Activity.ActInvoicePrint">
 
 
@@ -96,18 +97,25 @@
 
 
                         <CheckBox
-                            android:id="@+id/checkBox1"
+                            android:id="@+id/checkpos"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.02"
-                            android:text="หน้าร้าน" />
+                            android:checked="true"
+                            android:enabled="false"
+                            android:text="หน้าร้าน"
+                            android:textColor="@color/colorDark"
+                            android:textColorLink="@color/colorWhite" />
 
                         <CheckBox
-                            android:id="@+id/checkBox2"
+                            android:id="@+id/checkship"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.11"
-                            android:text="จัดส่ง" />
+                            android:layout_weight="0.18"
+                            android:enabled="false"
+                            android:text="จัดส่ง"
+                            android:textColor="@color/colorDark"
+                            android:textColorLink="@color/colorWhite"/>
                     </LinearLayout>
 
                 </TableRow>
@@ -122,24 +130,33 @@
 
 
                         <CheckBox
-                            android:id="@+id/checkBox3"
+                            android:id="@+id/checkcash"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:enabled="false"
+                            android:textColor="@color/colorDark"
+                            android:textColorLink="@color/colorWhite"
                             android:text="เงินสด" />
 
                         <CheckBox
-                            android:id="@+id/checkBox4"
+                            android:id="@+id/checktransfer"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:enabled="false"
+                            android:textColor="@color/colorDark"
+                            android:textColorLink="@color/colorWhite"
                             android:text="เงินโอน" />
 
                         <CheckBox
-                            android:id="@+id/checkBox5"
+                            android:id="@+id/checkcredit"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:enabled="false"
+                            android:textColor="@color/colorDark"
+                            android:textColorLink="@color/colorWhite"
                             android:text="บัตรเครดิต/เดบิต" />
                     </LinearLayout>
 

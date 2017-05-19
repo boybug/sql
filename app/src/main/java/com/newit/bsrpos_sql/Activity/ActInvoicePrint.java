@@ -1,46 +1,32 @@
 package com.newit.bsrpos_sql.Activity;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
-import android.os.CancellationSignal;
-import android.os.ParcelFileDescriptor;
-import android.print.PageRange;
-import android.print.PrintAttributes;
-import android.print.PrintDocumentAdapter;
-import android.print.PrintDocumentInfo;
 import android.print.PrintManager;
-import android.print.pdf.PrintedPdfDocument;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.newit.bsrpos_sql.Model.Invoice;
 import com.newit.bsrpos_sql.Model.InvoiceItem;
+import com.newit.bsrpos_sql.Model.OrderPay;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 public class ActInvoicePrint extends Activity {
 
     private Invoice order;
-    private AdpCustom<InvoiceItem> adapOrderItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
         setContentView(R.layout.invoice_print);
 
         Bundle bundle = getIntent().getExtras();
@@ -48,7 +34,23 @@ public class ActInvoicePrint extends Activity {
             finish();
         } else order = (Invoice) bundle.getSerializable("invoice");
 
-        adapOrderItem = new AdpCustom<InvoiceItem>(R.layout.listing_grid_invoice_print, getLayoutInflater(), order.getItems()) {
+        TextView textno = (TextView) findViewById(R.id.textno);
+        TextView textdate = (TextView) findViewById(R.id.textdate);
+        TextView textsum = (TextView) findViewById(R.id.textsum);
+        CheckBox checkship = (CheckBox) findViewById(R.id.checkship);
+        CheckBox checkcash = (CheckBox) findViewById(R.id.checkcash);
+        CheckBox checktransfer = (CheckBox) findViewById(R.id.checktransfer);
+        CheckBox checkcredit = (CheckBox) findViewById(R.id.checkcredit);
+
+        textno.setText("เลขที่ " + order.getNo());
+        textdate.setText("วันที่ " + order.getDate());
+        textsum.setText("รวม " + String.valueOf(order.getAmount()));
+        checkship.setChecked(order.isShip());
+        checkcash.setChecked(order.getPay() == OrderPay.Cash);
+        checktransfer.setChecked(order.getPay() == OrderPay.Transfer);
+        checkcredit.setChecked(order.getPay() == OrderPay.Credit);
+
+        AdpCustom<InvoiceItem> adapOrderItem = new AdpCustom<InvoiceItem>(R.layout.listing_grid_invoice_print, getLayoutInflater(), order.getItems()) {
             @Override
             protected void populateView(View v, InvoiceItem model) {
                 TextView orderitem_no = (TextView) v.findViewById(R.id.invoiceitem_no);
@@ -66,7 +68,6 @@ public class ActInvoicePrint extends Activity {
 
         printPDF();
 
-
     }
 
     public void printPDF() {
@@ -76,7 +77,9 @@ public class ActInvoicePrint extends Activity {
                 findViewById(R.id.relativeLayout)), null);
     }
 
-
-
-
+    @Override
+    public boolean onTouchEvent ( MotionEvent event ) {
+            finish();
+            return true;
+    }
 }

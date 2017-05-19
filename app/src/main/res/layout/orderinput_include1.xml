@@ -85,12 +85,12 @@
                         android:textStyle="bold" />
 
                     <Button
-                        android:id="@+id/bt_pay"
+                        android:id="@+id/bt_add_item"
                         android:layout_width="wrap_content"
                         android:layout_height="35dp"
                         android:layout_gravity="center|right"
                         android:background="@color/colorAccent"
-                        android:text="จ่ายเงิน"
+                        android:text="สินค้า"
                         android:textColor="@color/colorWhite" />
 
                 </LinearLayout>
