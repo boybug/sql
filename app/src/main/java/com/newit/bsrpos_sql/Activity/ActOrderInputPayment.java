@@ -68,7 +68,8 @@ public class ActOrderInputPayment extends ActBase {
             finish();
         } else order = (Order) bundle.getSerializable("order");
 
-        getInvoices();
+        if (order.getStat() == OrderStat.Confirm)
+            getInvoices();
 
         radio_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -129,10 +130,8 @@ public class ActOrderInputPayment extends ActBase {
     }
 
     private void getInvoices() {
-        if (order.getStat() == OrderStat.Confirm) {
-            invoices.clear();
-            new SqlQuery(ActOrderInputPayment.this, spGetInvoice, "{call " + Global.database.getPrefix() + "getinvoice(?)}", new String[]{String.valueOf(order.getId())});
-        }
+        invoices.clear();
+        new SqlQuery(ActOrderInputPayment.this, spGetInvoice, "{call " + Global.database.getPrefix() + "getinvoice(?)}", new String[]{String.valueOf(order.getId())});
     }
 
     private void redrawOrder() {
@@ -159,7 +158,6 @@ public class ActOrderInputPayment extends ActBase {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.base_print, menu);
         this.menu = menu;
-        menu.clear();
         return true;
     }
 
@@ -183,6 +181,7 @@ public class ActOrderInputPayment extends ActBase {
             if (rs != null && rs.next()) {
                 SqlResult result = new SqlResult(rs);
                 if (result.getMsg() == null) {
+                    MessageBox("ยืนยันรายการสำเร็จ");
                     getInvoices();
                 } else MessageBox(result.getMsg());
             }
@@ -193,12 +192,13 @@ public class ActOrderInputPayment extends ActBase {
                         OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"));
                 invoices.add(i);
             }
-            menu.clear();
-            for (int i = 0; i < invoices.size(); i++) {
-                menu.add(0, i, Menu.NONE, "พิมพ์ใบเสร็จ: " + invoices.get(i).getNo());
+            if (menu != null) {
+                menu.clear();
+                for (int i = 0; i < invoices.size(); i++) {
+                    menu.add(0, i, Menu.NONE, "พิมพ์ใบเสร็จ: " + invoices.get(i).getNo());
+                }
             }
         }
-
     }
 
 }

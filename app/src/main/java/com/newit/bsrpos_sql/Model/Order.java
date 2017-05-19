@@ -241,6 +241,7 @@ public class Order extends ModelBase {
                     if (result.getIden() > 0) {
                         setId(result.getIden());
                         if (getRecordStat() == RecordStat.I) {
+                            setId(result.getIden());
                             setNo(rs.getString("order_no"));
                         }
                         setRecordStat(RecordStat.NULL);
