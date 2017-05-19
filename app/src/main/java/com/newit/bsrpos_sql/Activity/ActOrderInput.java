@@ -191,6 +191,7 @@ public class ActOrderInput extends ActBase {
                     redrawProduct(model.getRemaining(), v);
                 }
             };
+            addVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, products, adapProduct);
             ListView listProduct = (ListView) findViewById(R.id.orderinput_product);
             listProduct.setAdapter(adapProduct);
             listProduct.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -224,7 +225,7 @@ public class ActOrderInput extends ActBase {
                 }
             });
             refresh();
-            addVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, products, adapProduct);
+
 
         } else {
             DrawerLayout drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -423,11 +424,13 @@ public class ActOrderInput extends ActBase {
     }
 
     public void mergeList(FbStock fbstock) {
-        for (Product p : products) {
-            if (p.getId() == fbstock.getProd_id() && p.getWh_Id() == fbstock.getWh_id()) {
-                p.setFbstock(fbstock);
-                adapProduct.notifyDataSetChanged();
-                break;
+        if (order.getStat() == OrderStat.New) {
+            for (Product p : products) {
+                if (p.getId() == fbstock.getProd_id() && p.getWh_Id() == fbstock.getWh_id()) {
+                    p.setFbstock(fbstock);
+                    adapProduct.notifyDataSetChanged();
+                    break;
+                }
             }
         }
         for (OrderItem i : order.getItems()) {

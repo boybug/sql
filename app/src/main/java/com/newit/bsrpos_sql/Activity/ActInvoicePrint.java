@@ -22,44 +22,45 @@ import android.view.WindowManager;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.newit.bsrpos_sql.Model.Invoice;
-import com.newit.bsrpos_sql.Model.InvoiceItem;
+import com.newit.bsrpos_sql.Model.Order;
+import com.newit.bsrpos_sql.Model.OrderItem;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class ActInvoicePrint extends Activity {
+public class ActOrderPrint extends Activity {
 
-    private Invoice invoice;
-    private AdpCustom<InvoiceItem> adap;
+    private Order order;
+    private AdpCustom<OrderItem> adapOrderItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.invoice_print);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setContentView(R.layout.order_print);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
             finish();
-        } else invoice = (Invoice) bundle.getSerializable("invoice");
+        } else order = (Order) bundle.getSerializable("order");
 
-        adap = new AdpCustom<InvoiceItem>(R.layout.listing_grid_invoice_print, getLayoutInflater(), invoice.getItems()) {
+        adapOrderItem = new AdpCustom<OrderItem>(R.layout.listing_grid_orderitem_print, getLayoutInflater(), order.getItems()) {
             @Override
-            protected void populateView(View v, InvoiceItem model) {
-                TextView invoiceitem_no = (TextView) v.findViewById(R.id.invoiceitem_no);
-                TextView invoiceitem_desc = (TextView) v.findViewById(R.id.invoiceitem_desc);
-                TextView invoiceitem_qty = (TextView) v.findViewById(R.id.invoiceitem_qty);
-                invoiceitem_no.setText(String.valueOf(model.getNo()));
-                invoiceitem_desc.setText(model.getProd_name());
-                invoiceitem_qty.setText(String.valueOf(model.getAmount()));
+            protected void populateView(View v, OrderItem model) {
+                TextView orderitem_no = (TextView) v.findViewById(R.id.orderitem_no);
+                TextView orderitem_desc = (TextView) v.findViewById(R.id.orderitem_desc);
+                TextView orderitem_qty = (TextView) v.findViewById(R.id.orderitem_qty);
+                orderitem_no.setText(String.valueOf(model.getNo()));
+                orderitem_desc.setText(model.getProduct().getName());
+                orderitem_qty.setText(String.valueOf(model.getPrice() * model.getQty()));
             }
         };
         ListView mylist = (ListView) findViewById(R.id.mylist);
-        mylist.setAdapter(adap);
+        mylist.setAdapter(adapOrderItem);
         HelperList.getListViewSize(mylist);
 
 
@@ -69,12 +70,15 @@ public class ActInvoicePrint extends Activity {
     }
 
     public void printPDF() {
+
         PrintManager printManager = (PrintManager) getSystemService(PRINT_SERVICE);
-        printManager.print("POS Invoice:" + invoice.getNo(), new ViewPrintAdapter(this, findViewById(R.id.relativeLayout)), null);
+        printManager.print("print_any_view_job_name", new ViewPrintAdapter(this,
+                findViewById(R.id.relativeLayout)), null);
     }
 
 
     public class ViewPrintAdapter extends PrintDocumentAdapter {
+
         private PrintedPdfDocument mDocument;
         private Context mContext;
         private View mView;
@@ -129,7 +133,7 @@ public class ActInvoicePrint extends Activity {
             float pageWidth = pageCanvas.getWidth();
             float pageHeight = pageCanvas.getHeight();
             // how can we fit the Rect src onto this page while maintaining aspect ratio?
-            float scale = Math.min(pageWidth / src.width(), pageHeight / src.height());
+            float scale = Math.min(pageWidth/src.width(), pageHeight/src.height());
             float left = pageWidth / 2 - src.width() * scale / 2;
             float top = pageHeight / 2 - src.height() * scale / 2;
             float right = pageWidth / 2 + src.width() * scale / 2;

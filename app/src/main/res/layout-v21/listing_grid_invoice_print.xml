@@ -14,28 +14,34 @@
             android:id="@+id/invoiceitem_no"
             style="@style/App_TextViewStyle"
             android:layout_width="wrap_content"
+            android:layout_height="20dp"
             android:gravity="right"
             android:paddingRight="5dp"
-            android:text="No." />
+            android:text="No."
+            android:textSize="15dp" />
 
         <TextView
             android:id="@+id/invoiceitem_desc"
             style="@style/App_TextViewStyle"
             android:layout_width="wrap_content"
+            android:layout_height="20dp"
             android:layout_weight="1"
             android:ellipsize="end"
             android:gravity="left"
-            android:maxLines="2"
-            android:text="Name" />
+            android:maxLines="1"
+            android:text="Name"
+            android:textSize="15dp" />
 
 
         <TextView
             android:id="@+id/invoiceitem_qty"
             style="@style/App_TextViewStyle"
             android:layout_width="wrap_content"
+            android:layout_height="20dp"
             android:gravity="right"
             android:paddingRight="5dp"
-            android:text="(Qty)" />
+            android:text="(Qty)"
+            android:textSize="15dp" />
 
     </TableRow>
 </LinearLayout>
