@@ -69,6 +69,9 @@
         <activity
             android:name=".Activity.ActInvoicePrint"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
+        <activity
+            android:name=".Activity.ActInvoice"
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
     </application>
 
 </manifest>

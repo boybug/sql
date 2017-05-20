@@ -41,7 +41,7 @@ public class ActOrder extends ActBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.listing);
 
-        setTitle("รายการบิลขาย@" + Global.wh_grp_name);
+        setTitle("รายการใบสั่ง@" + Global.wh_grp_name);
         setSwipeRefresh(R.id.swipe_refresh, R.id.listing_list);
 
         adap = new AdpCustom<Order>(R.layout.listing_grid_order, getLayoutInflater(), orders) {
@@ -61,7 +61,7 @@ public class ActOrder extends ActBase {
                 order_ship.setText(String.valueOf(order.isShip() ? "ส่ง" : "ไม่ส่ง"));
 
                 TextView order_usr = (TextView) v.findViewById(R.id.order_usr);
-                order_usr.setText("ผู้เปิดบิล : " + String.valueOf(order.getUsr_name()));
+                order_usr.setText("ผู้เปิดใบสั่ง : " + String.valueOf(order.getUsr_name()));
 
                 if (order.getStat() == OrderStat.New) {
                     v.setBackgroundColor(Color.parseColor("#abdacf"));

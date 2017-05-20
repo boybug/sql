@@ -10,9 +10,15 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -58,7 +64,6 @@ public class ActLogin extends ActBase {
 
         if (saveLogin) {
             txt_username.setText(loginPreferences.getString("username", null));
-            txt_password.setText(loginPreferences.getString("password", null));
             saveLoginCheckBox.setChecked(true);
         }
 
@@ -66,35 +71,74 @@ public class ActLogin extends ActBase {
         bt_cmd_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showProgressDialog();
                 username = txt_username.getText().toString();
                 password = txt_password.getText().toString();
                 if (!Global.isNetworkAvailable(getApplicationContext())) {
-                    hideProgressDialog();
                     MessageBox("ไม่มีสัญญาณเน็ทเวิร์ค");
                 } else if (ActLogin.this.Validate()) {
-                    mAuth.signInWithEmailAndPassword(username, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (!task.isSuccessful()) {
-                                mAuth.createUserWithEmailAndPassword(username, password).addOnCompleteListener(ActLogin.this, new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        if (task.isSuccessful()) processLogin();
-                                        else {
-                                            hideProgressDialog();
-                                            MessageBox("ไม่สามารถสร้างผู้ใช้ใหม่ได้");
-                                        }
-                                    }
-                                });
-                            } else {
-                                processLogin();
-                            }
-                        }
-                    });
+                    showProgressDialog();
+                    signIn();
                 }
             }
         });
+    }
+
+    private void signIn() {
+        mAuth.signInWithEmailAndPassword(username, password)
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        processLogin();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        if (e instanceof FirebaseAuthInvalidUserException) {
+                            switch (((FirebaseAuthInvalidUserException) e).getErrorCode()) {
+                                case "ERROR_USER_DISABLED":
+                                    hideProgressDialog();
+                                    MessageBox("บัญชีถูกระงับการใช้งาน");
+                                    break;
+                                case "ERROR_USER_NOT_FOUND":
+                                    signUp();
+                                    break;
+                                case "ERROR_USER_TOKEN_EXPIRED":
+                                    hideProgressDialog();
+                                    MessageBox("บัญชีถูกเปลี่ยนรหัสผ่านจากเครื่องอื่น โปรดล้อกอินใหม่อีกครั้ง");
+                                    break;
+                                default:
+                                    hideProgressDialog();
+                            }
+                        } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                            hideProgressDialog();
+                            String err = ((FirebaseAuthInvalidCredentialsException) e).getErrorCode();
+                            MessageBox(err);
+                        }
+                    }
+                });
+    }
+
+    private void signUp() {
+        mAuth.createUserWithEmailAndPassword(username, password)
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        processLogin();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        hideProgressDialog();
+                        if (e instanceof FirebaseAuthWeakPasswordException)
+                            MessageBox(((FirebaseAuthWeakPasswordException) e).getReason());
+                        else if (e instanceof FirebaseAuthInvalidCredentialsException)
+                            MessageBox("อีเมล์ไม่ถูกต้อง");
+                        else if (e instanceof FirebaseAuthUserCollisionException)
+                            MessageBox("อีเมล์เคยลงทะเบียนแล้ว");
+                    }
+                });
     }
 
     private void processLogin() {
@@ -118,6 +162,7 @@ public class ActLogin extends ActBase {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                hideProgressDialog();
             }
         });
     }
@@ -139,7 +184,6 @@ public class ActLogin extends ActBase {
         if (saveLoginCheckBox.isChecked()) {
             loginPrefsEditor.putBoolean("saveLogin", true);
             loginPrefsEditor.putString("username", username);
-            loginPrefsEditor.putString("password", password);
             loginPrefsEditor.commit();
         } else {
             loginPrefsEditor.clear();
@@ -171,10 +215,21 @@ public class ActLogin extends ActBase {
                 } else {
                     hideProgressDialog();
                     ActLogin.this.MessageBox("ชื่อผู้ใช้หรือรหัสผ่านไม่ปรากฎใน ERP");
+                    deleteUser();
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void deleteUser() {
+        mAuth.getCurrentUser().delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        MessageBox("ไม่พบผู้ใช้ใน ERP โปรดติดต่อไอที");
+                    }
+                });
     }
 }

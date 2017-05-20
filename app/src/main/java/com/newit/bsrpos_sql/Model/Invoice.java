@@ -23,9 +23,10 @@ public class Invoice extends ModelBase {
     private OrderPay pay;
     private boolean ship;
     private String remark;
+    private String order_no;
 
     public Invoice(int id, String no, String date, String cus_name, int qty, float weight,
-                   float amount, String usr_name, OrderPay pay, boolean ship, String remark) {
+                   float amount, String usr_name, OrderPay pay, boolean ship, String remark, String order_no) {
         super(false);
         this.id = id;
         this.no = no;
@@ -38,6 +39,7 @@ public class Invoice extends ModelBase {
         this.pay = pay;
         this.ship = ship;
         this.remark = remark;
+        this.order_no = order_no;
 
         //invoiceItem
         try {
@@ -57,6 +59,50 @@ public class Invoice extends ModelBase {
 
     public List<InvoiceItem> getItems() {
         return items;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getCus_name() {
+        return cus_name;
+    }
+
+    public int getQty() {
+        return qty;
+    }
+
+    public float getWeight() {
+        return weight;
+    }
+
+    public float getAmount() {
+        return amount;
+    }
+
+    public String getUsr_name() {
+        return usr_name;
+    }
+
+    public OrderPay getPay() {
+        return pay;
+    }
+
+    public boolean isShip() {
+        return ship;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public String getOrder_no() {
+        return order_no;
     }
 
     @Override

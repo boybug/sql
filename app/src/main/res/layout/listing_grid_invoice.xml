@@ -1,0 +1,75 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:padding="6dip">
+
+    <!--todo: เอามันมาโชว์ที-->
+    <TextView
+        android:id="@+id/order_no"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignWithParentIfMissing="true"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/invoice_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignBottom="@+id/invoice_usr"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/invoice_ship"
+        android:layout_marginRight="6dip"
+        android:gravity="center_vertical"
+        android:text="00.00"
+        android:textColor="#ff0000" />
+
+    <TextView
+        android:id="@+id/invoice_ship"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/invoice_cus"
+        android:layout_alignEnd="@+id/invoice_amount"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/invoice_amount"
+        android:gravity="center_vertical"
+        android:text="00.00" />
+
+    <TextView
+        android:id="@+id/invoice_usr"
+        android:layout_width="fill_parent"
+        android:layout_height="26dip"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/invoice_cus"
+        android:layout_toStartOf="@+id/invoice_amount"
+        android:paddingLeft="5dp"
+        android:paddingTop="3dp"
+        android:text="invoice_usr"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/invoice_cus"
+        android:layout_width="fill_parent"
+        android:layout_height="26dip"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/invoice_no"
+        android:layout_toStartOf="@+id/invoice_amount"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp"
+        android:text="invoice_cus"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/invoice_no"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_toStartOf="@+id/invoice_ship"
+        android:gravity="center_vertical"
+        android:paddingLeft="5dp"
+        android:text="invoice_no"
+        android:textColor="@color/colorFish"
+        android:textSize="20sp" />
+
+</RelativeLayout>

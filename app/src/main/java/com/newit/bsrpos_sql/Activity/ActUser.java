@@ -50,7 +50,7 @@ public class ActUser extends ActBase {
                 user_name.setText(user.getName());
 
                 TextView user_deleteorder = (TextView) v.findViewById(R.id.user_deleteorder);
-                if (user.isDeleteorder()) user_deleteorder.setText("ลบบิลได้");
+                if (user.isDeleteorder()) user_deleteorder.setText("ลบใบสั่งได้");
                 else user_deleteorder.setVisibility(View.GONE);
 
                 TextView user_admin = (TextView) v.findViewById(R.id.user_admin);

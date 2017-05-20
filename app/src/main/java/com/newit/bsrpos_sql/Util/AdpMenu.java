@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.newit.bsrpos_sql.Activity.ActCustomer;
+import com.newit.bsrpos_sql.Activity.ActInvoice;
 import com.newit.bsrpos_sql.Activity.ActOrder;
 import com.newit.bsrpos_sql.Activity.ActProduct;
 import com.newit.bsrpos_sql.Activity.ActUser;
@@ -27,10 +28,11 @@ public class AdpMenu extends BaseAdapter {
 
     public AdpMenu(Context context) {
         menus = new ArrayList<>();
-        menus.add(new Menu(1, "ขาย", R.drawable.order, R.color.colorPrimaryNavy, ActOrder.class));
-        menus.add(new Menu(2, "ลูกค้า", R.drawable.customer, R.color.colorPrimaryGreen, ActCustomer.class));
-        menus.add(new Menu(3, "สินค้า", R.drawable.product, R.color.colorSquid, ActProduct.class));
-        menus.add(new Menu(4, "ผู้ใช้", R.drawable.utility, R.color.colorBeef, ActUser.class));
+        menus.add(new Menu(1, "ใบสั่งขาย", R.drawable.order, R.color.colorPrimaryNavy, ActOrder.class));
+        menus.add(new Menu(2, "ใบแจ้งหนี้ขาย", R.drawable.order, R.color.colorInsect, ActInvoice.class));
+        menus.add(new Menu(3, "ลูกค้า", R.drawable.customer, R.color.colorPrimaryGreen, ActCustomer.class));
+        menus.add(new Menu(4, "สินค้า", R.drawable.product, R.color.colorSquid, ActProduct.class));
+        menus.add(new Menu(5, "ผู้ใช้", R.drawable.utility, R.color.colorBeef, ActUser.class));
         inflater = LayoutInflater.from(context);
     }
 

@@ -89,7 +89,7 @@ public class ActOrderInput extends ActBase {
 
         if (order == null && customer != null) {
             order = new Order(customer.getId(), customer.getName(), customer.isShip());
-            setTitle("เปิดบิลใหม่@" + Global.wh_grp_name);
+            setTitle("เปิดใบสั่งใหม่@" + Global.wh_grp_name);
         } else if (order != null) {
             new SqlQuery(this, spQueryOrderItem, "{call " + Global.database.getPrefix() + "getorderitem(?)}", new String[]{String.valueOf(order.getId())});
             setTitle(order.getNo() + "@" + Global.wh_grp_name);

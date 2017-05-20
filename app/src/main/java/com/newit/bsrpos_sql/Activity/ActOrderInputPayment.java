@@ -131,7 +131,7 @@ public class ActOrderInputPayment extends ActBase {
 
     private void getInvoices() {
         invoices.clear();
-        new SqlQuery(ActOrderInputPayment.this, spGetInvoice, "{call " + Global.database.getPrefix() + "getinvoice(?)}", new String[]{String.valueOf(order.getId())});
+        new SqlQuery(ActOrderInputPayment.this, spGetInvoice, "{call " + Global.database.getPrefix() + "getinvoice(?,?)}", new String[]{String.valueOf(order.getId()), String.valueOf(order.getWh_grp_Id())});
     }
 
     private void redrawOrder() {
@@ -189,7 +189,7 @@ public class ActOrderInputPayment extends ActBase {
             while (rs != null && rs.next()) {
                 Invoice i = new Invoice(rs.getInt("id"), rs.getString("no"), rs.getString("invoice_date"), rs.getString("cus_name"),
                         rs.getInt("qty"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getString("usr_name"),
-                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"));
+                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"), rs.getString("order_no"));
                 invoices.add(i);
             }
             if (menu != null) {

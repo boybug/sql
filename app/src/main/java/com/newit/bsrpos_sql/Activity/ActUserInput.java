@@ -106,7 +106,7 @@ public class ActUserInput extends ActBase {
                     dialog.setTitle("อนุญาต");
                     dialog.setIcon(R.mipmap.ic_launcher);
                     dialog.setCancelable(true);
-                    dialog.setMessage("คุณต้องการเปลี่ยนระดับการลบบิลใช่หรือไม่");
+                    dialog.setMessage("คุณต้องการเปลี่ยนระดับการลบใบสั่งใช่หรือไม่");
                     dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             showProgressDialog();
@@ -135,7 +135,7 @@ public class ActUserInput extends ActBase {
         }
     }
 
-    private void PassResetViaEmail(final String login, final String oldpassword, final String newpassword) {
+    private void PassResetViaEmail(final String login, final String oldpassword, final String newpassword, boolean isReset) {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         AuthCredential credential = EmailAuthProvider.getCredential(login, oldpassword);
@@ -199,7 +199,6 @@ public class ActUserInput extends ActBase {
                         } else if (!TextUtils.isEmpty(oldpass) && !TextUtils.isEmpty(newpass) && !TextUtils.isEmpty(confirmpass) && Objects.equals(newpass, confirmpass)) {
                             showProgressDialog();
                             new SqlQuery(ActUserInput.this, spChngPwd, "{call " + Global.database.getPrefix() + "chngpasword(?,?,?)}", new String[]{user.getLogin(), String.valueOf(oldpass), String.valueOf(newpass)});
-
                         }
                     }
                 });
@@ -215,7 +214,7 @@ public class ActUserInput extends ActBase {
                 SqlResult result = new SqlResult(rs);
                 if (result.getMsg() == null) {
                     MessageBox("เปลี่ยนรหัสผ่านสำเร็จ");
-                    PassResetViaEmail(user.getEmail(), oldpass, newpass);
+                    PassResetViaEmail(user.getEmail(), oldpass, newpass, false);
                 } else MessageBox(result.getMsg());
             }
         } else if (tag == spResetPwd) {
@@ -223,15 +222,14 @@ public class ActUserInput extends ActBase {
             if (rs != null && rs.next()) {
                 SqlResult result = new SqlResult(rs);
                 if (result.getMsg() == null) {
-                    MessageBox("รีเซทรหัสผ่านสำเร็จ");
-                    PassResetViaEmail(user.getEmail(), user.getPassword(), "123456");
+                    PassResetViaEmail(user.getEmail(), user.getPassword(), "123456", true);
                 } else MessageBox(result.getMsg());
             }
         } else if (tag == spUpdateDeleteOrder) {
             hideProgressDialog();
             if (rs != null && rs.next()) {
                 SqlResult result = new SqlResult(rs);
-                MessageBox(result.getMsg() == null ? "เปลี่ยนระดับการลบบิลสำเร็จ" : result.getMsg());
+                MessageBox(result.getMsg() == null ? "เปลี่ยนระดับการลบใบสั่งสำเร็จ" : result.getMsg());
             }
         }
     }

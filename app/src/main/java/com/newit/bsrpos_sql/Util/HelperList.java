@@ -1,4 +1,4 @@
-package com.newit.bsrpos_sql.Activity;
+package com.newit.bsrpos_sql.Util;
 
 import android.util.Log;
 import android.view.View;
