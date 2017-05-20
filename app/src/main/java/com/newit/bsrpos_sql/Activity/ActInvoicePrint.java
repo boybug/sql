@@ -22,7 +22,7 @@ import java.sql.SQLException;
 
 public class ActInvoicePrint extends ActBase {
 
-    private Invoice order;
+    private Invoice invoice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,33 +36,33 @@ public class ActInvoicePrint extends ActBase {
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
             finish();
-        } else order = (Invoice) bundle.getSerializable("invoice");
+        } else invoice = (Invoice) bundle.getSerializable("invoice");
 
-        TextView textno = (TextView) findViewById(R.id.textno);
-        TextView textdate = (TextView) findViewById(R.id.textdate);
-        TextView textsum = (TextView) findViewById(R.id.textsum);
-        CheckBox checkship = (CheckBox) findViewById(R.id.checkship);
-        CheckBox checkcash = (CheckBox) findViewById(R.id.checkcash);
-        CheckBox checktransfer = (CheckBox) findViewById(R.id.checktransfer);
-        CheckBox checkcredit = (CheckBox) findViewById(R.id.checkcredit);
+        TextView invoiceprint_no = (TextView) findViewById(R.id.invoiceprint_no);
+        TextView invoiceprint_date = (TextView) findViewById(R.id.invoiceprint_date);
+        TextView invoiceprint_sum = (TextView) findViewById(R.id.invoiceprint_sum);
+        CheckBox invoiceprint_ship = (CheckBox) findViewById(R.id.invoiceprint_ship);
+        CheckBox invoiceprint_cash = (CheckBox) findViewById(R.id.invoiceprint_cash);
+        CheckBox invoiceprint_transfer = (CheckBox) findViewById(R.id.invoiceprint_transfer);
+        CheckBox invoiceprint_credit = (CheckBox) findViewById(R.id.invoiceprint_credit);
 
-        textno.setText("เลขที่ " + order.getNo());
-        textdate.setText("วันที่ " + order.getDate());
-        textsum.setText("รวม " + String.valueOf(order.getAmount()));
-        checkship.setChecked(order.isShip());
-        checkcash.setChecked(order.getPay() == OrderPay.Cash);
-        checktransfer.setChecked(order.getPay() == OrderPay.Transfer);
-        checkcredit.setChecked(order.getPay() == OrderPay.Credit);
+        invoiceprint_no.setText("เลขที่ " + invoice.getNo());
+        invoiceprint_date.setText("วันที่ " + invoice.getDate());
+        invoiceprint_sum.setText("รวม " + String.valueOf(invoice.getAmount()));
+        invoiceprint_ship.setChecked(invoice.isShip());
+        invoiceprint_cash.setChecked(invoice.getPay() == OrderPay.Cash);
+        invoiceprint_transfer.setChecked(invoice.getPay() == OrderPay.Transfer);
+        invoiceprint_credit.setChecked(invoice.getPay() == OrderPay.Credit);
 
-        AdpCustom<InvoiceItem> adapOrderItem = new AdpCustom<InvoiceItem>(R.layout.listing_grid_invoice_print, getLayoutInflater(), order.getItems()) {
+        AdpCustom<InvoiceItem> adapOrderItem = new AdpCustom<InvoiceItem>(R.layout.listing_grid_invoice_print, getLayoutInflater(), invoice.getItems()) {
             @Override
             protected void populateView(View v, InvoiceItem model) {
-                TextView orderitem_no = (TextView) v.findViewById(R.id.invoiceitem_no);
-                TextView orderitem_desc = (TextView) v.findViewById(R.id.invoiceitem_desc);
-                TextView orderitem_qty = (TextView) v.findViewById(R.id.invoiceitem_qty);
-                orderitem_no.setText(String.valueOf(model.getNo()));
-                orderitem_desc.setText(model.getProd_name());
-                orderitem_qty.setText(String.valueOf(model.getAmount()));
+                TextView invoiceitem_no = (TextView) v.findViewById(R.id.invoiceitem_no);
+                TextView invoiceitem_desc = (TextView) v.findViewById(R.id.invoiceitem_desc);
+                TextView invoiceitem_qty = (TextView) v.findViewById(R.id.invoiceitem_qty);
+                invoiceitem_no.setText(String.valueOf(model.getNo()));
+                invoiceitem_desc.setText(model.getProd_name());
+                invoiceitem_qty.setText(String.valueOf(model.getAmount()));
             }
         };
         ListView mylist = (ListView) findViewById(R.id.mylist);
@@ -76,7 +76,7 @@ public class ActInvoicePrint extends ActBase {
     public void printPDF() {
 
         PrintManager printManager = (PrintManager) getSystemService(PRINT_SERVICE);
-        printManager.print("POS Invoice " + order.getNo(), new AdpPrint(ActInvoicePrint.this, findViewById(R.id.relativeLayout)), null);
+        printManager.print("POS Invoice " + invoice.getNo(), new AdpPrint(ActInvoicePrint.this, findViewById(R.id.relativeLayout)), null);
     }
 
     @Override

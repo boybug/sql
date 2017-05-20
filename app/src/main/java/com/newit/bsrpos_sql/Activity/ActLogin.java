@@ -132,7 +132,7 @@ public class ActLogin extends ActBase {
                     public void onFailure(@NonNull Exception e) {
                         hideProgressDialog();
                         if (e instanceof FirebaseAuthWeakPasswordException)
-                            MessageBox(((FirebaseAuthWeakPasswordException) e).getReason());
+                            MessageBox("รหัสผ่านง่ายเกินไป");
                         else if (e instanceof FirebaseAuthInvalidCredentialsException)
                             MessageBox("อีเมล์ไม่ถูกต้อง");
                         else if (e instanceof FirebaseAuthUserCollisionException)
@@ -174,7 +174,7 @@ public class ActLogin extends ActBase {
             isValid = false;
         }
         if (password.equals("") || password.length() < 6) {
-            txt_password.setError("ต้องกรอกมากกว่า 6 หลัก");
+            txt_password.setError("ต้องกรอก 6 หลักขึ้นไป");
             isValid = false;
         }
         return isValid;
@@ -213,8 +213,6 @@ public class ActLogin extends ActBase {
                     ActLogin.this.startActivity(intent);
                     ActLogin.this.finish();
                 } else {
-                    hideProgressDialog();
-                    ActLogin.this.MessageBox("ชื่อผู้ใช้หรือรหัสผ่านไม่ปรากฎใน ERP");
                     deleteUser();
                 }
             }
@@ -224,11 +222,12 @@ public class ActLogin extends ActBase {
     }
 
     private void deleteUser() {
+        hideProgressDialog();
         mAuth.getCurrentUser().delete()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        MessageBox("ไม่พบผู้ใช้ใน ERP โปรดติดต่อไอที");
+                        MessageBox("ไม่พบอีเมล์ใใน ERP โปรดติดต่อไอที");
                     }
                 });
     }

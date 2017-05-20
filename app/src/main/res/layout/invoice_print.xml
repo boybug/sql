@@ -66,7 +66,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/textno"
+                            android:id="@+id/invoiceprint_no"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -75,7 +75,7 @@
                             android:text="เลขที่" />
 
                         <TextView
-                            android:id="@+id/textdate"
+                            android:id="@+id/invoiceprint_date"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -108,7 +108,7 @@
                             android:textColorLink="@color/colorWhite" />
 
                         <CheckBox
-                            android:id="@+id/checkship"
+                            android:id="@+id/invoiceprint_ship"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.18"
@@ -130,7 +130,7 @@
 
 
                         <CheckBox
-                            android:id="@+id/checkcash"
+                            android:id="@+id/invoiceprint_cash"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -140,7 +140,7 @@
                             android:text="เงินสด" />
 
                         <CheckBox
-                            android:id="@+id/checktransfer"
+                            android:id="@+id/invoiceprint_transfer"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -150,7 +150,7 @@
                             android:text="เงินโอน" />
 
                         <CheckBox
-                            android:id="@+id/checkcredit"
+                            android:id="@+id/invoiceprint_credit"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -230,7 +230,7 @@
 
 
                     <TextView
-                        android:id="@+id/textsum"
+                        android:id="@+id/invoiceprint_sum"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_span="2"
