@@ -72,7 +72,8 @@
         <activity
             android:name=".Activity.ActInvoice"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
-        <activity android:name=".Activity.ActInvoiceInput"></activity>
+        <activity android:name=".Activity.ActInvoiceInput" />
+        <activity android:name=".Activity.ActOrderPrint"></activity>
     </application>
 
 </manifest>

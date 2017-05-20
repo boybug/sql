@@ -13,7 +13,7 @@ import com.newit.bsrpos_sql.Model.InvoiceItem;
 import com.newit.bsrpos_sql.Model.OrderPay;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
-import com.newit.bsrpos_sql.Util.HelperList;
+import com.newit.bsrpos_sql.Util.AdpPrint;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,7 +29,7 @@ public class ActInvoicePrint extends ActBase {
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
-        setContentView(R.layout.invoice_print);
+        setContentView(R.layout.invoiceprint);
 
         hideActionBar();
 
@@ -65,9 +65,9 @@ public class ActInvoicePrint extends ActBase {
                 invoiceitem_qty.setText(String.valueOf(model.getAmount()));
             }
         };
-        ListView mylist = (ListView) findViewById(R.id.mylist);
-        mylist.setAdapter(adapOrderItem);
-        HelperList.getListViewSize(mylist);
+        ListView list = (ListView) findViewById(R.id.invoiceprint_list);
+        list.setAdapter(adapOrderItem);
+        AdpPrint.formatListView(list);
 
         printPDF(invoice.getNo(), R.id.relativeLayout);
     }

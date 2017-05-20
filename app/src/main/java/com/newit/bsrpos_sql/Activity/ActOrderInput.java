@@ -389,11 +389,15 @@ public class ActOrderInput extends ActBase {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.nav_chngwhgrp) {
-            // TODO: chngewhgrp
+            //todo: chngwhgrp
         } else if (item.getItemId() == R.id.nav_logout) {
             super.backPressed(ActLogin.class);
         } else if (item.getItemId() == R.id.nav_logout + 1) {
-            //todo: ActOrderPrint
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("order", order);
+            Intent intent = new Intent(ActOrderInput.this, ActOrderPrint.class);
+            intent.putExtras(bundle);
+            ActOrderInput.this.startActivity(intent);
         } else if (item.getItemId() == R.id.nav_logout + 2) {
             if (order.getItems().size() == 0) {
                 MessageBox("ไม่มีรายการขาย ไม่สามารถชำระเงินได้");
