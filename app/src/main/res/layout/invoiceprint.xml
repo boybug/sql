@@ -219,7 +219,7 @@
                     style="@style/Widget.AppCompat.ListView.Menu"
                     android:layout_width="match_parent"
                     android:layout_height="780dp"
-                    android:scrollbars="none|horizontal|vertical" />
+                    android:scrollbars="none" />
             </LinearLayout>
 
             <TableRow

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorWhite"
-    tools:context=".Activity.ActInvoicePrint">
+    tools:context=".Activity.ActOrderPrint">
 
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        tools:context=".Activity.ActInvoicePrint">
+        tools:context=".Activity.ActOrderPrint">
 
 
         <TableLayout
@@ -185,23 +185,32 @@
                     android:id="@+id/orderprint_list"
                     style="@style/Widget.AppCompat.ListView.Menu"
                     android:layout_width="match_parent"
-                    android:layout_height="780dp"
-                    android:scrollbars="none|horizontal|vertical" />
+                    android:layout_height="match_parent"
+                    android:scrollbars="none" />
             </LinearLayout>
+
 
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="30dp"
+                android:weightSum="2">
 
-
-                <TextView
-                    android:id="@+id/orderprint_sum"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_span="2"
-                    android:gravity="right"
-                    android:text="รวม" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/orderprint_sales"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="left"
+                        android:text="ฝ่ายขาย...................." />
+
+                </LinearLayout>
             </TableRow>
 
             <TableRow
@@ -221,54 +230,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:gravity="left"
-                        android:text="ฝ่ายคลัง...................." />
-
-                    <TextView
-                        android:id="@+id/textship"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
 
                         android:gravity="left"
-                        android:text="ฝ่ายขนส่ง...................." />
+                        android:text="ฝ่ายคลัง..................................................." />
 
                 </LinearLayout>
             </TableRow>
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:paddingBottom="5dp"
-                android:weightSum="2">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="30dp"
-                    android:layout_span="2"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/textcus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="left"
-                        android:text="ลูกค้า........................." />
-
-                    <TextView
-                        android:id="@+id/textsales"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-
-                        android:gravity="left"
-                        android:text="ฝ่ายขาย......................." />
-
-                </LinearLayout>
-            </TableRow>
 
         </TableLayout>
 

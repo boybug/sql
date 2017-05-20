@@ -36,15 +36,25 @@ public class ActOrderPrint extends ActBase {
             finish();
         } else order = (Order) bundle.getSerializable("order");
 
+        TextView orderprint_no = (TextView) findViewById(R.id.orderprint_no);
+        TextView orderprint_date = (TextView) findViewById(R.id.orderprint_date);
+        TextView orderprint_cus = (TextView) findViewById(R.id.orderprint_cus);
+        TextView orderprint_sales = (TextView) findViewById(R.id.orderprint_sales);
+
+        orderprint_no.setText("เลขที่ " + order.getNo());
+        orderprint_date.setText("วันที่ " + order.getDate());
+        orderprint_cus.setText("ลูกค้า " + order.getCus_name());
+        orderprint_sales.setText("ฝ่ายขาย " + order.getUsr_name());
+
         AdpCustom<OrderItem> adap = new AdpCustom<OrderItem>(R.layout.listing_grid_orderprint, getLayoutInflater(), order.getItems()) {
             @Override
             protected void populateView(View v, OrderItem model) {
                 TextView orderprint_no = (TextView) v.findViewById(R.id.orderprint_no);
                 TextView orderprint_desc = (TextView) v.findViewById(R.id.orderprint_desc);
-                TextView orderprint_qty = (TextView) v.findViewById(R.id.orderprint_qty);
+                TextView orderprint_orderqty = (TextView) v.findViewById(R.id.orderprint_orderqty);
                 orderprint_no.setText(String.valueOf(model.getNo()));
                 orderprint_desc.setText(model.getProduct().getName());
-                orderprint_qty.setText(String.valueOf(model.getQty()));
+                orderprint_orderqty.setText(String.valueOf(model.getQty()));
             }
         };
         ListView list = (ListView) findViewById(R.id.orderprint_list);

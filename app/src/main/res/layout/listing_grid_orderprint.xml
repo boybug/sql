@@ -7,14 +7,20 @@
 
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="visible">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_span="2"
+            android:orientation="horizontal">
 
         <TextView
             android:id="@+id/orderprint_no"
             style="@style/App_TextViewStyle"
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
+            android:layout_height="wrap_content"
             android:gravity="right"
             android:paddingRight="5dp"
             android:text="No."
@@ -23,25 +29,38 @@
         <TextView
             android:id="@+id/orderprint_desc"
             style="@style/App_TextViewStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"
+
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:ellipsize="end"
             android:gravity="left"
-            android:maxLines="1"
             android:text="Name"
-            android:textSize="15dp" />
+            android:textSize="15dp"
+            android:layout_width="0dp" />
 
 
         <TextView
-            android:id="@+id/orderprint_qty"
+            android:id="@+id/orderprint_orderqty"
             style="@style/App_TextViewStyle"
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
+            android:layout_height="wrap_content"
             android:gravity="right"
             android:paddingRight="5dp"
+            android:layout_weight="0.3"
             android:text="(Qty)"
             android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/orderprint_isuuqty"
+            style="@style/App_TextViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:layout_weight="0.3"
+            android:paddingRight="5dp"
+            android:text="     "
+            android:textSize="15dp" />
+
+        </LinearLayout>
 
     </TableRow>
 </LinearLayout>
