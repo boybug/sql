@@ -380,8 +380,8 @@ public class ActOrderInput extends ActBase {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.contextmenu, menu);
-        menu.add(0, R.id.nav_chngwhgrp + 1, Menu.NONE, "จ่ายเงิน");
-        menu.add(0, R.id.nav_chngwhgrp + 2, Menu.NONE, "พิมพ์ใบหยิบสินค้า");
+        menu.add(0, R.id.nav_chngwhgrp + 1, Menu.NONE, "พิมพ์ใบหยิบสินค้า");
+        menu.add(0, R.id.nav_chngwhgrp + 2, Menu.NONE, "ชำระเงินและยืนยัน");
         return true;
     }
 
@@ -392,10 +392,12 @@ public class ActOrderInput extends ActBase {
         } else if (item.getItemId() == R.id.nav_chngwhgrp) {
             // TODO: chngewhgrp
         } else if (item.getItemId() == R.id.nav_chngwhgrp + 1) {
+            //todo: ActOrderPrint
+        } else if (item.getItemId() == R.id.nav_chngwhgrp + 2) {
             if (order.getItems().size() == 0) {
-                MessageBox("ไม่มีรายการขาย ไม่สามารถจ่ายได้");
+                MessageBox("ไม่มีรายการขาย ไม่สามารถชำระเงินได้");
             } else if (Objects.equals(order.getNo(), null) || order.getRecordStat() != RecordStat.NULL) {
-                MessageBox("กรุณาบันทึกข้อมูลก่อนการจ่าย");
+                MessageBox("เอกสารมีการเปลี่ยนแปลง กรุณาบันทึกก่อนการชำระเงิน");
             } else {
                 Bundle bundle1 = new Bundle();
                 bundle1.putSerializable("order", order);
@@ -403,8 +405,6 @@ public class ActOrderInput extends ActBase {
                 intent.putExtras(bundle1);
                 ActOrderInput.this.startActivityForResult(intent, 2);
             }
-        } else if (item.getItemId() == R.id.nav_chngwhgrp + 2) {
-            //todo: ActOrderPrint
         }
         return true;
     }

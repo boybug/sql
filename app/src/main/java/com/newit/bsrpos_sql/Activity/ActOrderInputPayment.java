@@ -48,6 +48,8 @@ public class ActOrderInputPayment extends ActBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.orderinput_payment);
 
+        setTitle("ยืนยันใบสั่งขาย@ " + Global.wh_grp_name);
+
         orderinput_cus = (TextView) findViewById(R.id.orderinput_cus);
         orderiteminputpayment_no = (TextView) findViewById(R.id.orderinput_no);
         orderiteminputpayment_qty = (TextView) findViewById(R.id.orderinput_qty);
@@ -98,17 +100,18 @@ public class ActOrderInputPayment extends ActBase {
 
         //region SAVE
         Button bt_cmd_save = (Button) findViewById(R.id.bt_cmd_save);
+        bt_cmd_save.setText("ยืนยันใบสั่งขาย");
         bt_cmd_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (order.getStat() == OrderStat.Confirm) MessageBox("เอกสารได้ถูกยืนยันไปแล้ว.");
+                if (order.getStat() == OrderStat.Confirm) MessageBox("ใบสั่งขายได้ถูกยืนยันไปแล้ว");
                 else if (order.getItems().size() == 0) MessageBox("ไม่มีรายการสินค้า");
                 else {
                     AlertDialog.Builder dialog = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new AlertDialog.Builder(ActOrderInputPayment.this, android.R.style.Theme_Material_Light_Dialog_Alert) : new AlertDialog.Builder(ActOrderInputPayment.this);
-                    dialog.setTitle("ยืนยันเอกสาร");
+                    dialog.setTitle("ยืนยันใบสั่งขาย");
                     dialog.setIcon(R.mipmap.ic_launcher);
                     dialog.setCancelable(true);
-                    dialog.setMessage("เอกสารยันแล้วจะไม่สามารถแก้ไขได้   คุณต้องการยืนยันใช่หรือไม่");
+                    dialog.setMessage("ใบสั่งยืนยันแล้วจะไม่สามารถแก้ไขได้ คุณต้องการยืนยันใช่หรือไม่");
                     dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             order.setRemark(orderiteminputpayment_remark.getText().toString());
@@ -156,7 +159,7 @@ public class ActOrderInputPayment extends ActBase {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.base_print, menu);
+        getMenuInflater().inflate(R.menu.contextmenu, menu);
         this.menu = menu;
         return true;
     }
@@ -181,7 +184,7 @@ public class ActOrderInputPayment extends ActBase {
             if (rs != null && rs.next()) {
                 SqlResult result = new SqlResult(rs);
                 if (result.getMsg() == null) {
-                    MessageBox("ยืนยันรายการสำเร็จ");
+                    MessageBox("ยืนยันใบสั่งขายสำเร็จ");
                     getInvoices();
                 } else MessageBox(result.getMsg());
             }

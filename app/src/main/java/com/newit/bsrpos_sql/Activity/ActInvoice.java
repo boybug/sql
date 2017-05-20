@@ -35,7 +35,7 @@ public class ActInvoice extends ActBase {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        setTitle("รายการบิลขาย@" + Global.wh_grp_name);
+        setTitle("รายการใบแจ้งหนี้@" + Global.wh_grp_name);
         setSwipeRefresh(R.id.swipe_refresh, R.id.listing_list);
 
         adap = new AdpCustom<Invoice>(R.layout.listing_grid_invoice, getLayoutInflater(), invoices) {
@@ -55,7 +55,7 @@ public class ActInvoice extends ActBase {
                 invoice_ship.setText(String.valueOf(invoice.isShip() ? "ส่ง" : "ไม่ส่ง"));
 
                 TextView invoice_usr = (TextView) v.findViewById(R.id.invoice_usr);
-                invoice_usr.setText("ผู้เปิดบิล : " + String.valueOf(invoice.getUsr_name()));
+                invoice_usr.setText("ผู้เปิดใบแจ้งหนี้ : " + String.valueOf(invoice.getUsr_name()));
 
                 if (searchString != null) {
                     SetTextSpan(searchString, invoice.getNo(), invoice_no);

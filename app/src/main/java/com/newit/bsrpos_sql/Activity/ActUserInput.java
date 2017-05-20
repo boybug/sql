@@ -106,7 +106,7 @@ public class ActUserInput extends ActBase {
                     dialog.setTitle("อนุญาต");
                     dialog.setIcon(R.mipmap.ic_launcher);
                     dialog.setCancelable(true);
-                    dialog.setMessage("คุณต้องการเปลี่ยนระดับการลบใบสั่งใช่หรือไม่");
+                    dialog.setMessage(userinput_deleteorder.isChecked() ? "อนุญาตให้ " + user.getName() + " สามารถลบใบสั่งได้ใช่ไหรือไม่" : "ยกเลิกสิทธิการลบใบสั่งของ " + user.getName() + " ใช่หรือไม่" );
                     dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             showProgressDialog();
@@ -229,7 +229,7 @@ public class ActUserInput extends ActBase {
             hideProgressDialog();
             if (rs != null && rs.next()) {
                 SqlResult result = new SqlResult(rs);
-                MessageBox(result.getMsg() == null ? "เปลี่ยนระดับการลบใบสั่งสำเร็จ" : result.getMsg());
+                MessageBox(result.getMsg() == null ? "เปลี่ยนสิทธิการลบใบสั่งสำเร็จ" : result.getMsg());
             }
         }
     }

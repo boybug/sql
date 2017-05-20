@@ -97,13 +97,13 @@ public class ActOrder extends ActBase {
                 public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                     final Order order = adap.getModels().get(position);
                     if (order.getStat() == OrderStat.Confirm)
-                        MessageBox("เอกสารยืนยันแล้วลบไม่ได้");
+                        MessageBox("ใบสั่งขายยืนยันแล้วลบไม่ได้");
                     else {
                         AlertDialog.Builder dialog = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new AlertDialog.Builder(ActOrder.this, android.R.style.Theme_Material_Light_Dialog_Alert) : new AlertDialog.Builder(ActOrder.this);
                         dialog.setTitle("ยืนยันการลบ");
                         dialog.setIcon(R.mipmap.ic_launcher);
                         dialog.setCancelable(true);
-                        dialog.setMessage("ท่านต้องการลบรายการนี้หรือไม่?");
+                        dialog.setMessage("ท่านต้องการลบใบสั่งขายเลขที่ " + order.getNo() + " หรือไม่?");
                         dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog12, int which) {
