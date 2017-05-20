@@ -149,6 +149,16 @@
 
         </RelativeLayout>
 
+        <TextView
+            android:id="@+id/ver"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:text="ver."
+            android:textColor="@color/colorGrey"
+            android:textSize="8dp"/>
+
     </RelativeLayout>
 
 </ScrollView>

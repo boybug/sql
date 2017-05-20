@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -49,12 +50,13 @@ public class ActLogin extends ActBase {
         setContentView(R.layout.login);
         hideActionBar();
 
+        TextView ver = (TextView) findViewById(R.id.ver);
         txt_username = (EditText) findViewById(R.id.login_name);
         txt_password = (EditText) findViewById(R.id.login_password);
         saveLoginCheckBox = (CheckBox) findViewById(R.id.login_remember);
         SharedPreferences loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginPrefsEditor = loginPreferences.edit();
-
+        ver.setText("Ver. "+ Global.getVersion(this));
         mAuth = FirebaseAuth.getInstance();
 
         Boolean saveLogin = loginPreferences.getBoolean("saveLogin", false);
