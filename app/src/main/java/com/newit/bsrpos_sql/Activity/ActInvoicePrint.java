@@ -1,6 +1,5 @@
 package com.newit.bsrpos_sql.Activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.print.PrintManager;
 import android.view.MotionEvent;
@@ -15,8 +14,13 @@ import com.newit.bsrpos_sql.Model.InvoiceItem;
 import com.newit.bsrpos_sql.Model.OrderPay;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
+import com.newit.bsrpos_sql.Util.AdpPrint;
+import com.newit.bsrpos_sql.Util.HelperList;
 
-public class ActInvoicePrint extends Activity {
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class ActInvoicePrint extends ActBase {
 
     private Invoice order;
 
@@ -65,7 +69,6 @@ public class ActInvoicePrint extends Activity {
         mylist.setAdapter(adapOrderItem);
         HelperList.getListViewSize(mylist);
 
-
         printPDF();
 
     }
@@ -73,13 +76,16 @@ public class ActInvoicePrint extends Activity {
     public void printPDF() {
 
         PrintManager printManager = (PrintManager) getSystemService(PRINT_SERVICE);
-        printManager.print("POS Invoice " + order.getNo(), new ViewPrintAdapter(this,
-                findViewById(R.id.relativeLayout)), null);
+        printManager.print("POS Invoice " + order.getNo(), new AdpPrint(ActInvoicePrint.this, findViewById(R.id.relativeLayout)), null);
     }
 
     @Override
-    public boolean onTouchEvent ( MotionEvent event ) {
-            finish();
-            return true;
+    public boolean onTouchEvent(MotionEvent event) {
+        finish();
+        return true;
+    }
+
+    @Override
+    public void processFinish(ResultSet rs, int tag) throws SQLException {
     }
 }

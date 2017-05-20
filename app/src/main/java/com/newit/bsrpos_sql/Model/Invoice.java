@@ -109,20 +109,4 @@ public class Invoice extends ModelBase {
     public String getSearchString() {
         return no;
     }
-
-    public String getDate() {
-        return date;
-    }
-
-    public float getAmount() {
-        return amount;
-    }
-
-    public OrderPay getPay() {
-        return pay;
-    }
-
-    public boolean isShip() {
-        return ship;
-    }
 }

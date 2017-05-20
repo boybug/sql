@@ -1,4 +1,4 @@
-package com.newit.bsrpos_sql.Activity;
+package com.newit.bsrpos_sql.Util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -16,16 +16,18 @@ import android.print.PrintDocumentInfo;
 import android.print.pdf.PrintedPdfDocument;
 import android.view.View;
 
+import com.newit.bsrpos_sql.Activity.ActBase;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 
-class ViewPrintAdapter extends PrintDocumentAdapter {
+public class AdpPrint extends PrintDocumentAdapter {
     private PrintedPdfDocument mDocument;
     private Context mContext;
     private View mView;
 
-    ViewPrintAdapter(ActInvoicePrint actInvoicePrint, View viewById) {
+    public AdpPrint(ActBase actInvoicePrint, View viewById) {
         mContext = actInvoicePrint;
         mView = viewById;
         mView = mView.getRootView();
@@ -70,7 +72,7 @@ class ViewPrintAdapter extends PrintDocumentAdapter {
         float pageWidth = pageCanvas.getWidth();
         float pageHeight = pageCanvas.getHeight();
         // how can we fit the Rect src onto this page while maintaining aspect ratio?
-        float scale = Math.min(pageWidth/src.width(), pageHeight/src.height());
+        float scale = Math.min(pageWidth / src.width(), pageHeight / src.height());
         float left = (float) (pageWidth / 2 - src.width() * scale / 2.3);
         float top = (float) (pageHeight / 2 - src.height() * scale / 2.3);
         float right = (float) (pageWidth / 2 + src.width() * scale / 2.3);
