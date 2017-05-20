@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
+import android.print.PrintManager;
 import android.speech.RecognizerIntent;
 import android.support.annotation.IdRes;
 import android.support.design.widget.FloatingActionButton;
@@ -34,6 +35,7 @@ import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.ModelBase;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
+import com.newit.bsrpos_sql.Util.AdpPrint;
 import com.newit.bsrpos_sql.Util.SqlConnect;
 import com.newit.bsrpos_sql.Util.sqlCallback;
 
@@ -268,5 +270,11 @@ public abstract class ActBase<T> extends AppCompatActivity implements sqlCallbac
 
     public void refresh() {
         MessageBox("no implementation.");
+    }
+
+    public void printPDF(String filename, @IdRes int rootViewId) {
+        PrintManager printManager = (PrintManager) getSystemService(PRINT_SERVICE);
+        AdpPrint printer = new AdpPrint(this, findViewById(rootViewId), filename);
+        printManager.print("BSR POS " + filename, printer, null);
     }
 }

@@ -1,7 +1,6 @@
 package com.newit.bsrpos_sql.Activity;
 
 import android.os.Bundle;
-import android.print.PrintManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -14,7 +13,6 @@ import com.newit.bsrpos_sql.Model.InvoiceItem;
 import com.newit.bsrpos_sql.Model.OrderPay;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
-import com.newit.bsrpos_sql.Util.AdpPrint;
 import com.newit.bsrpos_sql.Util.HelperList;
 
 import java.sql.ResultSet;
@@ -32,6 +30,8 @@ public class ActInvoicePrint extends ActBase {
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
         setContentView(R.layout.invoice_print);
+
+        hideActionBar();
 
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
@@ -69,14 +69,7 @@ public class ActInvoicePrint extends ActBase {
         mylist.setAdapter(adapOrderItem);
         HelperList.getListViewSize(mylist);
 
-        printPDF();
-
-    }
-
-    public void printPDF() {
-
-        PrintManager printManager = (PrintManager) getSystemService(PRINT_SERVICE);
-        printManager.print("POS Invoice " + invoice.getNo(), new AdpPrint(ActInvoicePrint.this, findViewById(R.id.relativeLayout)), null);
+        printPDF(invoice.getNo(), R.id.relativeLayout);
     }
 
     @Override

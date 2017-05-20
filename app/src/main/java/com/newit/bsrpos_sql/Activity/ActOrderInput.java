@@ -380,20 +380,20 @@ public class ActOrderInput extends ActBase {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.contextmenu, menu);
-        menu.add(0, R.id.nav_chngwhgrp + 1, Menu.NONE, "พิมพ์ใบหยิบสินค้า");
-        menu.add(0, R.id.nav_chngwhgrp + 2, Menu.NONE, "ชำระเงินและยืนยัน");
+        menu.add(0, R.id.nav_logout + 1, Menu.NONE, "พิมพ์ใบหยิบสินค้า");
+        menu.add(0, R.id.nav_logout + 2, Menu.NONE, "ชำระเงินและยืนยัน");
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.nav_logout) {
-            super.backPressed(ActLogin.class);
-        } else if (item.getItemId() == R.id.nav_chngwhgrp) {
+        if (item.getItemId() == R.id.nav_chngwhgrp) {
             // TODO: chngewhgrp
-        } else if (item.getItemId() == R.id.nav_chngwhgrp + 1) {
+        } else if (item.getItemId() == R.id.nav_logout) {
+            super.backPressed(ActLogin.class);
+        } else if (item.getItemId() == R.id.nav_logout + 1) {
             //todo: ActOrderPrint
-        } else if (item.getItemId() == R.id.nav_chngwhgrp + 2) {
+        } else if (item.getItemId() == R.id.nav_logout + 2) {
             if (order.getItems().size() == 0) {
                 MessageBox("ไม่มีรายการขาย ไม่สามารถชำระเงินได้");
             } else if (Objects.equals(order.getNo(), null) || order.getRecordStat() != RecordStat.NULL) {

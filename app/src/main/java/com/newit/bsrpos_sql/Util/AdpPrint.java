@@ -26,10 +26,12 @@ public class AdpPrint extends PrintDocumentAdapter {
     private PrintedPdfDocument mDocument;
     private Context mContext;
     private View mView;
+    private String filename;
 
-    public AdpPrint(ActBase actInvoicePrint, View viewById) {
+    public AdpPrint(ActBase actInvoicePrint, View viewById, String filename) {
         mContext = actInvoicePrint;
         mView = viewById;
+        this.filename = filename;
         mView = mView.getRootView();
     }
 
@@ -43,7 +45,7 @@ public class AdpPrint extends PrintDocumentAdapter {
         }
 
         PrintDocumentInfo.Builder builder = new PrintDocumentInfo
-                .Builder("print_output.pdf")
+                .Builder(filename + ".pdf")
                 .setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
                 .setPageCount(1);
 
