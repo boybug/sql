@@ -11,7 +11,7 @@
 
 
         <TextView
-            android:id="@+id/invoiceitem_no"
+            android:id="@+id/orderprint_no"
             style="@style/App_TextViewStyle"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
@@ -21,7 +21,7 @@
             android:textSize="15dp" />
 
         <TextView
-            android:id="@+id/invoiceitem_desc"
+            android:id="@+id/orderprint_desc"
             style="@style/App_TextViewStyle"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
@@ -34,7 +34,7 @@
 
 
         <TextView
-            android:id="@+id/invoiceitem_qty"
+            android:id="@+id/orderprint_qty"
             style="@style/App_TextViewStyle"
             android:layout_width="wrap_content"
             android:layout_height="20dp"

@@ -54,15 +54,15 @@ public class ActInvoicePrint extends ActBase {
         invoiceprint_transfer.setChecked(invoice.getPay() == OrderPay.Transfer);
         invoiceprint_credit.setChecked(invoice.getPay() == OrderPay.Credit);
 
-        AdpCustom<InvoiceItem> adapOrderItem = new AdpCustom<InvoiceItem>(R.layout.listing_grid_invoice_print, getLayoutInflater(), invoice.getItems()) {
+        AdpCustom<InvoiceItem> adapOrderItem = new AdpCustom<InvoiceItem>(R.layout.listing_grid_invoiceprint, getLayoutInflater(), invoice.getItems()) {
             @Override
             protected void populateView(View v, InvoiceItem model) {
-                TextView invoiceitem_no = (TextView) v.findViewById(R.id.invoiceitem_no);
-                TextView invoiceitem_desc = (TextView) v.findViewById(R.id.invoiceitem_desc);
-                TextView invoiceitem_qty = (TextView) v.findViewById(R.id.invoiceitem_qty);
-                invoiceitem_no.setText(String.valueOf(model.getNo()));
-                invoiceitem_desc.setText(model.getProd_name());
-                invoiceitem_qty.setText(String.valueOf(model.getAmount()));
+                TextView invoiceprint_no = (TextView) v.findViewById(R.id.invoiceprint_no);
+                TextView invoiceprint_desc = (TextView) v.findViewById(R.id.invoiceprint_desc);
+                TextView invoiceprint_qty = (TextView) v.findViewById(R.id.invoiceprint_qty);
+                invoiceprint_no.setText(String.valueOf(model.getNo()));
+                invoiceprint_desc.setText(model.getProd_name());
+                invoiceprint_qty.setText(String.valueOf(model.getAmount()));
             }
         };
         ListView list = (ListView) findViewById(R.id.invoiceprint_list);
