@@ -1,5 +1,6 @@
 package com.newit.bsrpos_sql.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.Menu;
@@ -68,12 +69,11 @@ public class ActInvoice extends ActBase {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //todo: ทำหน้าโชว์ invoice item
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable("invoice", adap.getModels().get(position));
-//                Intent intent = new Intent(ActInvoice.this, ActInvoiceInput.class);
-//                intent.putExtras(bundle);
-//                ActInvoice.this.startActivity(intent);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("invoice", adap.getModels().get(position));
+                Intent intent = new Intent(ActInvoice.this, ActInvoiceInput.class);
+                intent.putExtras(bundle);
+                ActInvoice.this.startActivity(intent);
             }
         });
 
@@ -113,7 +113,7 @@ public class ActInvoice extends ActBase {
             while (rs != null && rs.next()) {
                 Invoice i = new Invoice(rs.getInt("id"), rs.getString("no"), rs.getString("invoice_date"), rs.getString("cus_name"),
                         rs.getInt("qty"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getString("usr_name"),
-                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"), rs.getString("order_no"));
+                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"), rs.getInt("order_id"), rs.getString("order_no"));
                 invoices.add(i);
             }
             if (adap != null) adap.notifyDataSetChanged();

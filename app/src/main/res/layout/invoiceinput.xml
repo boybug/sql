@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/content_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:stretchColumns="1">
+
+            <TableRow>
+
+                <include
+                    layout="@layout/invoiceinput_include1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_span="2" />
+
+            </TableRow>
+
+            <TableRow>
+
+                <include
+                    layout="@layout/invoiceinput_include2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_span="2" />
+
+            </TableRow>
+
+            <TableRow>
+
+                <include
+                    layout="@layout/invoiceinput_include3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_span="2" />
+
+            </TableRow>
+
+            <TableRow>
+
+                <include
+                    layout="@layout/invoiceinput_include4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_span="2" />
+
+            </TableRow>
+
+            <TableRow android:id="@+id/tr_item_head">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_span="2"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/invoiceinput_listtitle"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_weight="1"
+                        android:background="@color/colorPrimary"
+                        android:gravity="center"
+                        android:paddingLeft="20dp"
+                        android:text="รายการสินค้า(0)"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </TableRow>
+
+            <TableRow>
+
+                <include
+                    layout="@layout/btn_save"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_span="2" />
+            </TableRow>
+
+        </TableLayout>
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

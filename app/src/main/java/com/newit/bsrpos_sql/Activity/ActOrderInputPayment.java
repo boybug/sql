@@ -192,7 +192,7 @@ public class ActOrderInputPayment extends ActBase {
             while (rs != null && rs.next()) {
                 Invoice i = new Invoice(rs.getInt("id"), rs.getString("no"), rs.getString("invoice_date"), rs.getString("cus_name"),
                         rs.getInt("qty"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getString("usr_name"),
-                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"), rs.getString("order_no"));
+                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"), rs.getInt("order_id"), rs.getString("order_no"));
                 invoices.add(i);
             }
             if (menu != null) {
