@@ -1,5 +1,6 @@
 package com.newit.bsrpos_sql.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.View;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.Invoice;
 import com.newit.bsrpos_sql.Model.InvoiceItem;
+import com.newit.bsrpos_sql.Model.Order;
+import com.newit.bsrpos_sql.Model.OrderPay;
 import com.newit.bsrpos_sql.Model.OrderStat;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
@@ -22,6 +25,7 @@ public class ActInvoiceInput extends ActBase {
 
     private Invoice invoice;
     private AdpCustom<InvoiceItem> adap;
+    private final int spQuery = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +41,7 @@ public class ActInvoiceInput extends ActBase {
             finish();
         }
         invoice = (Invoice) (bundle != null ? bundle.getSerializable("invoice") : null);
-        setTitle(invoice.getNo() + "@" + Global.wh_grp_name);
+        setTitle("ใบแจ้งหนี้ " + invoice.getNo() + "@" + Global.wh_grp_name);
 
         TextView invoiceinput_cus = (TextView) findViewById(R.id.invoiceinput_cus);
         TextView invoiceinput_no = (TextView) findViewById(R.id.invoiceinput_no);
@@ -46,6 +50,7 @@ public class ActInvoiceInput extends ActBase {
         TextView invoiceinput_amt = (TextView) findViewById(R.id.invoiceinput_amt);
         TextView invoiceinput_listtitle = (TextView) findViewById(R.id.invoiceinput_listtitle);
         TextView invoiceinput_order = (TextView) findViewById(R.id.invoiceinput_order);
+        TextView invoiceinput_user = (TextView) findViewById(R.id.invoiceinput_user);
         Button bt_cmd_save = (Button) findViewById(R.id.bt_cmd_save);
         bt_cmd_save.setVisibility(View.GONE);
 
@@ -56,6 +61,7 @@ public class ActInvoiceInput extends ActBase {
         invoiceinput_amt.setText(String.valueOf(invoice.getAmount()));
         invoiceinput_listtitle.setText("รายการสินค้า(" + String.valueOf(invoice.getItems().size()) + ")");
         invoiceinput_order.setText(invoice.getOrder_no());
+        invoiceinput_user.setText(invoice.getUsr_name());
 
         adap = new AdpCustom<InvoiceItem>(R.layout.listing_grid_invoiceitem, getLayoutInflater(), invoice.getItems()) {
             @Override
@@ -74,12 +80,25 @@ public class ActInvoiceInput extends ActBase {
         invoiceinput_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //todo : click แล้วไปหน้า order
+                new SqlQuery(ActInvoiceInput.this, spQuery, "{call " + Global.database.getPrefix() + "getorder(?,?)}", new String[]{String.valueOf(Global.wh_Grp_Id), String.valueOf(invoice.getOrder_Id())});
             }
         });
     }
 
     @Override
     public void processFinish(ResultSet rs, int tag) throws SQLException {
+        if (tag == spQuery) {
+            if (rs != null && rs.next()) {
+                Order o = new Order(rs.getInt("id"), rs.getString("no"), rs.getString("order_date"),
+                        rs.getInt("cus_id"), rs.getString("cus_name"), rs.getInt("wh_grp_id"), OrderStat.valueOf(rs.getString("order_stat")),
+                        rs.getInt("qty"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("usr_id"), rs.getString("usr_name"),
+                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"));
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("order", o);
+                Intent intent = new Intent(ActInvoiceInput.this, ActOrderInput.class);
+                intent.putExtras(bundle);
+                ActInvoiceInput.this.startActivityForResult(intent, 4);
+            }
+        }
     }
 }

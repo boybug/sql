@@ -92,7 +92,7 @@ public class ActOrderInput extends ActBase {
             setTitle("เปิดใบสั่งใหม่@" + Global.wh_grp_name);
         } else if (order != null) {
             new SqlQuery(this, spQueryOrderItem, "{call " + Global.database.getPrefix() + "getorderitem(?)}", new String[]{String.valueOf(order.getId())});
-            setTitle(order.getNo() + "@" + Global.wh_grp_name);
+            setTitle("ใบสั่งขาย " + order.getNo() + "@" + Global.wh_grp_name);
         }
         redrawOrder();
         //endregion
@@ -320,6 +320,7 @@ public class ActOrderInput extends ActBase {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
             if (data.getBooleanExtra("FINISH", false))
                 finish();

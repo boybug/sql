@@ -72,6 +72,16 @@
 
             </TableRow>
 
+            <TableRow>
+
+                <include
+                    layout="@layout/invoiceinput_include5"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_span="2" />
+
+            </TableRow>
+
             <TableRow android:id="@+id/tr_item_head">
 
                 <LinearLayout

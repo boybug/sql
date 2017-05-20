@@ -144,7 +144,7 @@ public class ActOrder extends ActBase {
 
     @Override
     public void refresh() {
-        new SqlQuery(this, spQuery, "{call " + Global.database.getPrefix() + "getorder(?,?)}", new String[]{String.valueOf(Global.wh_Grp_Id), String.valueOf(Global.user.getId())});
+        new SqlQuery(this, spQuery, "{call " + Global.database.getPrefix() + "getorder(?,?)}", new String[]{String.valueOf(Global.wh_Grp_Id), "0"});
     }
 
     @Override
