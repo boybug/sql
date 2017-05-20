@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:paddingRight="5dp"
-                android:layout_weight="0.2"
+                android:layout_weight="0.12"
                 android:text="(Qty)"
                 android:textSize="15dp" />
 
