@@ -60,7 +60,7 @@ public class ActOrderPrint extends ActBase {
         ListView list = (ListView) findViewById(R.id.orderprint_list);
         list.setAdapter(adap);
         AdpPrint.formatListView(list);
-        printPDF(order.getNo(), R.id.relativeLayout);
+        printPDF(order.getNo(), R.id.relativeLayout_ActOrderPrint);
     }
 
     @Override

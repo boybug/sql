@@ -380,25 +380,21 @@ public class ActOrderInput extends ActBase {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.contextmenu, menu);
-        menu.add(0, R.id.nav_logout + 1, Menu.NONE, "พิมพ์ใบหยิบสินค้า");
-        menu.add(0, R.id.nav_logout + 2, Menu.NONE, "ชำระเงินและยืนยัน");
+        getMenuInflater().inflate(R.menu.nologout, menu);
+        menu.add(0, 1, Menu.NONE, "พิมพ์ใบหยิบสินค้า");
+        menu.add(0, 2, Menu.NONE, "ชำระเงินและยืนยัน");
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.nav_chngwhgrp) {
-            //todo: chngwhgrp
-        } else if (item.getItemId() == R.id.nav_logout) {
-            super.backPressed(ActLogin.class);
-        } else if (item.getItemId() == R.id.nav_logout + 1) {
+         if (item.getItemId() ==  1) {
             Bundle bundle = new Bundle();
             bundle.putSerializable("order", order);
             Intent intent = new Intent(ActOrderInput.this, ActOrderPrint.class);
             intent.putExtras(bundle);
             ActOrderInput.this.startActivity(intent);
-        } else if (item.getItemId() == R.id.nav_logout + 2) {
+        } else if (item.getItemId() == 2) {
             if (order.getItems().size() == 0) {
                 MessageBox("ไม่มีรายการขาย ไม่สามารถชำระเงินได้");
             } else if (Objects.equals(order.getNo(), null) || order.getRecordStat() != RecordStat.NULL) {

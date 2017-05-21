@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/relativeLayout"
-    android:layout_width="match_parent"
+    android:id="@+id/relativeLayout_ActInvoicePrint"
+    android:layout_width="58mm"
     android:layout_height="wrap_content"
     android:background="@color/colorWhite"
+    android:layout_gravity="top|center"
     tools:context=".Activity.ActInvoicePrint">
 
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
+        android:layout_width="58mm"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
@@ -67,7 +68,7 @@
 
                     <TextView
                         android:id="@+id/invoiceprint_no"
-                        android:layout_width="wrap_content"
+                        android:layout_width="29mm"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
 
@@ -76,10 +77,10 @@
 
                     <TextView
                         android:id="@+id/invoiceprint_date"
-                        android:layout_width="wrap_content"
+                        android:layout_width="29mm"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-
+                        android:textSize="14dp"
                         android:gravity="left"
                         android:text="วันที่" />
 
@@ -111,7 +112,7 @@
                         android:id="@+id/invoiceprint_ship"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.18"
+                        android:layout_weight="0.21"
                         android:enabled="false"
                         android:text="จัดส่ง"
                         android:textColor="@color/colorDark"
@@ -218,7 +219,7 @@
                     android:id="@+id/invoiceprint_list"
                     style="@style/Widget.AppCompat.ListView.Menu"
                     android:layout_width="match_parent"
-                    android:layout_height="780dp"
+                    android:layout_height="wrap_content"
                     android:scrollbars="none" />
             </LinearLayout>
 
@@ -238,29 +239,31 @@
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent"
+                android:layout_width="29mm"
                 android:layout_height="match_parent"
                 android:layout_marginTop="30dp"
                 android:weightSum="2">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="29mm"
                     android:layout_height="match_parent"
                     android:layout_span="2"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/textwh"
-                        android:layout_width="wrap_content"
+                        android:layout_width="29mm"
                         android:layout_height="wrap_content"
+                        android:textSize="12dp"
                         android:layout_weight="1"
                         android:gravity="left"
                         android:text="ฝ่ายคลัง...................." />
 
                     <TextView
                         android:id="@+id/textship"
-                        android:layout_width="wrap_content"
+                        android:layout_width="29mm"
                         android:layout_height="wrap_content"
+                        android:textSize="12dp"
                         android:layout_weight="1"
 
                         android:gravity="left"
@@ -270,14 +273,14 @@
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent"
+                android:layout_width="29mm"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:paddingBottom="5dp"
                 android:weightSum="2">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="29mm"
                     android:layout_height="match_parent"
                     android:layout_marginTop="30dp"
                     android:layout_span="2"
@@ -285,18 +288,20 @@
 
                     <TextView
                         android:id="@+id/textcus"
-                        android:layout_width="wrap_content"
+                        android:layout_width="29mm"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:textSize="12dp"
                         android:gravity="left"
                         android:text="ลูกค้า........................." />
 
                     <TextView
-                        android:id="@+id/textsales"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/invoiceprint_sales"
+                        android:layout_width="29mm"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-
+                        android:maxLines="1"
+                        android:textSize="12dp"
                         android:gravity="left"
                         android:text="ฝ่ายขาย......................." />
 

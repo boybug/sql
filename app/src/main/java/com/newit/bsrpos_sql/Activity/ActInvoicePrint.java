@@ -45,6 +45,7 @@ public class ActInvoicePrint extends ActBase {
         CheckBox invoiceprint_cash = (CheckBox) findViewById(R.id.invoiceprint_cash);
         CheckBox invoiceprint_transfer = (CheckBox) findViewById(R.id.invoiceprint_transfer);
         CheckBox invoiceprint_credit = (CheckBox) findViewById(R.id.invoiceprint_credit);
+        TextView invoiceprint_sales = (TextView) findViewById(R.id.invoiceprint_sales);
 
         invoiceprint_no.setText("เลขที่ " + invoice.getNo());
         invoiceprint_date.setText("วันที่ " + invoice.getDate());
@@ -53,7 +54,7 @@ public class ActInvoicePrint extends ActBase {
         invoiceprint_cash.setChecked(invoice.getPay() == OrderPay.Cash);
         invoiceprint_transfer.setChecked(invoice.getPay() == OrderPay.Transfer);
         invoiceprint_credit.setChecked(invoice.getPay() == OrderPay.Credit);
-
+        invoiceprint_sales.setText("ฝ่ายขาย "+invoice.getUsr_name());
         AdpCustom<InvoiceItem> adapOrderItem = new AdpCustom<InvoiceItem>(R.layout.listing_grid_invoiceprint, getLayoutInflater(), invoice.getItems()) {
             @Override
             protected void populateView(View v, InvoiceItem model) {
@@ -69,7 +70,7 @@ public class ActInvoicePrint extends ActBase {
         list.setAdapter(adapOrderItem);
         AdpPrint.formatListView(list);
 
-        printPDF(invoice.getNo(), R.id.relativeLayout);
+        printPDF(invoice.getNo(), R.id.relativeLayout_ActInvoicePrint);
     }
 
     @Override

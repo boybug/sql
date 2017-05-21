@@ -71,7 +71,7 @@ public class ActCustomerDetail extends ActBase {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.contextmenu, menu);
+        getMenuInflater().inflate(R.menu.nologout, menu);
         return true;
     }
 

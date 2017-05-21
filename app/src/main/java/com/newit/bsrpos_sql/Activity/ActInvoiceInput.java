@@ -3,6 +3,7 @@ package com.newit.bsrpos_sql.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -83,6 +84,12 @@ public class ActInvoiceInput extends ActBase {
                 new SqlQuery(ActInvoiceInput.this, spQuery, "{call " + Global.database.getPrefix() + "getorder(?,?)}", new String[]{String.valueOf(Global.wh_Grp_Id), String.valueOf(invoice.getOrder_Id())});
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.nologout, menu);
+        return true;
     }
 
     @Override

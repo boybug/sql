@@ -229,7 +229,7 @@ public class ActLogin extends ActBase {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        MessageBox("ไม่พบอีเมล์ใใน ERP โปรดติดต่อไอที");
+                        MessageBox("ไม่พบอีเมล์ใน ERP โปรดติดต่อไอที");
                     }
                 });
     }
