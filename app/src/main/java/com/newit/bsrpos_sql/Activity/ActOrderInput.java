@@ -244,18 +244,21 @@ public class ActOrderInput extends ActBase {
 
         //region SAVE
         Button bt_cmd_save = (Button) findViewById(R.id.bt_cmd_save);
-        if (order.getStat() == OrderStat.New) {
-            bt_cmd_save.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        bt_cmd_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (order.getUsr_id() != Global.user.getId())
+                    MessageBox("ไม่สามารถบันทึกรายการคนอื่นได้");
+                else if (order.getStat() == OrderStat.New)
+                    MessageBox("ไม่สามารถบันทึกรายการที่ยืนยันแล้ว");
+                else {
                     SqlResult result = order.save(ActOrderInput.this);
                     ActOrderInput.this.redrawOrder();
                     adapOrderItem.notifyDataSetChanged();
                     ActOrderInput.this.MessageBox(result.getMsg() == null ? "บันทึกสำเร็จ" : result.getMsg());
                 }
-            });
-
-        } else bt_cmd_save.setEnabled(false);
+            }
+        });
         //endregion
 
         //region add_item

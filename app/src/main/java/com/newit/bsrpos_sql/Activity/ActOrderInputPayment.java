@@ -104,8 +104,12 @@ public class ActOrderInputPayment extends ActBase {
         bt_cmd_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (order.getStat() == OrderStat.Confirm) MessageBox("ใบสั่งขายได้ถูกยืนยันไปแล้ว");
-                else if (order.getItems().size() == 0) MessageBox("ไม่มีรายการสินค้า");
+                if (order.getUsr_id() != Global.user.getId())
+                    MessageBox("ไม่สามารถยืนยันใบสั่งของคนอื่น");
+                else if (order.getStat() == OrderStat.Confirm)
+                    MessageBox("ใบสั่งขายได้ถูกยืนยันไปแล้ว");
+                else if (order.getItems().size() == 0)
+                    MessageBox("ไม่มีรายการสินค้า");
                 else {
                     AlertDialog.Builder dialog = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new AlertDialog.Builder(ActOrderInputPayment.this, android.R.style.Theme_Material_Light_Dialog_Alert) : new AlertDialog.Builder(ActOrderInputPayment.this);
                     dialog.setTitle("ยืนยันใบสั่งขาย");

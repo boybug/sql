@@ -98,6 +98,8 @@ public class ActOrder extends ActBase {
                     final Order order = adap.getModels().get(position);
                     if (order.getStat() == OrderStat.Confirm)
                         MessageBox("ใบสั่งขายยืนยันแล้วลบไม่ได้");
+                    else if (order.getUsr_id() != Global.user.getId())
+                        MessageBox("ไม่สามารถลบใบสั่งคนอื่นได้");
                     else {
                         AlertDialog.Builder dialog = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new AlertDialog.Builder(ActOrder.this, android.R.style.Theme_Material_Light_Dialog_Alert) : new AlertDialog.Builder(ActOrder.this);
                         dialog.setTitle("ยืนยันการลบ");

@@ -25,6 +25,7 @@ public class ActInvoicePrint extends ActBase {
     private Invoice invoice;
     private AdpCustom<InvoiceItem> adap;
     private final int spQueryInvoiceItem = 1;
+    private ListView list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +73,8 @@ public class ActInvoicePrint extends ActBase {
                 invoiceprint_qty.setText(String.valueOf(model.getAmount()));
             }
         };
-        ListView list = (ListView) findViewById(R.id.invoiceprint_list);
+        list = (ListView) findViewById(R.id.invoiceprint_list);
         list.setAdapter(adap);
-        AdpPrint.formatListView(list);
-
-        printPDF(invoice.getNo(), R.id.relativeLayout_ActInvoicePrint);
     }
 
     @Override
@@ -91,8 +89,10 @@ public class ActInvoicePrint extends ActBase {
             while (rs != null && rs.next()) {
                 InvoiceItem item = new InvoiceItem(rs.getInt("no"), rs.getString("prod_name"), rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"));
                 invoice.getItems().add(item);
-                adap.notifyDataSetChanged();
             }
+            adap.notifyDataSetChanged();
+            AdpPrint.formatListView(list);
+            printPDF(invoice.getNo(), R.id.relativeLayout_ActInvoicePrint);
         }
     }
 }

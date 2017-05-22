@@ -114,8 +114,60 @@ public class ActLogin extends ActBase {
                             }
                         } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
                             hideProgressDialog();
-                            String err = ((FirebaseAuthInvalidCredentialsException) e).getErrorCode();
-                            MessageBox(err);
+                            switch (((FirebaseAuthInvalidCredentialsException) e).getErrorCode()) {
+                                case "ERROR_INVALID_CREDENTIAL":
+                                    hideProgressDialog();
+                                    MessageBox("อีเมล์ไม่มีการใช้งานจริง");
+                                    break;
+                                case "ERROR_INVALID_EMAIL":
+                                    hideProgressDialog();
+                                    MessageBox("อีเมล์ไม่ถูกต้อง");
+                                    break;
+                                case "ERROR_WRONG_PASSWORD":
+                                    hideProgressDialog();
+                                    MessageBox("รหัสผ่านผิด");
+                                    break;
+                                case "ERROR_USER_MISMATCH":
+                                    hideProgressDialog();
+                                    MessageBox("บัญชีถูกเปลี่ยนรหัสผ่านจากเครื่องอื่น โปรดล้อกอินใหม่อีกครั้ง");
+                                    break;
+                                case "ERROR_REQUIRES_RECENT_LOGIN":
+                                    hideProgressDialog();
+                                    MessageBox("บัญชีถูกเปลี่ยนรหัสผ่านจากเครื่องอื่น โปรดล้อกอินใหม่อีกครั้ง");
+                                    break;
+                                case "ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL":
+                                    break;
+                                case "ERROR_EMAIL_ALREADY_IN_USE":
+                                    hideProgressDialog();
+                                    MessageBox("มีการล็อกอินด้วยอีเมลนี้จากที่อื่นแล้ว");
+                                    break;
+                                case "ERROR_CREDENTIAL_ALREADY_IN_USE":
+                                    break;
+                                case "ERROR_USER_DISABLED":
+                                    hideProgressDialog();
+                                    MessageBox("บัญชีถูกระงับการใช้งาน");
+                                    break;
+                                case "ERROR_USER_TOKEN_EXPIRED":
+                                    hideProgressDialog();
+                                    MessageBox("เซสชั่นหมดอายุ โปรดล้อกอินใหม่อีกครั้ง");
+                                    break;
+                                case "ERROR_USER_NOT_FOUND":
+                                    hideProgressDialog();
+                                    MessageBox("ไม่พบรายการผู้ใช้");
+                                    break;
+                                case "ERROR_INVALID_USER_TOKEN":
+                                    hideProgressDialog();
+                                    MessageBox("เซสชั่นหมดอายุ โปรดล้อกอินใหม่อีกครั้ง");
+                                    break;
+                                case "ERROR_WEAK_PASSWORD":
+                                    hideProgressDialog();
+                                    MessageBox("รหัสผ่านง่ายเกินไป");
+                                    break;
+                                default:
+                                    hideProgressDialog();
+                                    MessageBox(((FirebaseAuthInvalidCredentialsException) e).getErrorCode());
+                                    break;
+                            }
                         }
                     }
                 });
