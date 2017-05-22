@@ -8,12 +8,14 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.Invoice;
 import com.newit.bsrpos_sql.Model.InvoiceItem;
 import com.newit.bsrpos_sql.Model.OrderPay;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
 import com.newit.bsrpos_sql.Util.AdpPrint;
+import com.newit.bsrpos_sql.Util.SqlQuery;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,6 +23,8 @@ import java.sql.SQLException;
 public class ActInvoicePrint extends ActBase {
 
     private Invoice invoice;
+    private AdpCustom<InvoiceItem> adap;
+    private final int spQueryInvoiceItem = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,8 @@ public class ActInvoicePrint extends ActBase {
         if (bundle == null) {
             finish();
         } else invoice = (Invoice) bundle.getSerializable("invoice");
+        new SqlQuery(ActInvoicePrint.this, spQueryInvoiceItem, "{call " + Global.database.getPrefix() + "getinvoiceitem(?)}", new String[]{String.valueOf(invoice.getId())});
+
 
         TextView invoiceprint_no = (TextView) findViewById(R.id.invoiceprint_no);
         TextView invoiceprint_date = (TextView) findViewById(R.id.invoiceprint_date);
@@ -55,7 +61,7 @@ public class ActInvoicePrint extends ActBase {
         invoiceprint_transfer.setChecked(invoice.getPay() == OrderPay.Transfer);
         invoiceprint_credit.setChecked(invoice.getPay() == OrderPay.Credit);
         invoiceprint_sales.setText("ฝ่ายขาย " + invoice.getUsr_name());
-        AdpCustom<InvoiceItem> adapOrderItem = new AdpCustom<InvoiceItem>(R.layout.listing_grid_invoiceprint, getLayoutInflater(), invoice.getItems()) {
+        adap = new AdpCustom<InvoiceItem>(R.layout.listing_grid_invoiceprint, getLayoutInflater(), invoice.getItems()) {
             @Override
             protected void populateView(View v, InvoiceItem model) {
                 TextView invoiceprint_no = (TextView) v.findViewById(R.id.invoiceprint_no);
@@ -67,7 +73,7 @@ public class ActInvoicePrint extends ActBase {
             }
         };
         ListView list = (ListView) findViewById(R.id.invoiceprint_list);
-        list.setAdapter(adapOrderItem);
+        list.setAdapter(adap);
         AdpPrint.formatListView(list);
 
         printPDF(invoice.getNo(), R.id.relativeLayout_ActInvoicePrint);
@@ -81,5 +87,12 @@ public class ActInvoicePrint extends ActBase {
 
     @Override
     public void queryReturn(ResultSet rs, int tag, Object caller) throws SQLException {
+        if (tag == spQueryInvoiceItem) {
+            while (rs != null && rs.next()) {
+                InvoiceItem item = new InvoiceItem(rs.getInt("no"), rs.getString("prod_name"), rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"));
+                invoice.getItems().add(item);
+                adap.notifyDataSetChanged();
+            }
+        }
     }
 }
