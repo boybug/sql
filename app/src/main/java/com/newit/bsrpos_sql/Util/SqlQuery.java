@@ -36,7 +36,7 @@ public class SqlQuery extends AsyncTask<String, String, ResultSet> {
 
     @Override
     protected void onPreExecute() {
-        activity.showProgressDialog("กำลังดึงข้อมูลจาก ERP...");
+        if (caller == null) activity.showProgressDialog("กำลังดึงข้อมูลจาก ERP...");
     }
 
     @Override
@@ -63,7 +63,7 @@ public class SqlQuery extends AsyncTask<String, String, ResultSet> {
 
     @Override
     protected void onPostExecute(ResultSet rs) {
-        activity.hideProgressDialog();
+        if (caller == null) activity.hideProgressDialog();
         try {
             activity.queryReturn(rs, tag, caller);
         } catch (SQLException e) {

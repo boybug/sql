@@ -1,11 +1,6 @@
 package com.newit.bsrpos_sql.Model;
 
 
-import com.newit.bsrpos_sql.Activity.ActBase;
-import com.newit.bsrpos_sql.Util.SqlQuery;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,26 +40,11 @@ public class Invoice extends ModelBase {
         this.order_no = order_no;
     }
 
-    private void queryInvoiceItems(ActBase activity) {
-        try {
-            ResultSet rs = SqlQuery.executeWait(activity, "{call " + Global.database.getPrefix() + "getinvoiceitem(?)}", new String[]{String.valueOf(id)});
-            while (rs != null && rs.next()) {
-                InvoiceItem item = new InvoiceItem(rs.getInt("no"), rs.getString("prod_name"), rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"));
-                items.add(item);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-
     public String getNo() {
         return no;
     }
 
-    public List<InvoiceItem> getItems(ActBase activity) {
-        //lazy load
-        if (items.size() == 0) queryInvoiceItems(activity);
+    public List<InvoiceItem> getItems() {
         return items;
     }
 
