@@ -169,9 +169,7 @@ public class OrderItem extends ModelBase {
         } else setPrice(product.getPrice());
         setAmount(qty * price);
 
-        order.setQty(order.getQty() + delta);
-        order.setWeight(order.getWeight() + (delta * product.getWeight()));
-        order.setAmount(order.getAmount() + (delta * price));
+        order.updateHeader();
     }
 
     public int getUom_id() {

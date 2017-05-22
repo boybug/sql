@@ -77,14 +77,16 @@ public class ActOrderItemInput extends ActBase {
             orderinput_save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (getStock() >= getQty()) {
+                    if (getQty() <= 0) orderiteminput_qty.setError("จำนวนต้องไม่น้อยกว่า 1");
+                    else if (getStock() < getQty()) orderiteminput_qty.setError("สต็อกไม่พอ");
+                    else {
                         item.setQty(getQty());
                         Intent intent = new Intent();
                         intent.putExtra("DELTA", getQty() - oldQty);
                         setResult(Activity.RESULT_OK, intent);
                         fb.setValue(item.getProduct().getFbstock().getReserve() + getQty() - oldQty);
                         finish();
-                    } else orderiteminput_qty.setError("สต็อกไม่พอ");
+                    }
                 }
             });
 

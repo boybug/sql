@@ -266,4 +266,18 @@ public class Order extends ModelBase {
         } else result.setMsg("ไม่มีความเปลี่ยนแปลง");
         return result;
     }
+
+    public void updateHeader() {
+        int tempQty = 0, tempWeight = 0;
+        float tempAmount = 0;
+        for(OrderItem i : items)
+        {
+            tempQty += i.getQty();
+            tempWeight += i.getWeight();
+            tempAmount += i.getAmount();
+        }
+        setQty(tempQty);
+        setWeight(tempWeight);
+        setAmount(tempAmount);
+    }
 }

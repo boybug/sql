@@ -91,6 +91,7 @@ public class ActOrderInput extends ActBase {
             order = new Order(customer.getId(), customer.getName(), customer.isShip());
             setTitle("เปิดใบสั่งใหม่@" + Global.wh_grp_name);
         } else if (order != null) {
+            showProgressDialog();
             new SqlQuery(this, spQueryOrderItem, "{call " + Global.database.getPrefix() + "getorderitem(?)}", new String[]{String.valueOf(order.getId())});
             setTitle("ใบสั่งขาย " + order.getNo() + "@" + Global.wh_grp_name);
         }
@@ -413,6 +414,7 @@ public class ActOrderInput extends ActBase {
     @Override
     public void processFinish(ResultSet rs, int tag) throws SQLException {
         if (tag == spQueryOrderItem) {
+            hideProgressDialog();
             order.getItems().clear();
             while (rs != null && rs.next()) {
                 Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"), rs.getInt("stock"), rs.getFloat("weight"), rs.getString("color"), rs.getBoolean("stepprice"), rs.getFloat("price"), rs.getInt("uom_id"), rs.getInt("wh_Id"));
