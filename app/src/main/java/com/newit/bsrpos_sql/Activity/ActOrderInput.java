@@ -141,13 +141,12 @@ public class ActOrderInput extends ActBase {
                             public void onClick(DialogInterface dialog12, int which) {
                                 //ย้ายไปพักไว้ก่อน
                                 if (item.getId() > 0) order.getDeletingItems().add(item);
-                                //update qty 0 เพื่อดีดหัว
-                                item.addQty(-1 * item.getQty());
                                 //update stock
                                 FbStock f = item.getProduct().getFbstock();
                                 fb.child(f.getKey()).child("reserve").setValue(f.getReserve() - item.getQty());
                                 //ลบออกจาก array
                                 order.getItems().remove(item);
+                                order.updateHeader();
                                 //rerun no
                                 for (int i = 1; i <= order.getItems().size(); i++)
                                     order.getItems().get(i - 1).setNo(i);

@@ -33,6 +33,7 @@ public class SqlQuery extends AsyncTask<String, String, ResultSet> {
                         stmt.setString(i + 1, spParams[i]);
                     }
                 }
+                stmt.setQueryTimeout(120);
                 stmt.execute();
                 return stmt.getResultSet();
             }
