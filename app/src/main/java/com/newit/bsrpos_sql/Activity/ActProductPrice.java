@@ -50,7 +50,7 @@ public class ActProductPrice extends ActBase {
             productprice_stock.setText(String.valueOf(prod.getRemaining()));
             productprice_wgt.setText(String.valueOf(prod.getWeight()));
 
-            new SqlQuery(ActProductPrice.this, this, 1, "{call " + Global.database.getPrefix() + "getstepprice(?,?)}", new String[]{String.valueOf(prod.getId()), String.valueOf(prod.getWh_Id())});
+            new SqlQuery(ActProductPrice.this, 1, "{call " + Global.database.getPrefix() + "getstepprice(?,?)}", new String[]{String.valueOf(prod.getId()), String.valueOf(prod.getWh_Id())});
 
             adap = new AdpCustom<StepPrice>(R.layout.listing_grid_productprice, getLayoutInflater(), stepPrices) {
                 @Override
@@ -128,7 +128,7 @@ public class ActProductPrice extends ActBase {
     }
 
     @Override
-    public void processFinish(ResultSet rs, int tag) throws SQLException {
+    public void queryReturn(ResultSet rs, int tag, Object caller) throws SQLException {
         if (tag == 1) {
             stepPrices.clear();
             while (rs != null && rs.next()) {

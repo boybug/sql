@@ -70,6 +70,6 @@ public class ActOrderPrint extends ActBase {
     }
 
     @Override
-    public void processFinish(ResultSet rs, int tag) throws SQLException {
+    public void queryReturn(ResultSet rs, int tag, Object caller) throws SQLException {
     }
 }

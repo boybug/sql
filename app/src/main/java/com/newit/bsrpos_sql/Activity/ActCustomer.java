@@ -75,7 +75,7 @@ public class ActCustomer extends ActBase {
 
     @Override
     public void refresh() {
-        new SqlQuery(ActCustomer.this, this, 1, "{call " + Global.database.getPrefix() + "getcus(?)}", new String[]{String.valueOf(Global.wh_Grp_Id)});
+        new SqlQuery(ActCustomer.this, 1, "{call " + Global.database.getPrefix() + "getcus(?)}", new String[]{String.valueOf(Global.wh_Grp_Id)});
     }
 
     @Override
@@ -93,7 +93,7 @@ public class ActCustomer extends ActBase {
     }
 
     @Override
-    public void processFinish(ResultSet rs, int tag) throws SQLException {
+    public void queryReturn(ResultSet rs, int tag, Object caller) throws SQLException {
         if (tag == 1) {
             customers.clear();
             while (rs != null && rs.next()) {

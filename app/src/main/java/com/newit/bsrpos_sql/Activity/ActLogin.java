@@ -158,7 +158,7 @@ public class ActLogin extends ActBase {
                     MessageBox("เวอร์ชั่นของคุณเป็น " + appversion + " กรุณาอัพเกรดเป็นเวอร์ชั่นใหม่สุด " + latestversion);
                     mAuth.signOut();
                 } else {
-                    new SqlQuery(ActLogin.this, ActLogin.this, spLogin, "{call " + Global.database.getPrefix() + "loginbyemail(?,?)}", new String[]{username, password});
+                    new SqlQuery(ActLogin.this, spLogin, "{call " + Global.database.getPrefix() + "loginbyemail(?,?)}", new String[]{username, password});
                 }
             }
 
@@ -203,7 +203,7 @@ public class ActLogin extends ActBase {
     }
 
     @Override
-    public void processFinish(ResultSet rs, int tag) {
+    public void queryReturn(ResultSet rs, int tag, Object caller) {
         try {
             if (tag == this.spLogin) {
                 if (rs != null && rs.next() && rs.getInt("usr_Id") > 0) {

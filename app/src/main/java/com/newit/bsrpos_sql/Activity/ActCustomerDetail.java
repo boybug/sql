@@ -84,6 +84,6 @@ public class ActCustomerDetail extends ActBase {
     }
 
     @Override
-    public void processFinish(ResultSet rs, int tag) {
+    public void queryReturn(ResultSet rs, int tag, Object caller) {
     }
 }

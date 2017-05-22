@@ -37,15 +37,16 @@ import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
 import com.newit.bsrpos_sql.Util.AdpPrint;
 import com.newit.bsrpos_sql.Util.SqlConnect;
-import com.newit.bsrpos_sql.Util.sqlCallback;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 
 @SuppressLint("Registered")
-public abstract class ActBase<T> extends AppCompatActivity implements sqlCallback {
+public abstract class ActBase<T> extends AppCompatActivity {
 
     protected EditText txt_search;
     private ProgressDialog mProgressDialog;
@@ -287,4 +288,6 @@ public abstract class ActBase<T> extends AppCompatActivity implements sqlCallbac
         AdpPrint printer = new AdpPrint(this, findViewById(rootViewId), filename);
         printManager.print("BSR POS " + filename, printer, null);
     }
+
+    public abstract void queryReturn(ResultSet rs, int tag, Object caller) throws SQLException;
 }

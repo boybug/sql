@@ -81,7 +81,7 @@ public class ActInvoiceInput extends ActBase {
         invoiceinput_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new SqlQuery(ActInvoiceInput.this, ActInvoiceInput.this, spQuery, "{call " + Global.database.getPrefix() + "getorder(?,?)}", new String[]{String.valueOf(Global.wh_Grp_Id), String.valueOf(invoice.getOrder_Id())});
+                new SqlQuery(ActInvoiceInput.this, spQuery, "{call " + Global.database.getPrefix() + "getorder(?,?)}", new String[]{String.valueOf(Global.wh_Grp_Id), String.valueOf(invoice.getOrder_Id())});
             }
         });
     }
@@ -93,7 +93,7 @@ public class ActInvoiceInput extends ActBase {
     }
 
     @Override
-    public void processFinish(ResultSet rs, int tag) throws SQLException {
+    public void queryReturn(ResultSet rs, int tag, Object caller) throws SQLException {
         if (tag == spQuery) {
             if (rs != null && rs.next()) {
                 Order o = new Order(rs.getInt("id"), rs.getString("no"), rs.getString("order_date"),

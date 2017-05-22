@@ -93,7 +93,7 @@ public class ActUser extends ActBase {
                         dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog12, int which) {
-                                new SqlQuery(ActUser.this, ActUser.this, spDelete, "{call " + Global.database.getPrefix() + "deleteuser(?,?)}", new String[]{user.getLogin(), String.valueOf(user.getId())});
+                                new SqlQuery(ActUser.this, spDelete, "{call " + Global.database.getPrefix() + "deleteuser(?,?)}", new String[]{user.getLogin(), String.valueOf(user.getId())});
                             }
                         });
                         dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
@@ -114,7 +114,7 @@ public class ActUser extends ActBase {
 
     @Override
     public void refresh() {
-        new SqlQuery(ActUser.this, this, spQuery, "{call " + Global.database.getPrefix() + "getuser(?,?)}", new String[]{Global.user.getLogin(), String.valueOf(Global.user.isAdmin())});
+        new SqlQuery(ActUser.this, spQuery, "{call " + Global.database.getPrefix() + "getuser(?,?)}", new String[]{Global.user.getLogin(), String.valueOf(Global.user.isAdmin())});
     }
 
     @Override
@@ -132,7 +132,7 @@ public class ActUser extends ActBase {
     }
 
     @Override
-    public void processFinish(ResultSet rs, int tag) throws SQLException {
+    public void queryReturn(ResultSet rs, int tag, Object caller) throws SQLException {
         if (tag == spQuery) {
             users.clear();
             while (rs != null && rs.next()) {

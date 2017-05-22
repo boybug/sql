@@ -102,12 +102,12 @@ public class ActProduct extends ActBase {
 
     @Override
     public void refresh() {
-        new SqlQuery(ActProduct.this, this, 1, "{call " + Global.database.getPrefix() + "getproduct(?)}", new String[]{String.valueOf(Global.wh_Grp_Id)});
+        new SqlQuery(ActProduct.this, 1, "{call " + Global.database.getPrefix() + "getproduct(?)}", new String[]{String.valueOf(Global.wh_Grp_Id)});
 
     }
 
     @Override
-    public void processFinish(ResultSet rs, int tag) throws SQLException {
+    public void queryReturn(ResultSet rs, int tag, Object caller) throws SQLException {
         if (tag == 1) {
             products.clear();
             while (rs != null && rs.next()) {

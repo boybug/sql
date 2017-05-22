@@ -13,12 +13,20 @@ public class SqlQuery extends AsyncTask<String, String, ResultSet> {
 
     private String spName;
     private String[] spParams;
-    public sqlCallback delegate = null;
     private ActBase activity;
+    private Object caller;
     private int tag;
 
-    public SqlQuery(ActBase activity, sqlCallback delegate, int tag, String spName, String[] spParams) {
-        this.delegate = delegate;
+    public SqlQuery(ActBase activity, int tag, String spName, String[] spParams) {
+        initialization(activity, tag, spName, spParams);
+    }
+
+    public SqlQuery(ActBase activity, int tag, String spName, String[] spParams, Object caller) {
+        this.caller = caller;
+        initialization(activity, tag, spName, spParams);
+    }
+
+    private void initialization(ActBase activity, int tag, String spName, String[] spParams) {
         this.tag = tag;
         this.spName = spName;
         this.spParams = spParams;
@@ -57,7 +65,7 @@ public class SqlQuery extends AsyncTask<String, String, ResultSet> {
     protected void onPostExecute(ResultSet rs) {
         activity.hideProgressDialog();
         try {
-            delegate.processFinish(rs, tag);
+            activity.queryReturn(rs, tag, caller);
         } catch (SQLException e) {
             e.printStackTrace();
             activity.MessageBox(spName + " post-execution error : " + e.getMessage());
