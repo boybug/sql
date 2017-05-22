@@ -56,7 +56,7 @@ public class ActLogin extends ActBase {
         saveLoginCheckBox = (CheckBox) findViewById(R.id.login_remember);
         SharedPreferences loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginPrefsEditor = loginPreferences.edit();
-        ver.setText("Ver. "+ Global.getVersion(this));
+        ver.setText("Ver. " + Global.getVersion(this));
         mAuth = FirebaseAuth.getInstance();
 
         Boolean saveLogin = loginPreferences.getBoolean("saveLogin", false);
@@ -158,7 +158,7 @@ public class ActLogin extends ActBase {
                     MessageBox("เวอร์ชั่นของคุณเป็น " + appversion + " กรุณาอัพเกรดเป็นเวอร์ชั่นใหม่สุด " + latestversion);
                     mAuth.signOut();
                 } else {
-                    new SqlQuery(ActLogin.this, spLogin, "{call " + Global.database.getPrefix() + "loginbyemail(?,?)}", new String[]{username, password});
+                    new SqlQuery(ActLogin.this, ActLogin.this, spLogin, "{call " + Global.database.getPrefix() + "loginbyemail(?,?)}", new String[]{username, password});
                 }
             }
 

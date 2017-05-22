@@ -89,7 +89,7 @@ public class ActInvoice extends ActBase {
 
     @Override
     public void refresh() {
-        new SqlQuery(ActInvoice.this, spQuery, "{call " + Global.database.getPrefix() + "getinvoice(?,?)}", new String[]{"0", String.valueOf(Global.wh_Grp_Id)});
+        new SqlQuery(ActInvoice.this, this, spQuery, "{call " + Global.database.getPrefix() + "getinvoice(?,?)}", new String[]{"0", String.valueOf(Global.wh_Grp_Id)});
     }
 
     @Override

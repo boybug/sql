@@ -116,7 +116,7 @@ public class ActOrderInputPayment extends ActBase {
                         public void onClick(DialogInterface dialog, int which) {
                             order.setRemark(orderiteminputpayment_remark.getText().toString());
                             String[] params = {String.valueOf(order.getId()), order.isShip() ? "1" : "0", String.valueOf(order.getPay()), String.valueOf(order.getRemark())};
-                            new SqlQuery(ActOrderInputPayment.this, spUpdate, "{call " + Global.database.getPrefix() + "setorderpay(?,?,?,?)}", params);
+                            new SqlQuery(ActOrderInputPayment.this, ActOrderInputPayment.this, spUpdate, "{call " + Global.database.getPrefix() + "setorderpay(?,?,?,?)}", params);
                         }
                     });
                     dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
@@ -134,7 +134,7 @@ public class ActOrderInputPayment extends ActBase {
 
     private void getInvoices() {
         invoices.clear();
-        new SqlQuery(ActOrderInputPayment.this, spGetInvoice, "{call " + Global.database.getPrefix() + "getinvoice(?,?)}", new String[]{String.valueOf(order.getId()), String.valueOf(order.getWh_grp_Id())});
+        new SqlQuery(ActOrderInputPayment.this, ActOrderInputPayment.this, spGetInvoice, "{call " + Global.database.getPrefix() + "getinvoice(?,?)}", new String[]{String.valueOf(order.getId()), String.valueOf(order.getWh_grp_Id())});
     }
 
     private void redrawOrder() {
@@ -166,11 +166,11 @@ public class ActOrderInputPayment extends ActBase {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("invoice", invoices.get(item.getItemId()));
-            Intent intent = new Intent(ActOrderInputPayment.this, ActInvoicePrint.class);
-            intent.putExtras(bundle);
-            ActOrderInputPayment.this.startActivity(intent);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("invoice", invoices.get(item.getItemId()));
+        Intent intent = new Intent(ActOrderInputPayment.this, ActInvoicePrint.class);
+        intent.putExtras(bundle);
+        ActOrderInputPayment.this.startActivity(intent);
         return true;
     }
 

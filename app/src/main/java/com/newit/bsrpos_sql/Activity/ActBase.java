@@ -64,6 +64,16 @@ public abstract class ActBase<T> extends AppCompatActivity implements sqlCallbac
         mProgressDialog.show();
     }
 
+    public void showProgressDialog(String message) {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(message);
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+        }
+        mProgressDialog.show();
+    }
+
     public void hideProgressDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
@@ -192,7 +202,7 @@ public abstract class ActBase<T> extends AppCompatActivity implements sqlCallbac
     }
 
     public void backPressed(Class nextActivity) {
-        if (nextActivity == ActLogin.class) SqlConnect.disconnect();
+        if (nextActivity == ActLogin.class) SqlConnect.disconnect(this);
         Intent intent = new Intent(getApplicationContext(), nextActivity);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -208,7 +218,7 @@ public abstract class ActBase<T> extends AppCompatActivity implements sqlCallbac
         dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog12, int which) {
-                if (nextActivity == ActLogin.class) SqlConnect.disconnect();
+                if (nextActivity == ActLogin.class) SqlConnect.disconnect(ActBase.this);
                 Intent intent = new Intent(ActBase.this.getApplicationContext(), nextActivity);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 ActBase.this.startActivity(intent);

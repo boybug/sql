@@ -60,11 +60,11 @@ public class ActInvoiceInput extends ActBase {
         invoiceinput_qty.setText(String.valueOf(invoice.getQty()));
         invoiceinput_wgt.setText(String.valueOf(invoice.getWeight()));
         invoiceinput_amt.setText(String.valueOf(invoice.getAmount()));
-        invoiceinput_listtitle.setText("รายการสินค้า(" + String.valueOf(invoice.getItems().size()) + ")");
+        invoiceinput_listtitle.setText("รายการสินค้า(" + String.valueOf(invoice.getItems(ActInvoiceInput.this).size()) + ")");
         invoiceinput_order.setText(invoice.getOrder_no());
         invoiceinput_user.setText(invoice.getUsr_name());
 
-        adap = new AdpCustom<InvoiceItem>(R.layout.listing_grid_invoiceitem, getLayoutInflater(), invoice.getItems()) {
+        adap = new AdpCustom<InvoiceItem>(R.layout.listing_grid_invoiceitem, getLayoutInflater(), invoice.getItems(ActInvoiceInput.this)) {
             @Override
             protected void populateView(View v, InvoiceItem model) {
                 TextView invoiceitem_no = (TextView) v.findViewById(R.id.invoiceitem_no);
@@ -81,7 +81,7 @@ public class ActInvoiceInput extends ActBase {
         invoiceinput_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new SqlQuery(ActInvoiceInput.this, spQuery, "{call " + Global.database.getPrefix() + "getorder(?,?)}", new String[]{String.valueOf(Global.wh_Grp_Id), String.valueOf(invoice.getOrder_Id())});
+                new SqlQuery(ActInvoiceInput.this, ActInvoiceInput.this, spQuery, "{call " + Global.database.getPrefix() + "getorder(?,?)}", new String[]{String.valueOf(Global.wh_Grp_Id), String.valueOf(invoice.getOrder_Id())});
             }
         });
     }

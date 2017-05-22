@@ -75,7 +75,7 @@ public class ActCustomer extends ActBase {
 
     @Override
     public void refresh() {
-        new SqlQuery(this, 1, "{call " + Global.database.getPrefix() + "getcus(?)}", new String[]{String.valueOf(Global.wh_Grp_Id)});
+        new SqlQuery(ActCustomer.this, this, 1, "{call " + Global.database.getPrefix() + "getcus(?)}", new String[]{String.valueOf(Global.wh_Grp_Id)});
     }
 
     @Override

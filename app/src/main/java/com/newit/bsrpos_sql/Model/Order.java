@@ -1,5 +1,6 @@
 package com.newit.bsrpos_sql.Model;
 
+import com.newit.bsrpos_sql.Activity.ActBase;
 import com.newit.bsrpos_sql.Util.SqlQuery;
 
 import java.sql.ResultSet;
@@ -228,13 +229,13 @@ public class Order extends ModelBase {
     }
 
 
-    public SqlResult save() {
+    public SqlResult save(ActBase activity) {
         SqlResult result = new SqlResult();
         if (getRecordStat() != RecordStat.NULL) {
             try {
                 String[] params = {String.valueOf(id), String.valueOf(cus_id), String.valueOf(stat), String.valueOf(wh_grp_Id), String.valueOf(usr_id),
                         String.valueOf(qty), String.valueOf(amount), String.valueOf(weight), String.valueOf(getRecordStat()), this.ship ? "1" : "0"};
-                ResultSet rs = SqlQuery.executeWait("{call " + Global.database.getPrefix() + "setorder(?,?,?,?,?,?,?,?,?,?)}", params);
+                ResultSet rs = SqlQuery.executeWait(activity, "{call " + Global.database.getPrefix() + "setorder(?,?,?,?,?,?,?,?,?,?)}", params);
                 if (rs != null && rs.next()) {
                     result.setIden(rs.getInt("Iden"));
                     result.setMsg(rs.getString("Msg"));
@@ -250,11 +251,11 @@ public class Order extends ModelBase {
                         for (OrderItem item : deletingItems) {
                             item.getOrder().setId(this.getId());
                             item.setRecordStat(RecordStat.D);
-                            result = item.delete();
+                            result = item.delete(activity);
                         }
                         for (OrderItem item : items) {
                             item.getOrder().setId(this.getId());
-                            result = item.save();
+                            result = item.save(activity);
                         }
 
                     } else result.setMsg("ไม่ได้รับคำตอบจาก server");
@@ -268,10 +269,9 @@ public class Order extends ModelBase {
     }
 
     public void updateHeader() {
-        int tempQty = 0, tempWeight = 0;
-        float tempAmount = 0;
-        for(OrderItem i : items)
-        {
+        int tempQty = 0;
+        float tempWeight = 0, tempAmount = 0;
+        for (OrderItem i : items) {
             tempQty += i.getQty();
             tempWeight += i.getWeight();
             tempAmount += i.getAmount();

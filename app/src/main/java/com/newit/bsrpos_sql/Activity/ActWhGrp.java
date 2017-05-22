@@ -68,7 +68,7 @@ public class ActWhGrp extends ActBase {
 
     @Override
     public void refresh() {
-        new SqlQuery(this, 1, "{call " + Global.database.getPrefix() + "getwhgrp(?)}", new String[]{String.valueOf(Global.user.getId())});
+        new SqlQuery(ActWhGrp.this, this, 1, "{call " + Global.database.getPrefix() + "getwhgrp(?)}", new String[]{String.valueOf(Global.user.getId())});
     }
 
     @Override

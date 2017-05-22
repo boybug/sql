@@ -1,5 +1,6 @@
 package com.newit.bsrpos_sql.Model;
 
+import com.newit.bsrpos_sql.Activity.ActBase;
 import com.newit.bsrpos_sql.Util.SqlQuery;
 
 import java.sql.ResultSet;
@@ -21,17 +22,17 @@ public class OrderItem extends ModelBase {
     private int wh_Id;
     private List<StepPrice> prices = new ArrayList<>();
 
-    public OrderItem(Order order, int no, Product product) {
+    public OrderItem(ActBase activity, Order order, int no, Product product) {
         super(true);
         qty = 0;
         price = 0;
         weight = 0;
         amount = 0;
         uom_id = product.getUom_id();
-        initialization(order, no, product);
+        initialization(activity, order, no, product);
     }
 
-    public OrderItem(Order order, int id, int no, Product product, int qty, float price, float weight, float amount, int uom_id, int wh_Id) {
+    public OrderItem(ActBase activity, Order order, int id, int no, Product product, int qty, float price, float weight, float amount, int uom_id, int wh_Id) {
         super(false);
         this.id = id;
         this.qty = qty;
@@ -40,10 +41,10 @@ public class OrderItem extends ModelBase {
         this.amount = amount;
         this.uom_id = uom_id;
         this.wh_Id = wh_Id;
-        initialization(order, no, product);
+        initialization(activity, order, no, product);
     }
 
-    private void initialization(Order order, int no, Product product) {
+    private void initialization(ActBase activity, Order order, int no, Product product) {
         this.order = order;
         this.no = no;
         this.product = product;
@@ -52,7 +53,7 @@ public class OrderItem extends ModelBase {
         //price
         if (order.getStat() == OrderStat.New && product.isStepPrice()) {
             try {
-                ResultSet rs = SqlQuery.executeWait("{call " + Global.database.getPrefix() + "getstepprice(?,?)}", new String[]{String.valueOf(product.getId()), String.valueOf(product.getWh_Id())});
+                ResultSet rs = SqlQuery.executeWait(activity, "{call " + Global.database.getPrefix() + "getstepprice(?,?)}", new String[]{String.valueOf(product.getId()), String.valueOf(product.getWh_Id())});
                 while (rs != null && rs.next()) {
                     StepPrice p = new StepPrice(rs.getInt("from"), rs.getInt("to"), rs.getFloat("price"));
                     prices.add(p);
@@ -176,14 +177,14 @@ public class OrderItem extends ModelBase {
         return uom_id;
     }
 
-    public SqlResult save() {
+    public SqlResult save(ActBase activity) {
         SqlResult result = new SqlResult();
         if (getRecordStat() != RecordStat.NULL) {
             try {
                 String[] params = {String.valueOf(order.getId()), String.valueOf(id), String.valueOf(no), String.valueOf(product.getId()),
                         String.valueOf(qty), String.valueOf(price), String.valueOf(amount), String.valueOf(weight), String.valueOf(uom_id),
                         String.valueOf(getRecordStat()), String.valueOf(product.getWh_Id())};
-                ResultSet rs = SqlQuery.executeWait("{call " + Global.database.getPrefix() + "setorderitem(?,?,?,?,?,?,?,?,?,?,?)}", params);
+                ResultSet rs = SqlQuery.executeWait(activity , "{call " + Global.database.getPrefix() + "setorderitem(?,?,?,?,?,?,?,?,?,?,?)}", params);
                 if (rs != null && rs.next()) {
                     result.setIden(rs.getInt("Iden"));
                     result.setMsg(rs.getString("Msg"));
@@ -200,11 +201,11 @@ public class OrderItem extends ModelBase {
         return result;
     }
 
-    public SqlResult delete() {
+    public SqlResult delete(ActBase activity) {
         SqlResult result = new SqlResult();
         if (getRecordStat() != RecordStat.NULL) {
             try {
-                ResultSet rs = SqlQuery.executeWait("{call " + Global.database.getPrefix() + "deleteorderitem(?)}", new String[]{String.valueOf(id)});
+                ResultSet rs = SqlQuery.executeWait(activity, "{call " + Global.database.getPrefix() + "deleteorderitem(?)}", new String[]{String.valueOf(id)});
                 if (rs != null && rs.next()) {
                     result.setIden(rs.getInt("Iden"));
                     result.setMsg(rs.getString("Msg"));

@@ -102,7 +102,7 @@ public class ActProduct extends ActBase {
 
     @Override
     public void refresh() {
-        new SqlQuery(this, 1, "{call " + Global.database.getPrefix() + "getproduct(?)}", new String[]{String.valueOf(Global.wh_Grp_Id)});
+        new SqlQuery(ActProduct.this, this, 1, "{call " + Global.database.getPrefix() + "getproduct(?)}", new String[]{String.valueOf(Global.wh_Grp_Id)});
 
     }
 

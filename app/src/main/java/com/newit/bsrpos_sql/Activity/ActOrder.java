@@ -107,7 +107,7 @@ public class ActOrder extends ActBase {
                         dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog12, int which) {
-                                new SqlQuery(ActOrder.this, spDelete, "{call " + Global.database.getPrefix() + "deleteorder(?)}", new String[]{String.valueOf(order.getId())});
+                                new SqlQuery(ActOrder.this, ActOrder.this, spDelete, "{call " + Global.database.getPrefix() + "deleteorder(?)}", new String[]{String.valueOf(order.getId())});
                             }
                         });
                         dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
@@ -144,7 +144,7 @@ public class ActOrder extends ActBase {
 
     @Override
     public void refresh() {
-        new SqlQuery(this, spQuery, "{call " + Global.database.getPrefix() + "getorder(?,?)}", new String[]{String.valueOf(Global.wh_Grp_Id), "0"});
+        new SqlQuery(ActOrder.this, this, spQuery, "{call " + Global.database.getPrefix() + "getorder(?,?)}", new String[]{String.valueOf(Global.wh_Grp_Id), "0"});
     }
 
     @Override

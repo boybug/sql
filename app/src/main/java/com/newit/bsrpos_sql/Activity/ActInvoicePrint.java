@@ -54,8 +54,8 @@ public class ActInvoicePrint extends ActBase {
         invoiceprint_cash.setChecked(invoice.getPay() == OrderPay.Cash);
         invoiceprint_transfer.setChecked(invoice.getPay() == OrderPay.Transfer);
         invoiceprint_credit.setChecked(invoice.getPay() == OrderPay.Credit);
-        invoiceprint_sales.setText("ฝ่ายขาย "+invoice.getUsr_name());
-        AdpCustom<InvoiceItem> adapOrderItem = new AdpCustom<InvoiceItem>(R.layout.listing_grid_invoiceprint, getLayoutInflater(), invoice.getItems()) {
+        invoiceprint_sales.setText("ฝ่ายขาย " + invoice.getUsr_name());
+        AdpCustom<InvoiceItem> adapOrderItem = new AdpCustom<InvoiceItem>(R.layout.listing_grid_invoiceprint, getLayoutInflater(), invoice.getItems(ActInvoicePrint.this)) {
             @Override
             protected void populateView(View v, InvoiceItem model) {
                 TextView invoiceprint_no = (TextView) v.findViewById(R.id.invoiceprint_no);

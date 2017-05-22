@@ -92,7 +92,7 @@ public class ActOrderInput extends ActBase {
             setTitle("เปิดใบสั่งใหม่@" + Global.wh_grp_name);
         } else if (order != null) {
             showProgressDialog();
-            new SqlQuery(this, spQueryOrderItem, "{call " + Global.database.getPrefix() + "getorderitem(?)}", new String[]{String.valueOf(order.getId())});
+            new SqlQuery(ActOrderInput.this, this, spQueryOrderItem, "{call " + Global.database.getPrefix() + "getorderitem(?)}", new String[]{String.valueOf(order.getId())});
             setTitle("ใบสั่งขาย " + order.getNo() + "@" + Global.wh_grp_name);
         }
         redrawOrder();
@@ -205,7 +205,7 @@ public class ActOrderInput extends ActBase {
                     if (p.getRemaining() > 0) {
                         OrderItem item = order.findItem(p);
                         if (item == null) {
-                            item = new OrderItem(order, order.getItems().size() + 1, p);
+                            item = new OrderItem(ActOrderInput.this, order, order.getItems().size() + 1, p);
                             order.getItems().add(item);
                         }
                         item.addQty(1);
@@ -243,7 +243,7 @@ public class ActOrderInput extends ActBase {
             bt_cmd_save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    SqlResult result = order.save();
+                    SqlResult result = order.save(ActOrderInput.this);
                     ActOrderInput.this.redrawOrder();
                     adapOrderItem.notifyDataSetChanged();
                     ActOrderInput.this.MessageBox(result.getMsg() == null ? "บันทึกสำเร็จ" : result.getMsg());
@@ -374,7 +374,7 @@ public class ActOrderInput extends ActBase {
     @Override
     public void refresh() {
         if (order.getStat() == OrderStat.New) {
-            new SqlQuery(this, spQueryProduct, "{call " + Global.database.getPrefix() + "getproduct(?)}", new String[]{String.valueOf(Global.wh_Grp_Id)});
+            new SqlQuery(ActOrderInput.this, this, spQueryProduct, "{call " + Global.database.getPrefix() + "getproduct(?)}", new String[]{String.valueOf(Global.wh_Grp_Id)});
         }
     }
 
@@ -388,7 +388,7 @@ public class ActOrderInput extends ActBase {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-         if (item.getItemId() ==  1) {
+        if (item.getItemId() == 1) {
             Bundle bundle = new Bundle();
             bundle.putSerializable("order", order);
             Intent intent = new Intent(ActOrderInput.this, ActOrderPrint.class);
@@ -413,16 +413,16 @@ public class ActOrderInput extends ActBase {
     @Override
     public void processFinish(ResultSet rs, int tag) throws SQLException {
         if (tag == spQueryOrderItem) {
-            hideProgressDialog();
             order.getItems().clear();
             while (rs != null && rs.next()) {
                 Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"), rs.getInt("stock"), rs.getFloat("weight"), rs.getString("color"), rs.getBoolean("stepprice"), rs.getFloat("price"), rs.getInt("uom_id"), rs.getInt("wh_Id"));
                 updateFbStock(p);
-                OrderItem item = new OrderItem(order, rs.getInt("id"), rs.getInt("no"), p, rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("uom_id"), rs.getInt("wh_Id"));
+                OrderItem item = new OrderItem(ActOrderInput.this, order, rs.getInt("id"), rs.getInt("no"), p, rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("uom_id"), rs.getInt("wh_Id"));
                 order.getItems().add(item);
             }
             adapOrderItem.notifyDataSetChanged();
             redrawOrder();
+            hideProgressDialog();
         } else if (tag == spQueryProduct) {
             products.clear();
             while (rs != null && rs.next()) {
