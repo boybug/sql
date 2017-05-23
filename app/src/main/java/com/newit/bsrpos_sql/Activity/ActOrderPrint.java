@@ -1,10 +1,15 @@
 package com.newit.bsrpos_sql.Activity;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.Bundle;
+import android.support.v4.print.PrintHelper;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.ListView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.newit.bsrpos_sql.Model.Order;
@@ -13,6 +18,9 @@ import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
 import com.newit.bsrpos_sql.Util.AdpPrint;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -23,13 +31,13 @@ public class ActOrderPrint extends ActBase {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        View decorView = getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        View decorView = getWindow().getDecorView();
+//        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
+//        decorView.setSystemUiVisibility(uiOptions);
         setContentView(R.layout.orderprint);
 
-        hideActionBar();
+        //  hideActionBar();
 
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
@@ -60,7 +68,29 @@ public class ActOrderPrint extends ActBase {
         ListView list = (ListView) findViewById(R.id.orderprint_list);
         list.setAdapter(adap);
         AdpPrint.formatListView(list);
-        printPDF(order.getNo(), R.id.relativeLayout_ActOrderPrint);
+        //printPDF(order.getNo(), R.id.relativeLayout_ActOrderPrint);
+
+
+    }
+
+    public static Bitmap loadBitmapFromView(View v, int width, int height) {
+        Bitmap b = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        v.draw(c);
+        return b;
+    }
+
+    public void saveBitmap(Bitmap bitmap) {
+        File imagePath = new File("/sdcard/screenshotdemo.jpg");
+        FileOutputStream fos;
+        try {
+            fos = new FileOutputStream(imagePath);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            MessageBox(e.getMessage());
+        }
     }
 
     @Override
@@ -72,4 +102,25 @@ public class ActOrderPrint extends ActBase {
     @Override
     public void queryReturn(ResultSet rs, int tag, Object caller) throws SQLException {
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.nologout, menu);
+        menu.add(0, 1, Menu.NONE, "พิมพ์ใบหยิบสินค้า");
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == 1) {
+            TableLayout orderprint_table = (TableLayout) findViewById(R.id.orderprint_table);
+            Bitmap bitmap1 = loadBitmapFromView(orderprint_table, orderprint_table.getWidth(), orderprint_table.getHeight());
+            PrintHelper photoPrinter = new PrintHelper(this);
+            photoPrinter.setScaleMode(PrintHelper.SCALE_MODE_FIT);
+            photoPrinter.printBitmap("droids.jpg - test print", bitmap1);
+        }
+        return true;
+    }
+
+
 }
