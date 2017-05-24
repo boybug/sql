@@ -253,6 +253,7 @@ public class Order extends ModelBase {
                             item.setRecordStat(RecordStat.D);
                             result = item.delete(activity);
                         }
+                        deletingItems.clear();
                         for (OrderItem item : items) {
                             item.getOrder().setId(this.getId());
                             result = item.save(activity);

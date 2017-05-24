@@ -15,6 +15,7 @@ public class OrderItem extends ModelBase {
     private int no;
     private Product product;
     private int qty;
+    private int qtybak;
     private float price;
     private float weight;
     private float amount;
@@ -25,6 +26,7 @@ public class OrderItem extends ModelBase {
     public OrderItem(Order order, int no, Product product) {
         super(true);
         qty = 0;
+        qtybak = 0;
         price = 0;
         weight = 0;
         amount = 0;
@@ -39,6 +41,7 @@ public class OrderItem extends ModelBase {
         super(false);
         this.id = id;
         this.qty = qty;
+        this.qtybak = qty;
         this.price = price;
         this.weight = weight;
         this.amount = amount;
@@ -181,6 +184,7 @@ public class OrderItem extends ModelBase {
                     if (result.getIden() > 0) {
                         setId(result.getIden());
                         setRecordStat(RecordStat.NULL);
+                        qtybak = 0;
                     } else result.setMsg("ไม่ได้รับคำตอบจาก server");
                 }
             } catch (SQLException e) {
@@ -215,5 +219,9 @@ public class OrderItem extends ModelBase {
     @Override
     public String getSearchString() {
         return product.getName();
+    }
+
+    public int getDelta() {
+        return qty - qtybak;
     }
 }

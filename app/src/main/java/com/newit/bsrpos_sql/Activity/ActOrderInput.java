@@ -249,7 +249,7 @@ public class ActOrderInput extends ActBase {
             public void onClick(View v) {
                 if (order.getUsr_id() != Global.user.getId())
                     MessageBox("ไม่สามารถบันทึกรายการคนอื่นได้");
-                else if (order.getStat() == OrderStat.New)
+                else if (order.getStat() == OrderStat.Confirm)
                     MessageBox("ไม่สามารถบันทึกรายการที่ยืนยันแล้ว");
                 else {
                     SqlResult result = order.save(ActOrderInput.this);
@@ -375,8 +375,41 @@ public class ActOrderInput extends ActBase {
     public void onBackPressed() {
         if (order.getRecordStat() == RecordStat.NULL)
             backPressed(ActOrder.class);
-        else
-            backPressed(ActOrder.class, "รายการยังไม่เซฟ", "เอกสารยังไม่เซฟ ท่านต้องการออกโดยไม่เซฟหรือไม่?");
+        else {
+            AlertDialog.Builder dialog = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert) : new AlertDialog.Builder(this);
+            dialog.setTitle("รายการยังไม่เซฟ");
+            dialog.setIcon(R.mipmap.ic_launcher);
+            dialog.setCancelable(true);
+            dialog.setMessage("เอกสารยังไม่เซฟ ท่านต้องการออกโดยไม่เซฟหรือไม่?");
+            dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog12, int which) {
+                    for (OrderItem item : order.getItems()) {
+                        if (item.getDelta() != 0) {
+                            FbStock f = item.getProduct().getFbstock();
+                            if (f != null) {
+                                fb.child(f.getKey()).child("reserve").setValue(f.getReserve() - item.getDelta());
+                            }
+                        }
+                    }
+                    for (OrderItem item : order.getDeletingItems()) {
+                        FbStock f = item.getProduct().getFbstock();
+                        if (f != null) {
+                            fb.child(f.getKey()).child("reserve").setValue(f.getReserve() + item.getQty());
+                        }
+                    }
+                    backPressed(ActOrder.class);
+
+                }
+            });
+            dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog1, int which) {
+                    dialog1.cancel();
+                }
+            });
+            dialog.show();
+        }
     }
 
     @Override
