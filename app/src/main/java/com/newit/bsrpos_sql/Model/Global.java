@@ -14,6 +14,10 @@ public class Global {
     public static boolean isLocal = false;
     public static Database database;
 
+    public static String getFbStockPath() {
+        return "fbstock" + String.valueOf(wh_Grp_Id);
+    }
+
     public static Boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();

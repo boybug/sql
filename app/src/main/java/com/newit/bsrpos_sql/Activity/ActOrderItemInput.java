@@ -15,6 +15,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.OrderItem;
 import com.newit.bsrpos_sql.R;
 
@@ -36,7 +37,7 @@ public class ActOrderItemInput extends ActBase {
         setContentView(R.layout.orderiteminput);
 
         if (validate()) {
-            fb = FirebaseDatabase.getInstance().getReference().child("fbstock").child(item.getProduct().getFbstock().getKey()).child("reserve");
+            fb = FirebaseDatabase.getInstance().getReference().child(Global.getFbStockPath()).child(item.getProduct().getFbstock().getKey()).child("reserve");
 
             TextView orderiteminput_desc = (TextView) findViewById(R.id.orderiteminput_desc);
             orderiteminput_stock = (TextView) findViewById(R.id.orderiteminput_stock);

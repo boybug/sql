@@ -40,7 +40,7 @@ public class ActProductPrice extends ActBase {
         setContentView(R.layout.productprice);
 
         if (validate()) {
-            fb = FirebaseDatabase.getInstance().getReference().child("fbstock");
+            fb = FirebaseDatabase.getInstance().getReference().child(Global.getFbStockPath());
 
             TextView productprice_name = (TextView) findViewById(R.id.productprice_name);
             productprice_stock = (TextView) findViewById(R.id.productprice_stock);

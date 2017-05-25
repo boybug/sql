@@ -31,14 +31,7 @@ public class ActOrderPrint extends ActBase {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        View decorView = getWindow().getDecorView();
-//        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
-//        decorView.setSystemUiVisibility(uiOptions);
         setContentView(R.layout.orderprint);
-
-        //  hideActionBar();
-
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
             finish();
@@ -69,8 +62,6 @@ public class ActOrderPrint extends ActBase {
         list.setAdapter(adap);
         AdpPrint.formatListView(list);
         //printPDF(order.getNo(), R.id.relativeLayout_ActOrderPrint);
-
-
     }
 
     public static Bitmap loadBitmapFromView(View v, int width, int height) {

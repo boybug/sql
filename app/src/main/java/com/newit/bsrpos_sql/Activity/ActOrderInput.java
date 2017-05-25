@@ -59,7 +59,7 @@ public class ActOrderInput extends ActBase {
     private final int spQueryOrderItemPrice = 3;
 
     private DrawerLayout drawer;
-    DatabaseReference fb = FirebaseDatabase.getInstance().getReference().child("fbstock");
+    DatabaseReference fb = FirebaseDatabase.getInstance().getReference().child(Global.getFbStockPath());
 
 
     @SuppressWarnings("unchecked")
@@ -217,12 +217,15 @@ public class ActOrderInput extends ActBase {
                         adapOrderItem.notifyDataSetChanged();
                         listOrderItem.setSelection(order.getItems().indexOf(item));
                         if (p.getFbstock() == null) {
-                            FbStock fbStock = new FbStock();
-                            fbStock.setReserve(1);
-                            fbStock.setProd_id(p.getId());
-                            fbStock.setWh_id(p.getWh_Id());
-                            String key = fb.push().getKey();
-                            fb.child(key).setValue(fbStock);
+                            updateFbStock(p);
+                            if (p.getFbstock() == null) {
+                                FbStock fbStock = new FbStock();
+                                fbStock.setReserve(1);
+                                fbStock.setProd_id(p.getId());
+                                fbStock.setWh_id(p.getWh_Id());
+                                String key = fb.push().getKey();
+                                fb.child(key).setValue(fbStock);
+                            }
                         } else {
                             FbStock f = p.getFbstock();
                             f.setReserve(f.getReserve() + 1);
@@ -234,8 +237,6 @@ public class ActOrderInput extends ActBase {
                 }
             });
             refresh();
-
-
         } else {
             DrawerLayout drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -336,16 +337,7 @@ public class ActOrderInput extends ActBase {
             int delta = data.getIntExtra("DELTA", 0);
             OrderItem oi = order.getItems().get(selectedIndex);
             oi.addQty(delta);
-
             adapOrderItem.notifyDataSetChanged();
-
-            for (Product p : products) {
-                if (p.getId() == oi.getProduct().getId()) {
-                    p.addReserve(delta);
-                    break;
-                }
-            }
-            adapProduct.notifyDataSetChanged();
             ActOrderInput.this.redrawOrder();
         }
     }
