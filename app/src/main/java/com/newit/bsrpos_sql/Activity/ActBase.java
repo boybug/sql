@@ -5,13 +5,18 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
+import android.print.PrintAttributes;
+import android.print.PrintDocumentAdapter;
+import android.print.PrintJob;
 import android.print.PrintManager;
 import android.speech.RecognizerIntent;
 import android.support.annotation.IdRes;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -23,6 +28,7 @@ import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.view.Menu;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -35,7 +41,6 @@ import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.ModelBase;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
-import com.newit.bsrpos_sql.Util.AdpPrint;
 import com.newit.bsrpos_sql.Util.SqlConnect;
 
 import java.sql.ResultSet;
@@ -283,10 +288,12 @@ public abstract class ActBase<T> extends AppCompatActivity {
         MessageBox("no implementation.");
     }
 
-    public void printPDF(String filename, @IdRes int rootViewId) {
-        PrintManager printManager = (PrintManager) getSystemService(PRINT_SERVICE);
-        AdpPrint printer = new AdpPrint(this, findViewById(rootViewId), filename);
-        printManager.print("BSR POS " + filename, printer, null);
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void createWebPrintJob(WebView webView, String jobName) {
+        PrintManager printManager = (PrintManager) ActBase.this.getSystemService(Context.PRINT_SERVICE);
+        PrintDocumentAdapter printAdapter = null;
+        printAdapter = webView.createPrintDocumentAdapter(jobName);
+        PrintJob printJob = printManager.print(jobName, printAdapter, new PrintAttributes.Builder().build());
     }
 
     public abstract void queryReturn(ResultSet rs, int tag, Object caller) throws SQLException;

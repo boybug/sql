@@ -10,8 +10,9 @@ public class InvoiceItem extends ModelBase {
     private float price;
     private float weight;
     private float amount;
+    private String html;
 
-    public InvoiceItem(int no, String prod_name, int qty, float price, float weight, float amount) {
+    public InvoiceItem(int no, String prod_name, int qty, float price, float weight, float amount, String html) {
         super(false);
         this.no = no;
         this.prod_name = prod_name;
@@ -19,6 +20,7 @@ public class InvoiceItem extends ModelBase {
         this.price = price;
         this.weight = weight;
         this.amount = amount;
+        this.html = html;
     }
 
     public int getNo() {
@@ -39,6 +41,10 @@ public class InvoiceItem extends ModelBase {
 
     public float getAmount() {
         return amount;
+    }
+
+    public String getHtml() {
+        return html;
     }
 
     @Override

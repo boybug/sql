@@ -2,14 +2,17 @@ package com.newit.bsrpos_sql.Activity;
 
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
@@ -42,6 +45,7 @@ public class ActOrderInputPayment extends ActBase {
     private RadioButton radio_paycash, radio_paytranfer, radio_paycredit;
     private Switch switch_payship;
     private Menu menu;
+    private WebView mWebView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,11 +174,20 @@ public class ActOrderInputPayment extends ActBase {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("invoice", invoices.get(item.getItemId()));
-        Intent intent = new Intent(ActOrderInputPayment.this, ActInvoicePrint.class);
-        intent.putExtras(bundle);
-        ActOrderInputPayment.this.startActivity(intent);
+        final Invoice invoice = invoices.get(item.getItemId());
+        WebView webView = new WebView(ActOrderInputPayment.this);
+        webView.setWebViewClient(new WebViewClient() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                Log.i("", "page finished loading " + url);
+                createWebPrintJob(view, "BSRPOS Invoice:" + invoice.getNo());
+                mWebView = null;
+            }
+        });
+        String htmlDocument = invoice.getHtml();
+        webView.loadDataWithBaseURL(null, htmlDocument, "text/HTML", "UTF-8", null);
+        mWebView = webView;
         return true;
     }
 
@@ -193,7 +206,7 @@ public class ActOrderInputPayment extends ActBase {
             while (rs != null && rs.next()) {
                 Invoice i = new Invoice(rs.getInt("id"), rs.getString("no"), rs.getString("invoice_date"), rs.getString("cus_name"),
                         rs.getInt("qty"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getString("usr_name"),
-                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"), rs.getInt("order_id"), rs.getString("order_no"));
+                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"), rs.getInt("order_id"), rs.getString("order_no"), rs.getString("html"));
                 invoices.add(i);
             }
             if (menu != null) {

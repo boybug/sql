@@ -9,11 +9,15 @@ import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.annotation.RequiresApi;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
@@ -60,6 +64,7 @@ public class ActOrderInput extends ActBase {
 
     private DrawerLayout drawer;
     DatabaseReference fb = FirebaseDatabase.getInstance().getReference().child(Global.getFbStockPath());
+    private WebView mWebView;
 
 
     @SuppressWarnings("unchecked")
@@ -415,18 +420,32 @@ public class ActOrderInput extends ActBase {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.nologout, menu);
         menu.add(0, 1, Menu.NONE, "พิมพ์ใบหยิบสินค้า");
-        menu.add(0, 2, Menu.NONE, "ชำระเงินและยืนยัน");
+        menu.add(0, 2, Menu.NONE, "ชำุระเงินและยืนยัน");
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == 1) {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("order", order);
-            Intent intent = new Intent(ActOrderInput.this, ActOrderPrint.class);
-            intent.putExtras(bundle);
-            ActOrderInput.this.startActivity(intent);
+            if (order.getItems().size() == 0) {
+                MessageBox("ไม่มีรายการขาย ไม่สามารถพิมพ์ใบเบิกได้");
+            } else if (Objects.equals(order.getNo(), null) || order.getRecordStat() != RecordStat.NULL) {
+                MessageBox("เอกสารมีการเปลี่ยนแปลง กรุณาบันทึกก่อนการพิมพ์ใบเบิก");
+            } else {
+                WebView webView = new WebView(ActOrderInput.this);
+                webView.setWebViewClient(new WebViewClient() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                    @Override
+                    public void onPageFinished(WebView view, String url) {
+                        Log.i("", "page finished loading " + url);
+                        createWebPrintJob(view, "BSRPOS Order:" + order.getNo());
+                        mWebView = null;
+                    }
+                });
+                String htmlDocument = order.getHtml();
+                webView.loadDataWithBaseURL(null, htmlDocument, "text/HTML", "UTF-8", null);
+                mWebView = webView;
+            }
         } else if (item.getItemId() == 2) {
             if (order.getItems().size() == 0) {
                 MessageBox("ไม่มีรายการขาย ไม่สามารถชำระเงินได้");
@@ -450,7 +469,7 @@ public class ActOrderInput extends ActBase {
             while (rs != null && rs.next()) {
                 Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"), rs.getInt("stock"), rs.getFloat("weight"), rs.getString("color"), rs.getBoolean("stepprice"), rs.getFloat("price"), rs.getInt("uom_id"), rs.getInt("wh_Id"));
                 updateFbStock(p);
-                OrderItem item = new OrderItem(order, rs.getInt("id"), rs.getInt("no"), p, rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("uom_id"), rs.getInt("wh_Id"));
+                OrderItem item = new OrderItem(order, rs.getInt("id"), rs.getInt("no"), p, rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("uom_id"), rs.getInt("wh_Id"), rs.getString("html"));
                 new SqlQuery(ActOrderInput.this, spQueryOrderItemPrice, "{call " + Global.database.getPrefix() + "getstepprice(?,?)}", new String[]{String.valueOf(p.getId()), String.valueOf(p.getWh_Id())}, item);
                 order.getItems().add(item);
             }

@@ -21,9 +21,9 @@ public class Invoice extends ModelBase {
     private String remark;
     private int order_Id;
     private String order_no;
+    private String html;
 
-    public Invoice(int id, String no, String date, String cus_name, int qty, float weight,
-                   float amount, String usr_name, OrderPay pay, boolean ship, String remark, int order_Id, String order_no) {
+    public Invoice(int id, String no, String date, String cus_name, int qty, float weight, float amount, String usr_name, OrderPay pay, boolean ship, String remark, int order_Id, String order_no, String html) {
         super(false);
         this.id = id;
         this.no = no;
@@ -38,6 +38,7 @@ public class Invoice extends ModelBase {
         this.remark = remark;
         this.order_Id = order_Id;
         this.order_no = order_no;
+        this.html = html;
     }
 
     public String getNo() {
@@ -94,6 +95,15 @@ public class Invoice extends ModelBase {
 
     public String getOrder_no() {
         return order_no;
+    }
+
+    public String getHtml() {
+        String invoiceitem = "";
+        for (InvoiceItem i : items) {
+            invoiceitem += i.getHtml();
+        }
+        String replaced = html.replaceAll("@invoiceitem", invoiceitem);
+        return replaced;
     }
 
     @Override

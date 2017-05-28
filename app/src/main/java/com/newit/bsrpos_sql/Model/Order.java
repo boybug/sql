@@ -29,6 +29,7 @@ public class Order extends ModelBase {
     private OrderPay pay;
     private boolean ship;
     private String remark;
+    private String html;
 
     public Order(int cus_id, String cus_name, boolean ship) {
         super(true);
@@ -47,7 +48,7 @@ public class Order extends ModelBase {
     }
 
     public Order(int id, String no, String date, int cus_id, String cus_name, int wh_grp_Id, OrderStat stat, int qty, float weight,
-                 float amount, int usr_id, String usr_name, OrderPay pay, boolean ship, String remark) {
+                 float amount, int usr_id, String usr_name, OrderPay pay, boolean ship, String remark, String html) {
         super(false);
         this.id = id;
         this.no = no;
@@ -64,6 +65,7 @@ public class Order extends ModelBase {
         this.pay = pay;
         this.ship = ship;
         this.remark = remark;
+        this.html = html;
     }
 
     public String getNo() {
@@ -207,6 +209,15 @@ public class Order extends ModelBase {
         }
     }
 
+    public String getHtml() {
+        String orderitem = "";
+        for (OrderItem i : items) {
+            orderitem += i.getHtml();
+        }
+        String replaced = html.replaceAll("@orderitem", orderitem);
+        return replaced;
+    }
+
     public List<OrderItem> getDeletingItems() {
         return deletingItems;
     }
@@ -227,7 +238,6 @@ public class Order extends ModelBase {
         }
         return null;
     }
-
 
     public SqlResult save(ActBase activity) {
         SqlResult result = new SqlResult();

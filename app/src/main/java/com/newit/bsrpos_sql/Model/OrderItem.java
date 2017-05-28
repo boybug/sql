@@ -22,6 +22,7 @@ public class OrderItem extends ModelBase {
     private int uom_id;
     private int wh_Id;
     private List<StepPrice> prices = new ArrayList<>();
+    private String html;
 
     public OrderItem(Order order, int no, Product product) {
         super(true);
@@ -37,7 +38,7 @@ public class OrderItem extends ModelBase {
         this.product = product;
     }
 
-    public OrderItem(Order order, int id, int no, Product product, int qty, float price, float weight, float amount, int uom_id, int wh_Id) {
+    public OrderItem(Order order, int id, int no, Product product, int qty, float price, float weight, float amount, int uom_id, int wh_Id ,String html) {
         super(false);
         this.id = id;
         this.qty = qty;
@@ -50,6 +51,7 @@ public class OrderItem extends ModelBase {
         this.order = order;
         this.no = no;
         this.product = product;
+        this.html = html;
     }
 
     public int getId() {
@@ -223,5 +225,9 @@ public class OrderItem extends ModelBase {
 
     public int getDelta() {
         return qty - qtybak;
+    }
+
+    public String getHtml() {
+        return html;
     }
 }
