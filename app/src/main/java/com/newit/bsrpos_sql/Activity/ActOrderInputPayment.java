@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,6 +37,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ActOrderInputPayment extends ActBase {
 
@@ -91,14 +94,17 @@ public class ActOrderInputPayment extends ActBase {
                     case R.id.radio_paycash:
                         order.setPay(OrderPay.Cash);
                         orderiteminputpayment_charge.setText(0);
+                        calRefund();
                         break;
                     case R.id.radio_paytranfer:
                         order.setPay(OrderPay.Transfer);
                         orderiteminputpayment_charge.setText(0);
+                        calRefund();
                         break;
                     case R.id.radio_paycredit:
                         order.setPay(OrderPay.Credit);
                         orderiteminputpayment_charge.setText(String.valueOf((order.getAmount() * 2) / 100.00));
+                        calRefund();
                         break;
                 }
             }
@@ -111,6 +117,20 @@ public class ActOrderInputPayment extends ActBase {
         });
 
         redrawOrder();
+
+        orderiteminputpayment_paid.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                getpaid();
+                calRefund();
+            }
+        });
 
         //region SAVE
         Button bt_cmd_save = (Button) findViewById(R.id.bt_cmd_save);
@@ -165,6 +185,8 @@ public class ActOrderInputPayment extends ActBase {
         orderiteminputpayment_wgt.setText(String.valueOf(order.getWeight()));
         orderiteminputpayment_amt.setText(String.valueOf(order.getAmount()));
         switch_payship.setChecked(order.isShip());
+        orderiteminputpayment_paid.setText(String.valueOf(order.getAmount()));
+        orderiteminputpayment_refund.setText("0");
 
         if (order.getStat() == OrderStat.Confirm) {
             if (order.getPay() == OrderPay.Cash) {
@@ -176,6 +198,19 @@ public class ActOrderInputPayment extends ActBase {
             }
             orderiteminputpayment_remark.setText(order.getRemark());
         } else order.setPay(OrderPay.Cash);
+    }
+
+    private void calRefund(){
+        float x = (float) (Float.valueOf(orderiteminputpayment_paid.getText().toString())  - (order.getAmount() + ((order.getAmount() * 2) / 100.00)));
+        orderiteminputpayment_refund.setText(String.valueOf(x));
+    }
+
+    private Float getpaid() {
+        if (orderiteminputpayment_paid.length() == 0) {
+            orderiteminputpayment_paid.setText("0");
+            orderiteminputpayment_paid.setSelectAllOnFocus(true);
+        }
+        return Float.valueOf(orderiteminputpayment_paid.getText().toString());
     }
 
     @Override
