@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimaryDark">#303F9F</color>
 
     <color name="colorPrimary">#0b6486</color>
     <color name="colorPrimaryNavy">#9DD8D2</color>
@@ -12,8 +11,6 @@
     <color name="colorSquid">#74b1c7</color>
     <color name="colorInsect">#bcdee7</color>
     <color name="colorBeef">#3dbb9f</color>
-    <color name="colorChicken">#71c7b3</color>
-    <color name="colorPig">#abdacf</color>
 
     <color name="colorGrey">#eeeeee</color>
     <color name="colorDark">#333333</color>

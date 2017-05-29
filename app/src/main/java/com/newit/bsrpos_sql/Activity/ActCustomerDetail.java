@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.newit.bsrpos_sql.Model.Customer;
+import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.R;
 
 import java.sql.ResultSet;
@@ -22,6 +23,8 @@ public class ActCustomerDetail extends ActBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.customerdetail);
+
+        setTitle("รายละเอียดลูกค้า@" + Global.wh_grp_name);
 
         if (validate()) {
             TextView customerdetail_name = (TextView) findViewById(R.id.customerdetail_name);

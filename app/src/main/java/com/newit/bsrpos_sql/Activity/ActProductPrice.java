@@ -39,6 +39,8 @@ public class ActProductPrice extends ActBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.productprice);
 
+        setTitle("รายละเอียดสินค้า@" + Global.wh_grp_name);
+
         if (validate()) {
             fb = FirebaseDatabase.getInstance().getReference().child(Global.getFbStockPath());
 

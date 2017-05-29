@@ -28,6 +28,7 @@ public class ActInvoiceInput extends ActBase {
     private AdpCustom<InvoiceItem> adap;
     private final int spQueryOrder = 1;
     private final int spQueryInvoiceItem = 2;
+    private TextView invoiceinput_listtitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +52,7 @@ public class ActInvoiceInput extends ActBase {
         TextView invoiceinput_qty = (TextView) findViewById(R.id.invoiceinput_qty);
         TextView invoiceinput_wgt = (TextView) findViewById(R.id.invoiceinput_wgt);
         TextView invoiceinput_amt = (TextView) findViewById(R.id.invoiceinput_amt);
-        TextView invoiceinput_listtitle = (TextView) findViewById(R.id.invoiceinput_listtitle);
+        invoiceinput_listtitle = (TextView) findViewById(R.id.invoiceinput_listtitle);
         TextView invoiceinput_order = (TextView) findViewById(R.id.invoiceinput_order);
         TextView invoiceinput_user = (TextView) findViewById(R.id.invoiceinput_user);
         Button bt_cmd_save = (Button) findViewById(R.id.bt_cmd_save);
@@ -62,7 +63,6 @@ public class ActInvoiceInput extends ActBase {
         invoiceinput_qty.setText(String.valueOf(invoice.getQty()));
         invoiceinput_wgt.setText(String.valueOf(invoice.getWeight()));
         invoiceinput_amt.setText(String.valueOf(invoice.getAmount()));
-        invoiceinput_listtitle.setText("รายการสินค้า(" + String.valueOf(invoice.getItems().size()) + ")");
         invoiceinput_order.setText(invoice.getOrder_no());
         invoiceinput_user.setText(invoice.getUsr_name());
 
@@ -101,6 +101,8 @@ public class ActInvoiceInput extends ActBase {
                 InvoiceItem item = new InvoiceItem(rs.getInt("no"), rs.getString("prod_name"), rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"));
                 invoice.getItems().add(item);
             }
+            invoiceinput_listtitle.setText("รายการสินค้า(" + String.valueOf(invoice.getItems().size()) + ")");
+            adap.notifyDataSetChanged();
 
         } else if (tag == spQueryOrder) {
             if (rs != null && rs.next()) {
