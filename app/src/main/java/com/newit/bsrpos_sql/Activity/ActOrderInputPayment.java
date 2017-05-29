@@ -222,6 +222,7 @@ public class ActOrderInputPayment extends ActBase {
         switch_payship.setChecked(order.isShip());
         orderiteminputpayment_paid.setText(String.valueOf(order.getAmount()));
         orderiteminputpayment_refund.setText("0");
+        orderiteminputpayment_charge.setText("0");
 
         if (order.getStat() == OrderStat.Confirm) {
             if (order.getPay() == OrderPay.Cash) {
