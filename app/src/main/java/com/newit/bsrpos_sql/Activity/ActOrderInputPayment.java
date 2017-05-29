@@ -16,7 +16,6 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -35,9 +34,9 @@ import com.newit.bsrpos_sql.Util.SqlQuery;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ActOrderInputPayment extends ActBase {
 
@@ -47,12 +46,13 @@ public class ActOrderInputPayment extends ActBase {
     private TextView orderiteminputpayment_no, orderiteminputpayment_qty, orderiteminputpayment_wgt, orderiteminputpayment_amt, orderinput_cus, orderiteminputpayment_remark;
     private RadioButton radio_paycash, radio_paytranfer, radio_paycredit;
     private Switch switch_payship;
-    private EditText orderiteminputpayment_paid,orderiteminputpayment_charge, orderiteminputpayment_refund;
+    private EditText orderiteminputpayment_paid, orderiteminputpayment_charge, orderiteminputpayment_refund;
     private Menu menu;
     private WebView webView;
     private final int spUpdate = 1;
     private final int spGetInvoice = 2;
     private final int spQueryInvoicePrint = 3;
+    private boolean stop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,17 +93,17 @@ public class ActOrderInputPayment extends ActBase {
                 switch (checkedId) {
                     case R.id.radio_paycash:
                         order.setPay(OrderPay.Cash);
-                        orderiteminputpayment_charge.setText(0);
+                        stop = true;
                         calRefund();
                         break;
                     case R.id.radio_paytranfer:
                         order.setPay(OrderPay.Transfer);
-                        orderiteminputpayment_charge.setText(0);
+                        stop = true;
                         calRefund();
                         break;
                     case R.id.radio_paycredit:
                         order.setPay(OrderPay.Credit);
-                        orderiteminputpayment_charge.setText(String.valueOf((order.getAmount() * 2) / 100.00));
+                        stop = true;
                         calRefund();
                         break;
                 }
@@ -122,13 +122,48 @@ public class ActOrderInputPayment extends ActBase {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!stop) {
+                    float charge;
+                    if (order.getPay() == OrderPay.Credit) {
+                        charge = (float) ((order.getAmount() * 2) / 100.00);
+                    } else charge = 0;
+                    if(s.length() == 0){
+                        s = "0";
+                    }
+                    float paid = Float.parseFloat(s.toString());
+                    float refund = paid - order.getAmount() - charge ;
+                    DecimalFormat format = new DecimalFormat("##.##");
+                    String formattedText = format.format(refund);
+                    orderiteminputpayment_refund.setText(formattedText);
+                }
             }
             @Override
             public void afterTextChanged(Editable s) {
-                getpaid();
-                calRefund();
+                if (orderiteminputpayment_paid.length() == 0) {
+                    orderiteminputpayment_paid.setText("0");
+                    orderiteminputpayment_paid.setSelectAllOnFocus(true);
+                }
+            }
+        });
+
+        orderiteminputpayment_refund.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (orderiteminputpayment_refund.length() == 0) {
+                    orderiteminputpayment_refund.setText("0");
+                    orderiteminputpayment_refund.setSelectAllOnFocus(true);
+                }
             }
         });
 
@@ -197,20 +232,25 @@ public class ActOrderInputPayment extends ActBase {
                 radio_paycredit.setChecked(true);
             }
             orderiteminputpayment_remark.setText(order.getRemark());
+            orderiteminputpayment_paid.setText(String.valueOf(order.getPaid()));
+            orderiteminputpayment_refund.setText(String.valueOf(order.getRefund()));
+            orderiteminputpayment_charge.setText(String.valueOf(order.getCharge()));
         } else order.setPay(OrderPay.Cash);
     }
 
-    private void calRefund(){
-        float x = (float) (Float.valueOf(orderiteminputpayment_paid.getText().toString())  - (order.getAmount() + ((order.getAmount() * 2) / 100.00)));
-        orderiteminputpayment_refund.setText(String.valueOf(x));
-    }
-
-    private Float getpaid() {
-        if (orderiteminputpayment_paid.length() == 0) {
-            orderiteminputpayment_paid.setText("0");
-            orderiteminputpayment_paid.setSelectAllOnFocus(true);
-        }
-        return Float.valueOf(orderiteminputpayment_paid.getText().toString());
+    private void calRefund() {
+        float charge;
+        if (order.getPay() == OrderPay.Credit) {
+            charge = (float) ((order.getAmount() * 2) / 100.00);
+        } else charge = 0;
+        float paid = order.getAmount() + charge;
+        float refund = paid - (order.getAmount() + charge);
+        DecimalFormat format = new DecimalFormat("##.##");
+        String formattedText = format.format(refund);
+        orderiteminputpayment_charge.setText(String.valueOf(charge));
+        orderiteminputpayment_refund.setText(formattedText);
+        orderiteminputpayment_paid.setText(String.valueOf(paid));
+        stop = false;
     }
 
     @Override
@@ -242,6 +282,7 @@ public class ActOrderInputPayment extends ActBase {
             if (rs != null && rs.next()) {
                 SqlResult result = new SqlResult(rs);
                 if (result.getMsg() == null) {
+                    order.setStat(OrderStat.Confirm);
                     MessageBox("ยืนยันใบสั่งขายสำเร็จ");
                     getInvoices();
                     //todo: ยืนยันแล้ว ลง 21101 แล้ว จะเตะ firebase + pos ยังไง
@@ -251,7 +292,7 @@ public class ActOrderInputPayment extends ActBase {
             while (rs != null && rs.next()) {
                 Invoice i = new Invoice(rs.getInt("id"), rs.getString("no"), rs.getString("invoice_date"), rs.getString("cus_name"),
                         rs.getInt("qty"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getString("usr_name"),
-                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"), rs.getInt("order_id"), rs.getString("order_no"),rs.getFloat("paid"),rs.getFloat("charge"),rs.getFloat("refund"));
+                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"), rs.getInt("order_id"), rs.getString("order_no"), rs.getFloat("paid"), rs.getFloat("charge"), rs.getFloat("refund"));
                 invoices.add(i);
             }
             if (menu != null) {
