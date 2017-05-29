@@ -14,7 +14,9 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
@@ -42,6 +44,7 @@ public class ActOrderInputPayment extends ActBase {
     private TextView orderiteminputpayment_no, orderiteminputpayment_qty, orderiteminputpayment_wgt, orderiteminputpayment_amt, orderinput_cus, orderiteminputpayment_remark;
     private RadioButton radio_paycash, radio_paytranfer, radio_paycredit;
     private Switch switch_payship;
+    private EditText orderiteminputpayment_paid,orderiteminputpayment_charge, orderiteminputpayment_refund;
     private Menu menu;
     private WebView webView;
     private final int spUpdate = 1;
@@ -61,6 +64,9 @@ public class ActOrderInputPayment extends ActBase {
         orderiteminputpayment_wgt = (TextView) findViewById(R.id.orderinput_wgt);
         orderiteminputpayment_amt = (TextView) findViewById(R.id.orderinput_amt);
         orderiteminputpayment_remark = (TextView) findViewById(R.id.orderiteminputpayment_remark);
+        orderiteminputpayment_charge = (EditText) findViewById(R.id.orderiteminputpayment_charge);
+        orderiteminputpayment_paid = (EditText) findViewById(R.id.orderiteminputpayment_paid);
+        orderiteminputpayment_refund = (EditText) findViewById(R.id.orderiteminputpayment_refund);
 
         switch_payship = (Switch) findViewById(R.id.switch_payship);
         RadioGroup radio_group = (RadioGroup) findViewById(R.id.radio_group);
@@ -84,12 +90,15 @@ public class ActOrderInputPayment extends ActBase {
                 switch (checkedId) {
                     case R.id.radio_paycash:
                         order.setPay(OrderPay.Cash);
+                        orderiteminputpayment_charge.setText(0);
                         break;
                     case R.id.radio_paytranfer:
                         order.setPay(OrderPay.Transfer);
+                        orderiteminputpayment_charge.setText(0);
                         break;
                     case R.id.radio_paycredit:
                         order.setPay(OrderPay.Credit);
+                        orderiteminputpayment_charge.setText(String.valueOf((order.getAmount() * 2) / 100.00));
                         break;
                 }
             }
@@ -124,8 +133,11 @@ public class ActOrderInputPayment extends ActBase {
                     dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             order.setRemark(orderiteminputpayment_remark.getText().toString());
-                            String[] params = {String.valueOf(order.getId()), order.isShip() ? "1" : "0", String.valueOf(order.getPay()), String.valueOf(order.getRemark())};
-                            new SqlQuery(ActOrderInputPayment.this, spUpdate, "{call " + Global.database.getPrefix() + "setorderpay(?,?,?,?)}", params);
+                            order.setPaid(Float.valueOf(orderiteminputpayment_paid.getText().toString()));
+                            order.setCharge(Float.valueOf(orderiteminputpayment_charge.getText().toString()));
+                            order.setRefund(Float.valueOf(orderiteminputpayment_refund.getText().toString()));
+                            String[] params = {String.valueOf(order.getId()), order.isShip() ? "1" : "0", String.valueOf(order.getPay()), String.valueOf(order.getRemark()), String.valueOf(order.getPaid()), String.valueOf(order.getCharge()), String.valueOf(order.getRefund())};
+                            new SqlQuery(ActOrderInputPayment.this, spUpdate, "{call " + Global.database.getPrefix() + "setorderpay(?,?,?,?,?,?,?)}", params);
                         }
                     });
                     dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {

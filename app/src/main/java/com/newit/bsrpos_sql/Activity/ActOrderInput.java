@@ -421,7 +421,7 @@ public class ActOrderInput extends ActBase {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.nologout, menu);
         menu.add(0, 1, Menu.NONE, "พิมพ์ใบหยิบสินค้า");
-        menu.add(0, 2, Menu.NONE, "ชำุระเงินและยืนยัน");
+        menu.add(0, 2, Menu.NONE, "ชำระเงินและยืนยัน");
         return true;
     }
 
