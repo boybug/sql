@@ -293,6 +293,7 @@ public abstract class ActBase<T> extends AppCompatActivity {
         PrintManager printManager = (PrintManager) ActBase.this.getSystemService(Context.PRINT_SERVICE);
         PrintDocumentAdapter printAdapter = null;
         printAdapter = webView.createPrintDocumentAdapter(jobName);
+
         PrintJob printJob = printManager.print(jobName, printAdapter, new PrintAttributes.Builder().build());
     }
 

@@ -29,7 +29,9 @@ public class Order extends ModelBase {
     private OrderPay pay;
     private boolean ship;
     private String remark;
-    private String html;
+    private float paid;
+    private float charge;
+    private float refund;
 
     public Order(int cus_id, String cus_name, boolean ship) {
         super(true);
@@ -45,10 +47,13 @@ public class Order extends ModelBase {
         wh_grp_Id = Global.wh_Grp_Id;
         this.ship = ship;
         this.pay = OrderPay.Cash;
+        this.paid = 0;
+        this.charge = 0;
+        this.refund = 0;
     }
 
     public Order(int id, String no, String date, int cus_id, String cus_name, int wh_grp_Id, OrderStat stat, int qty, float weight,
-                 float amount, int usr_id, String usr_name, OrderPay pay, boolean ship, String remark, String html) {
+                 float amount, int usr_id, String usr_name, OrderPay pay, boolean ship, String remark, float paid, float charge, float refund) {
         super(false);
         this.id = id;
         this.no = no;
@@ -65,7 +70,9 @@ public class Order extends ModelBase {
         this.pay = pay;
         this.ship = ship;
         this.remark = remark;
-        this.html = html;
+        this.paid = paid;
+        this.charge = charge;
+        this.refund = refund;
     }
 
     public String getNo() {
@@ -209,13 +216,37 @@ public class Order extends ModelBase {
         }
     }
 
-    public String getHtml() {
-        String orderitem = "";
-        for (OrderItem i : items) {
-            orderitem += i.getHtml();
+    public float getPaid() {
+        return paid;
+    }
+
+    public void setPaid(float paid) {
+        if (!Objects.equals(this.paid, paid)) {
+            this.paid = paid;
+            updateRecordStat();
         }
-        String replaced = html.replaceAll("@orderitem", orderitem);
-        return replaced;
+    }
+
+    public float getCharge() {
+        return charge;
+    }
+
+    public void setCharge(float charge) {
+        if (!Objects.equals(this.charge, charge)) {
+            this.charge = charge;
+            updateRecordStat();
+        }
+    }
+
+    public float getRefund() {
+        return refund;
+    }
+
+    public void setRefund(float refund) {
+        if (!Objects.equals(this.refund, refund)) {
+            this.refund = refund;
+            updateRecordStat();
+        }
     }
 
     public List<OrderItem> getDeletingItems() {

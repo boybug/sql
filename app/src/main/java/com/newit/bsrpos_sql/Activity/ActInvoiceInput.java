@@ -98,7 +98,7 @@ public class ActInvoiceInput extends ActBase {
     public void queryReturn(ResultSet rs, int tag, Object caller) throws SQLException {
         if (tag == spQueryInvoiceItem) {
             while (rs != null && rs.next()) {
-                InvoiceItem item = new InvoiceItem(rs.getInt("no"), rs.getString("prod_name"), rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"),rs.getString("html"));
+                InvoiceItem item = new InvoiceItem(rs.getInt("no"), rs.getString("prod_name"), rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"));
                 invoice.getItems().add(item);
             }
 
@@ -107,7 +107,7 @@ public class ActInvoiceInput extends ActBase {
                 Order o = new Order(rs.getInt("id"), rs.getString("no"), rs.getString("order_date"),
                         rs.getInt("cus_id"), rs.getString("cus_name"), rs.getInt("wh_grp_id"), OrderStat.valueOf(rs.getString("order_stat")),
                         rs.getInt("qty"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("usr_id"), rs.getString("usr_name"),
-                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"), rs.getString("html"));
+                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"),rs.getFloat("paid"),rs.getFloat("charge"),rs.getFloat("refund"));
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("order", o);
                 Intent intent = new Intent(ActInvoiceInput.this, ActOrderInput.class);

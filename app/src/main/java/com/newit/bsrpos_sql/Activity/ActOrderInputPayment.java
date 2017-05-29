@@ -37,15 +37,16 @@ import java.util.List;
 public class ActOrderInputPayment extends ActBase {
 
     private Order order;
-    private final int spUpdate = 1;
-    private final int spGetInvoice = 2;
     private List<Invoice> invoices = new ArrayList<>();
 
     private TextView orderiteminputpayment_no, orderiteminputpayment_qty, orderiteminputpayment_wgt, orderiteminputpayment_amt, orderinput_cus, orderiteminputpayment_remark;
     private RadioButton radio_paycash, radio_paytranfer, radio_paycredit;
     private Switch switch_payship;
     private Menu menu;
-    private WebView mWebView;
+    private WebView webView;
+    private final int spUpdate = 1;
+    private final int spGetInvoice = 2;
+    private final int spQueryInvoicePrint = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,19 +176,16 @@ public class ActOrderInputPayment extends ActBase {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         final Invoice invoice = invoices.get(item.getItemId());
-        WebView webView = new WebView(ActOrderInputPayment.this);
+        webView = new WebView(ActOrderInputPayment.this);
         webView.setWebViewClient(new WebViewClient() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onPageFinished(WebView view, String url) {
                 Log.i("", "page finished loading " + url);
                 createWebPrintJob(view, "BSRPOS Invoice:" + invoice.getNo());
-                mWebView = null;
             }
         });
-        String htmlDocument = invoice.getHtml();
-        webView.loadDataWithBaseURL(null, htmlDocument, "text/HTML", "UTF-8", null);
-        mWebView = webView;
+        new SqlQuery(ActOrderInputPayment.this, spQueryInvoicePrint, "{call " + Global.database.getPrefix() + "getinvoiceprint(?)}", new String[]{String.valueOf(invoice.getId())});
         return true;
     }
 
@@ -206,7 +204,7 @@ public class ActOrderInputPayment extends ActBase {
             while (rs != null && rs.next()) {
                 Invoice i = new Invoice(rs.getInt("id"), rs.getString("no"), rs.getString("invoice_date"), rs.getString("cus_name"),
                         rs.getInt("qty"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getString("usr_name"),
-                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"), rs.getInt("order_id"), rs.getString("order_no"), rs.getString("html"));
+                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"), rs.getInt("order_id"), rs.getString("order_no"),rs.getFloat("paid"),rs.getFloat("charge"),rs.getFloat("refund"));
                 invoices.add(i);
             }
             if (menu != null) {
@@ -214,6 +212,11 @@ public class ActOrderInputPayment extends ActBase {
                 for (int i = 0; i < invoices.size(); i++) {
                     menu.add(0, i, Menu.NONE, "พิมพ์ใบเสร็จ: " + invoices.get(i).getNo());
                 }
+            }
+        } else if (tag == spQueryInvoicePrint) {
+            if (rs != null && rs.next()) {
+                String htmlDocument = rs.getString("html");
+                webView.loadDataWithBaseURL(null, htmlDocument, "text/HTML", "UTF-8", null);
             }
         }
     }

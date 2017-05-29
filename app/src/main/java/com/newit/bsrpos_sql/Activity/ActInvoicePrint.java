@@ -87,7 +87,7 @@ public class ActInvoicePrint extends ActBase {
     public void queryReturn(ResultSet rs, int tag, Object caller) throws SQLException {
         if (tag == spQueryInvoiceItem) {
             while (rs != null && rs.next()) {
-                InvoiceItem item = new InvoiceItem(rs.getInt("no"), rs.getString("prod_name"), rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getString("html"));
+                InvoiceItem item = new InvoiceItem(rs.getInt("no"), rs.getString("prod_name"), rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"));
                 invoice.getItems().add(item);
             }
             adap.notifyDataSetChanged();
