@@ -54,7 +54,7 @@ public class ActOrderItemInput extends ActBase {
 
             orderiteminput_qty.setSelectAllOnFocus(true);
             orderiteminput_qty.setText(String.valueOf(item.getQty()));
-            orderiteminput_stock.setText(String.valueOf(item.getProduct().getRemaining()));
+            orderiteminput_stock.setText(String.valueOf(item.getProduct().getRemaining() + item.getQty()));
             orderiteminput_amt.setText(String.valueOf(item.getAmount()));
 
             oldQty = getQty();
@@ -96,7 +96,7 @@ public class ActOrderItemInput extends ActBase {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     item.getProduct().getFbstock().setReserve(dataSnapshot.getValue(Integer.class));
-                    orderiteminput_stock.setText(String.valueOf(item.getProduct().getRemaining()));
+                    orderiteminput_stock.setText(String.valueOf(item.getProduct().getRemaining() + item.getQty()));
                 }
 
                 @Override

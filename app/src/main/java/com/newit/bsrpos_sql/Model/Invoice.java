@@ -24,8 +24,9 @@ public class Invoice extends ModelBase {
     private float paid;
     private float charge;
     private float refund;
+    private OrderStat stat;
 
-    public Invoice(int id, String no, String date, String cus_name, int qty, float weight, float amount, String usr_name, OrderPay pay, boolean ship, String remark, int order_Id, String order_no, float paid, float charge, float refund) {
+    public Invoice(int id, String no, String date, String cus_name, int qty, float weight, float amount, String usr_name, OrderPay pay, boolean ship, String remark, int order_Id, String order_no, float paid, float charge, float refund, OrderStat stat) {
         super(false);
         this.id = id;
         this.no = no;
@@ -43,6 +44,7 @@ public class Invoice extends ModelBase {
         this.paid = paid;
         this.charge = charge;
         this.refund = refund;
+        this.stat = stat;
     }
 
     public String getNo() {
@@ -111,6 +113,10 @@ public class Invoice extends ModelBase {
 
     public float getRefund() {
         return refund;
+    }
+
+    public OrderStat getStat() {
+        return stat;
     }
 
     @Override

@@ -11,8 +11,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.print.PrintAttributes;
-import android.print.PrintDocumentAdapter;
-import android.print.PrintJob;
 import android.print.PrintManager;
 import android.speech.RecognizerIntent;
 import android.support.annotation.IdRes;
@@ -291,10 +289,7 @@ public abstract class ActBase<T> extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void createWebPrintJob(WebView webView, String jobName) {
         PrintManager printManager = (PrintManager) ActBase.this.getSystemService(Context.PRINT_SERVICE);
-        PrintDocumentAdapter printAdapter = null;
-        printAdapter = webView.createPrintDocumentAdapter(jobName);
-
-        PrintJob printJob = printManager.print(jobName, printAdapter, new PrintAttributes.Builder().build());
+        printManager.print(jobName, webView.createPrintDocumentAdapter(jobName), new PrintAttributes.Builder().build());
     }
 
     public abstract void queryReturn(ResultSet rs, int tag, Object caller) throws SQLException;

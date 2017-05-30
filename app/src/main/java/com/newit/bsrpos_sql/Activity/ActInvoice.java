@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.Invoice;
 import com.newit.bsrpos_sql.Model.OrderPay;
+import com.newit.bsrpos_sql.Model.OrderStat;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
 import com.newit.bsrpos_sql.Util.SqlQuery;
@@ -113,7 +114,8 @@ public class ActInvoice extends ActBase {
             while (rs != null && rs.next()) {
                 Invoice i = new Invoice(rs.getInt("id"), rs.getString("no"), rs.getString("invoice_date"), rs.getString("cus_name"),
                         rs.getInt("qty"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getString("usr_name"),
-                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"), rs.getInt("order_id"), rs.getString("order_no"),rs.getFloat("paid"),rs.getFloat("charge"),rs.getFloat("refund"));
+                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"), rs.getInt("order_id"), rs.getString("order_no"),
+                        rs.getFloat("paid"), rs.getFloat("charge"), rs.getFloat("refund"), OrderStat.valueOf(rs.getString("stat")));
                 invoices.add(i);
             }
             if (adap != null) adap.notifyDataSetChanged();

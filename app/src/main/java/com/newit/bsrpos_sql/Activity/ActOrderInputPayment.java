@@ -130,16 +130,17 @@ public class ActOrderInputPayment extends ActBase {
                     if (order.getPay() == OrderPay.Credit) {
                         charge = (float) ((order.getAmount() * 2) / 100.00);
                     } else charge = 0;
-                    if(s.length() == 0){
+                    if (s.length() == 0) {
                         s = "0";
                     }
                     float paid = Float.parseFloat(s.toString());
-                    float refund = paid - order.getAmount() - charge ;
+                    float refund = paid - order.getAmount() - charge;
                     DecimalFormat format = new DecimalFormat("##.##");
                     String formattedText = format.format(refund);
                     orderiteminputpayment_refund.setText(formattedText);
                 }
             }
+
             @Override
             public void afterTextChanged(Editable s) {
                 if (orderiteminputpayment_paid.length() == 0) {
@@ -293,7 +294,8 @@ public class ActOrderInputPayment extends ActBase {
             while (rs != null && rs.next()) {
                 Invoice i = new Invoice(rs.getInt("id"), rs.getString("no"), rs.getString("invoice_date"), rs.getString("cus_name"),
                         rs.getInt("qty"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getString("usr_name"),
-                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"), rs.getInt("order_id"), rs.getString("order_no"), rs.getFloat("paid"), rs.getFloat("charge"), rs.getFloat("refund"));
+                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"), rs.getInt("order_id"),
+                        rs.getString("order_no"), rs.getFloat("paid"), rs.getFloat("charge"), rs.getFloat("refund"), OrderStat.valueOf(rs.getString("stat")));
                 invoices.add(i);
             }
             if (menu != null) {

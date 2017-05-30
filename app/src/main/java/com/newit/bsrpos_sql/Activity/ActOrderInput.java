@@ -138,7 +138,9 @@ public class ActOrderInput extends ActBase {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                     final OrderItem item = order.getItems().get(position);
-                    if (order.getStat() == OrderStat.Confirm)
+                    if (order.getUsr_id() != Global.user.getId())
+                        MessageBox("ไม่สามารถแก้ไขรายการคนอื่นได้");
+                    else if (order.getStat() == OrderStat.Confirm)
                         MessageBox("เอกสารยืนยันแล้วลบไม่ได้");
                     else {
                         AlertDialog.Builder dialog = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new AlertDialog.Builder(ActOrderInput.this, android.R.style.Theme_Material_Light_Dialog_Alert) : new AlertDialog.Builder(ActOrderInput.this);
@@ -211,34 +213,38 @@ public class ActOrderInput extends ActBase {
             listProduct.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Product p = adapProduct.getModels().get(position);
-                    if (p.getRemaining() > 0) {
-                        OrderItem item = order.findItem(p);
-                        if (item == null) {
-                            item = new OrderItem(order, order.getItems().size() + 1, p);
-                            new SqlQuery(ActOrderInput.this, spQueryOrderItemPrice, "{call " + Global.database.getPrefix() + "getstepprice(?,?)}", new String[]{String.valueOf(p.getId()), String.valueOf(p.getWh_Id())}, item);
-                            order.getItems().add(item);
-                        }
-                        item.addQty(1);
-                        adapOrderItem.notifyDataSetChanged();
-                        listOrderItem.setSelection(order.getItems().indexOf(item));
-                        if (p.getFbstock() == null) {
-                            updateFbStock(p);
-                            if (p.getFbstock() == null) {
-                                FbStock fbStock = new FbStock();
-                                fbStock.setReserve(1);
-                                fbStock.setProd_id(p.getId());
-                                fbStock.setWh_id(p.getWh_Id());
-                                String key = fb.push().getKey();
-                                fb.child(key).setValue(fbStock);
+                    if (order.getUsr_id() != Global.user.getId())
+                        MessageBox("ไม่สามารถแก้ไขรายการคนอื่นได้");
+                    else {
+                        Product p = adapProduct.getModels().get(position);
+                        if (p.getRemaining() > 0) {
+                            OrderItem item = order.findItem(p);
+                            if (item == null) {
+                                item = new OrderItem(order, order.getItems().size() + 1, p);
+                                new SqlQuery(ActOrderInput.this, spQueryOrderItemPrice, "{call " + Global.database.getPrefix() + "getstepprice(?,?)}", new String[]{String.valueOf(p.getId()), String.valueOf(p.getWh_Id())}, item);
+                                order.getItems().add(item);
                             }
-                        } else {
-                            FbStock f = p.getFbstock();
-                            f.setReserve(f.getReserve() + 1);
-                            fb.child(p.getFbstock().getKey()).child("reserve").setValue(f.getReserve());
+                            item.addQty(1);
+                            adapOrderItem.notifyDataSetChanged();
+                            listOrderItem.setSelection(order.getItems().indexOf(item));
+                            if (p.getFbstock() == null) {
+                                updateFbStock(p);
+                                if (p.getFbstock() == null) {
+                                    FbStock fbStock = new FbStock();
+                                    fbStock.setReserve(1);
+                                    fbStock.setProd_id(p.getId());
+                                    fbStock.setWh_id(p.getWh_Id());
+                                    String key = fb.push().getKey();
+                                    fb.child(key).setValue(fbStock);
+                                }
+                            } else {
+                                FbStock f = p.getFbstock();
+                                f.setReserve(f.getReserve() + 1);
+                                fb.child(p.getFbstock().getKey()).child("reserve").setValue(f.getReserve());
+                            }
+                            ActOrderInput.this.redrawProduct(p.getRemaining(), view);
+                            ActOrderInput.this.redrawOrder();
                         }
-                        ActOrderInput.this.redrawProduct(p.getRemaining(), view);
-                        ActOrderInput.this.redrawOrder();
                     }
                 }
             });
@@ -438,7 +444,6 @@ public class ActOrderInput extends ActBase {
                     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onPageFinished(WebView view, String url) {
-                        Log.i("", "page finished loading " + url);
                         createWebPrintJob(view, "BSRPOS Order:" + order.getNo());
                     }
                 });
