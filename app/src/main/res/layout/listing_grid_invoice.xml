@@ -11,11 +11,11 @@
         android:gravity="center_vertical"
         android:paddingLeft="5dp"
         android:text="order_no"
-        android:layout_alignParentTop="true"
+        android:textSize="18sp"
+        android:textColor="@color/colorAccent"
+        android:layout_below="@+id/invoice_no"
         android:layout_alignParentStart="true"
-        android:textSize="20sp"
-        android:layout_toStartOf="@+id/invoice_ship"
-        android:textColor="@color/colorAccent"/>
+        android:layout_toStartOf="@+id/invoice_amount" />
 
     <TextView
         android:id="@+id/invoice_amount"
@@ -44,25 +44,25 @@
         android:id="@+id/invoice_usr"
         android:layout_width="fill_parent"
         android:layout_height="26dip"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/invoice_cus"
-        android:layout_toStartOf="@+id/invoice_amount"
         android:paddingLeft="5dp"
         android:paddingTop="3dp"
         android:text="invoice_usr"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:layout_below="@+id/invoice_cus"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/invoice_amount" />
 
     <TextView
         android:id="@+id/invoice_cus"
         android:layout_width="fill_parent"
         android:layout_height="26dip"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/invoice_no"
-        android:layout_toStartOf="@+id/invoice_amount"
         android:paddingLeft="5dp"
         android:paddingTop="5dp"
         android:text="invoice_cus"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:layout_below="@+id/order_no"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/invoice_amount" />
 
     <TextView
         android:id="@+id/invoice_no"
@@ -74,8 +74,8 @@
         android:text="invoice_no"
         android:textColor="@color/colorFish"
         android:textSize="20sp"
+        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/order_no"
-        android:layout_toStartOf="@+id/invoice_amount" />
+        android:layout_toStartOf="@+id/invoice_ship" />
 
 </RelativeLayout>

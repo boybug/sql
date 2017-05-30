@@ -46,10 +46,10 @@ public class ActInvoice extends ActBase {
             protected void populateView(View v, Invoice invoice) {
 
                 TextView order_no = (TextView) v.findViewById(R.id.order_no);
-                order_no.setText(invoice.getOrder_no());
+                  order_no.setText("ใบสั่ง : " + invoice.getOrder_no());
 
                 TextView invoice_no = (TextView) v.findViewById(R.id.invoice_no);
-                invoice_no.setText(invoice.getNo());
+                invoice_no.setText("ใบแจ้งหนี้ : " + invoice.getNo());
 
                 TextView invoice_cus = (TextView) v.findViewById(R.id.invoice_cus);
                 invoice_cus.setText(invoice.getCus_name());
