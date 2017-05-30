@@ -105,9 +105,9 @@ public class ActOrderInput extends ActBase {
         } else if (order != null) {
             showProgressDialog();
             new SqlQuery(ActOrderInput.this, spQueryOrderItem, "{call " + Global.database.getPrefix() + "getorderitem(?)}", new String[]{String.valueOf(order.getId())});
-            new SqlQuery(ActOrderInput.this, spQueryConfirmedStock, "{call " + Global.database.getPrefix() + "getconfirmedstock(?)}", new String[]{String.valueOf(Global.wh_Grp_Id)});
             setTitle("ใบสั่งขาย " + order.getNo() + "@" + Global.wh_grp_name);
         }
+        new SqlQuery(ActOrderInput.this, spQueryConfirmedStock, "{call " + Global.database.getPrefix() + "getconfirmedstock(?)}", new String[]{String.valueOf(Global.wh_Grp_Id)});
         redrawOrder();
         //endregion
 
