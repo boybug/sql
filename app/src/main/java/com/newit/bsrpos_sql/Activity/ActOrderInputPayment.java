@@ -287,7 +287,6 @@ public class ActOrderInputPayment extends ActBase {
                     order.setStat(OrderStat.Confirm);
                     MessageBox("ยืนยันใบสั่งขายสำเร็จ");
                     getInvoices();
-                    //todo: ยืนยันแล้ว ลง 21101 แล้ว จะเตะ firebase + pos ยังไง
                 } else MessageBox(result.getMsg());
             }
         } else if (tag == spGetInvoice) {

@@ -12,7 +12,6 @@ import android.os.StrictMode;
 import android.support.annotation.RequiresApi;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +27,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.newit.bsrpos_sql.Model.ConfirmedStock;
 import com.newit.bsrpos_sql.Model.Customer;
 import com.newit.bsrpos_sql.Model.FbStock;
 import com.newit.bsrpos_sql.Model.Global;
@@ -45,6 +45,7 @@ import com.newit.bsrpos_sql.Util.SqlQuery;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -53,6 +54,7 @@ public class ActOrderInput extends ActBase {
     private Order order;
     private List<Product> products = new ArrayList<>();
     private List<FbStock> fbStocks = new ArrayList<>();
+    private List<ConfirmedStock> confirmedStocks = new ArrayList<>();
     private AdpCustom<Product> adapProduct;
     private int selectedIndex;
     private AdpCustom<OrderItem> adapOrderItem;
@@ -62,11 +64,12 @@ public class ActOrderInput extends ActBase {
     private final int spQueryProduct = 2;
     private final int spQueryOrderItemPrice = 3;
     private final int spQueryOrderPrint = 4;
+    private final int spQueryConfirmedStock = 5;
+    private final int spUpdateFbStock = 6;
 
     private DrawerLayout drawer;
     private DatabaseReference fb = FirebaseDatabase.getInstance().getReference().child(Global.getFbStockPath());
     private WebView webView;
-
 
     @SuppressWarnings("unchecked")
     @Override
@@ -102,7 +105,7 @@ public class ActOrderInput extends ActBase {
         } else if (order != null) {
             showProgressDialog();
             new SqlQuery(ActOrderInput.this, spQueryOrderItem, "{call " + Global.database.getPrefix() + "getorderitem(?)}", new String[]{String.valueOf(order.getId())});
-
+            new SqlQuery(ActOrderInput.this, spQueryConfirmedStock, "{call " + Global.database.getPrefix() + "getconfirmedstock(?)}", new String[]{String.valueOf(Global.wh_Grp_Id)});
             setTitle("ใบสั่งขาย " + order.getNo() + "@" + Global.wh_grp_name);
         }
         redrawOrder();
@@ -228,7 +231,7 @@ public class ActOrderInput extends ActBase {
                             adapOrderItem.notifyDataSetChanged();
                             listOrderItem.setSelection(order.getItems().indexOf(item));
                             if (p.getFbstock() == null) {
-                                updateFbStock(p);
+                                setProductFb(p);
                                 if (p.getFbstock() == null) {
                                     FbStock fbStock = new FbStock();
                                     fbStock.setReserve(1);
@@ -471,7 +474,7 @@ public class ActOrderInput extends ActBase {
             order.getItems().clear();
             while (rs != null && rs.next()) {
                 Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"), rs.getInt("stock"), rs.getFloat("weight"), rs.getString("color"), rs.getBoolean("stepprice"), rs.getFloat("price"), rs.getInt("uom_id"), rs.getInt("wh_Id"));
-                updateFbStock(p);
+                setProductFb(p);
                 OrderItem item = new OrderItem(order, rs.getInt("id"), rs.getInt("no"), p, rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("uom_id"), rs.getInt("wh_Id"));
                 new SqlQuery(ActOrderInput.this, spQueryOrderItemPrice, "{call " + Global.database.getPrefix() + "getstepprice(?,?)}", new String[]{String.valueOf(p.getId()), String.valueOf(p.getWh_Id())}, item);
                 order.getItems().add(item);
@@ -484,7 +487,7 @@ public class ActOrderInput extends ActBase {
             products.clear();
             while (rs != null && rs.next()) {
                 Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"), rs.getInt("stock"), rs.getFloat("weight"), rs.getString("color"), rs.getBoolean("stepprice"), rs.getFloat("price"), rs.getInt("uom_id"), rs.getInt("wh_Id"));
-                updateFbStock(p);
+                setProductFb(p);
                 products.add(p);
             }
             adapProduct.notifyDataSetChanged();
@@ -500,10 +503,32 @@ public class ActOrderInput extends ActBase {
                 String htmlDocument = rs.getString("html");
                 webView.loadDataWithBaseURL(null, htmlDocument, "text/HTML", "UTF-8", null);
             }
+        } else if (tag == spQueryConfirmedStock) {
+            confirmedStocks.clear();
+            while (rs != null && rs.next()) {
+                boolean found = false;
+                ConfirmedStock c = new ConfirmedStock(rs.getInt("item_Id"), rs.getInt("wh_Id"), rs.getInt("prod_Id"), rs.getInt("qty"));
+                for (FbStock f : fbStocks) {
+                    if (f.getWh_id() == c.getWh_Id() && f.getProd_id() == c.getProd_Id()) {
+                        updateFbStock(f, c);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    confirmedStocks.add(c);
+                }
+            }
+        } else if (tag == spUpdateFbStock) {
+            if (rs != null && rs.next()) {
+                SqlResult result = new SqlResult(rs);
+                if (result.getMsg() != null)
+                    MessageBox(result.getMsg());
+            }
         }
     }
 
-    private void updateFbStock(Product p) {
+    private void setProductFb(Product p) {
         for (FbStock f : fbStocks) {
             if (f.getProd_id() == p.getId() && f.getWh_id() == p.getWh_Id()) {
                 p.setFbstock(f);
@@ -539,5 +564,19 @@ public class ActOrderInput extends ActBase {
                 }
             }
         }
+        Iterator<ConfirmedStock> i = confirmedStocks.iterator();
+        while (i.hasNext()) {
+            ConfirmedStock c = i.next();
+            if (c.getWh_Id() == fbstock.getWh_id() && c.getProd_Id() == fbstock.getProd_id()) {
+                updateFbStock(fbstock, c);
+                i.remove();
+            }
+        }
+    }
+
+    public void updateFbStock(FbStock f, ConfirmedStock c) {
+        int remaining = f.getReserve() >= c.getQty() ? f.getReserve() - c.getQty() : 0;
+        fb.child(f.getKey()).child("reserve").setValue(remaining);
+        new SqlQuery(ActOrderInput.this, spUpdateFbStock, "{call " + Global.database.getPrefix() + "updateorderitem(?)}", new String[]{String.valueOf(c.getItem_id())});
     }
 }
