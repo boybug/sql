@@ -40,10 +40,12 @@ public class ActCustomerDetail extends ActBase {
             customerdetail_tel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!customer.getTel().equals("")) {
-                        Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                        callIntent.setData(Uri.parse("tel:" + customerdetail_tel.getText()));
-                        ActCustomerDetail.this.startActivity(callIntent);
+                    if (!(customer.getTel() == null)) {
+                        if (!customer.getTel().equals("")) {
+                            Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                            callIntent.setData(Uri.parse("tel:" + customerdetail_tel.getText()));
+                            ActCustomerDetail.this.startActivity(callIntent);
+                        }
                     }
                 }
             });
