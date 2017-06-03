@@ -8,14 +8,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
         <include layout="@layout/listing_search" />
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-
             <include layout="@layout/listing_grid" />
 
         </android.support.v4.widget.SwipeRefreshLayout>

@@ -45,10 +45,50 @@
                 android:layout_column="0"
                 android:gravity="center|right"
                 android:paddingRight="20dp"
-                android:text="สต๊อก" />
+                android:text="สต๊อก ERP" />
 
             <TextView
                 android:id="@+id/productprice_stock"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_column="1"
+                android:gravity="center|left"
+                android:inputType="number" />
+
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_column="0"
+                android:gravity="center|right"
+                android:paddingRight="20dp"
+                android:text="สต๊อกจอง" />
+
+            <TextView
+                android:id="@+id/productprice_fb"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_column="1"
+                android:gravity="center|left"
+                android:inputType="number" />
+
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_column="0"
+                android:gravity="center|right"
+                android:paddingRight="20dp"
+                android:text="สต๊อกขายได้" />
+
+            <TextView
+                android:id="@+id/productprice_remaining"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_column="1"

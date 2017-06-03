@@ -67,6 +67,7 @@ public class ActLogin extends ActBase {
         if (saveLogin) {
             txt_username.setText(loginPreferences.getString("username", null));
             saveLoginCheckBox.setChecked(true);
+            txt_password.requestFocus();
         }
 
         Button bt_cmd_save = (Button) findViewById(R.id.login_login);

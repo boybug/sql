@@ -13,7 +13,7 @@ public class ActSplash extends ActBase {
     private Handler handler;
     private Runnable runnable;
     private long delay_time;
-    private long time = 1000L;
+    private long time = 3000L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

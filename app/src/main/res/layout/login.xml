@@ -14,20 +14,22 @@
             android:id="@+id/headerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/mainLayout"
             android:layout_alignParentTop="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:background="@color/colorPrimaryNavy"
-                android:gravity="center_horizontal">
+                android:gravity="center_horizontal"
+                android:weightSum="1"
+                android:layout_alignParentTop="true">
 
                 <ImageView
-                    android:layout_width="150dp"
+                    android:layout_width="130dp"
                     android:layout_height="130dp"
+                    android:layout_weight="0.02"
                     android:background="@color/colorPrimaryNavy"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/backgroud" />
 
             </LinearLayout>
@@ -43,69 +45,12 @@
             android:orientation="vertical"
             android:weightSum="1">
 
-            <EditText
-                android:id="@+id/login_name"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/bt_command_height"
-                android:background="@color/colorWhite"
-                android:ellipsize="end"
-                android:ems="10"
-                android:gravity="center|left"
-                android:hint="ชื่อผู้ใช้"
-                android:inputType="textEmailAddress"
-                android:lines="1"
-                android:maxLines="1"
-                android:paddingLeft="5dp"
-                android:scrollHorizontally="true"
-                android:textSize="20sp" />
-
-
-            <EditText
-                android:id="@+id/login_password"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/bt_command_height"
-                android:layout_marginTop="10dp"
-                android:background="@color/colorWhite"
-                android:ellipsize="end"
-                android:ems="10"
-                android:gravity="center|left"
-                android:hint="รหัสผ่าน"
-                android:inputType="textPassword"
-                android:lines="1"
-                android:maxLines="1"
-                android:paddingLeft="5dp"
-                android:scrollHorizontally="true"
-                android:textSize="20sp" />
-
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
-                <CheckBox
-                    android:id="@+id/login_remember"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/bt_command_height"
-                    android:layout_marginTop="10dp"
-                    android:layout_weight="1"
-                    android:gravity="center|left"
-                    android:hint="จำการล็อกอิน"
-                    android:paddingLeft="5dp"
-                    android:scrollHorizontally="true"
-                    android:textSize="15sp" />
-
-                <CheckBox
-                    android:id="@+id/login_local"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/bt_command_height"
-                    android:layout_marginTop="10dp"
-                    android:layout_weight="1"
-                    android:gravity="center|left"
-                    android:hint="เชื่อมต่อในวงแลน"
-                    android:paddingLeft="5dp"
-                    android:scrollHorizontally="true"
-                    android:textSize="15sp" />
             </LinearLayout>
 
 
@@ -116,12 +61,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_below="@+id/mainLayout">
+            android:layout_below="@+id/login_password">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true">
+                android:layout_alignParentBottom="true"
+                android:id="@+id/linearLayout">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -147,17 +93,81 @@
 
             </LinearLayout>
 
+            <CheckBox
+                android:id="@+id/login_local"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/bt_command_height"
+                android:layout_weight="1"
+                android:gravity="center|left"
+                android:hint="เชื่อมต่อในวงแลน"
+                android:paddingLeft="5dp"
+                android:scrollHorizontally="true"
+                android:textSize="15sp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true" />
+
+            <CheckBox
+                android:id="@+id/login_remember"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/bt_command_height"
+                android:layout_weight="1"
+                android:gravity="center|left"
+                android:hint="จำชื่อผู้ใช้"
+                android:paddingLeft="5dp"
+                android:scrollHorizontally="true"
+                android:textSize="15sp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true" />
+
         </RelativeLayout>
 
         <TextView
             android:id="@+id/ver"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            android:text="ver."
+            android:text="เวอร์ชั่น"
             android:textColor="@color/colorGrey"
-            android:textSize="8dp"/>
+            android:textSize="8dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="53dp"
+            android:layout_alignParentEnd="true" />
+
+        <EditText
+            android:id="@+id/login_name"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bt_command_height"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/headerLayout"
+            android:background="@color/colorWhite"
+            android:ellipsize="end"
+            android:ems="10"
+            android:gravity="center|left"
+            android:hint="ชื่อผู้ใช้"
+            android:inputType="textEmailAddress"
+            android:lines="1"
+            android:maxLines="1"
+            android:paddingLeft="5dp"
+            android:scrollHorizontally="true"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/login_password"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bt_command_height"
+            android:background="@color/colorWhite"
+            android:ellipsize="end"
+            android:ems="10"
+            android:gravity="center|left"
+            android:hint="รหัสผ่าน"
+            android:inputType="textPassword"
+            android:lines="1"
+            android:maxLines="1"
+            android:paddingLeft="5dp"
+            android:scrollHorizontally="true"
+            android:textSize="20sp"
+            android:layout_marginTop="11dp"
+            android:layout_below="@+id/login_name"
+            android:layout_alignParentStart="true" />
 
     </RelativeLayout>
 

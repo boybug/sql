@@ -32,7 +32,7 @@ public class ActProductPrice extends ActBase {
     private AdpCustom<StepPrice> adap;
     private Query fb;
     private ChildEventListener fbStockListner;
-    private TextView productprice_stock;
+    private TextView productprice_stock, productprice_fb, productprice_remaining;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +46,14 @@ public class ActProductPrice extends ActBase {
 
             TextView productprice_name = (TextView) findViewById(R.id.productprice_name);
             productprice_stock = (TextView) findViewById(R.id.productprice_stock);
+            productprice_fb = (TextView) findViewById(R.id.productprice_fb);
+            productprice_remaining = (TextView) findViewById(R.id.productprice_remaining);
             TextView productprice_wgt = (TextView) findViewById(R.id.productprice_wgt);
 
             productprice_name.setText(prod.getName());
-            productprice_stock.setText(String.valueOf(prod.getRemaining()));
+            productprice_stock.setText(String.valueOf(prod.getStock()));
+            productprice_fb.setText("0");
+            productprice_remaining.setText(String.valueOf(prod.getStock()));
             productprice_wgt.setText(String.valueOf(prod.getWeight()));
 
             new SqlQuery(ActProductPrice.this, 1, "{call " + Global.database.getPrefix() + "getstepprice(?,?)}", new String[]{String.valueOf(prod.getId()), String.valueOf(prod.getWh_Id())});
@@ -101,7 +105,9 @@ public class ActProductPrice extends ActBase {
         FbStock f = dataSnapshot.getValue(FbStock.class);
         if (f.getWh_id() == prod.getWh_Id() && f.getProd_id() == prod.getId()) {
             prod.setFbstock(f);
-            productprice_stock.setText(String.valueOf(prod.getRemaining()));
+            productprice_stock.setText(String.valueOf(prod.getStock()));
+            productprice_fb.setText(String.valueOf(prod.getFbstock().getReserve()));
+            productprice_remaining.setText(String.valueOf(prod.getRemaining()));
         }
     }
 
