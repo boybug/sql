@@ -577,6 +577,7 @@ public class ActOrderInput extends ActBase {
     public void updateFbStock(FbStock f, ConfirmedStock c) {
         int remaining = f.getReserve() >= c.getQty() ? f.getReserve() - c.getQty() : 0;
         fb.child(f.getKey()).child("reserve").setValue(remaining);
+        f.setReserve(remaining);
         new SqlQuery(ActOrderInput.this, spUpdateFbStock, "{call " + Global.database.getPrefix() + "updateorderitem(?)}", new String[]{String.valueOf(c.getItem_id())});
     }
 }
