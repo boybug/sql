@@ -12,7 +12,7 @@
     <color name="colorInsect">#bcdee7</color>
     <color name="colorBeef">#3dbb9f</color>
 
-    <color name="colorGrey">#f64343</color>
+    <color name="colorGrey">#BEBEBE</color>
     <color name="colorDark">#333333</color>
     <color name="colorWhite">#ffffff</color>
 </resources>
