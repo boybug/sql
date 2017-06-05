@@ -196,7 +196,7 @@ public class ActOrder extends ActBase {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         FbStock f = dataSnapshot.getValue(FbStock.class);
-                        fb.setValue(f.getReserve() - qty);
+                        fb.child("reserve").setValue(f.getReserve() - qty);
                     }
 
                     @Override
@@ -204,7 +204,7 @@ public class ActOrder extends ActBase {
                     }
                 });
             }
-            Order order = (Order)caller;
+            Order order = (Order) caller;
             new SqlQuery(ActOrder.this, spDelete, "{call " + Global.database.getPrefix() + "deleteorder(?)}", new String[]{String.valueOf(order.getId())});
         }
     }
