@@ -57,7 +57,8 @@
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
         <activity
             android:name=".Activity.ActOrderInputPayment"
-            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".Activity.ActOrderItemInput"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />

@@ -1,94 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:fillViewport="true">
 
-    <android.support.design.widget.AppBarLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:padding="10dp">
 
-
-    </android.support.design.widget.AppBarLayout>
-
-    <LinearLayout
-        android:id="@+id/content_main"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-
-        <TableLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:stretchColumns="1">
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/mainLayout"
+            android:layout_alignParentTop="true"
+            android:id="@+id/headerLayout">
 
-            <TableRow android:id="@+id/tr_customer_new">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:gravity="center_horizontal">
 
-                <include
-                    layout="@layout/orderinput_include1_1"
+
+                <TableLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_span="2" />
+                    android:orientation="vertical"
+                    android:stretchColumns="1">
 
-            </TableRow>
+                    <TableRow android:id="@+id/tr_customer_new">
 
-            <TableRow android:id="@+id/tr_no">
+                        <include
+                            layout="@layout/orderinput_include1_1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_span="2" />
 
-                <include
-                    layout="@layout/orderinput_include1_2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_span="2" />
+                    </TableRow>
 
-            </TableRow>
+                    <TableRow android:id="@+id/tr_no">
 
-            <TableRow android:id="@+id/tr_qty">
+                        <include
+                            layout="@layout/orderinput_include1_2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_span="2" />
 
-                <include
-                    layout="@layout/orderinput_include1_3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_span="2" />
+                    </TableRow>
 
-            </TableRow>
+                    <TableRow android:id="@+id/tr_qty">
+
+                        <include
+                            layout="@layout/orderinput_include1_3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_span="2" />
+
+                    </TableRow>
 
 
-            <TableRow android:id="@+id/tr_item_head">
+                    <TableRow android:id="@+id/tr_item_head">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_span="2"
-                    android:orientation="horizontal">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_span="2"
+                            android:orientation="horizontal">
 
-                    <include
-                        layout="@layout/orderiteminput_payment_include1"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                            <include
+                                layout="@layout/orderiteminput_payment_include1"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
 
-                </LinearLayout>
+                        </LinearLayout>
 
-            </TableRow>
+                    </TableRow>
 
-            <TableRow
-                android:id="@+id/tr_order_save"
-                android:paddingBottom="5dp"
-                android:visibility="visible">
+                    <TableRow
+                        android:id="@+id/tr_order_save"
+                        android:paddingBottom="5dp"
+                        android:visibility="visible">
 
-                <include
-                    layout="@layout/btn_save"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_span="2" />
-            </TableRow>
+                        <include
+                            layout="@layout/btn_save"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_span="2" />
+                    </TableRow>
 
-        </TableLayout>
+                </TableLayout>
 
-    </LinearLayout>
+            </LinearLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</ScrollView>
