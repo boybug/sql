@@ -56,7 +56,7 @@ public class ActLogin extends ActBase {
         saveLoginCheckBox = (CheckBox) findViewById(R.id.login_remember);
         SharedPreferences loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginPrefsEditor = loginPreferences.edit();
-        ver.setText("Ver. " + Global.getVersion(this));
+        ver.setText("เวอร์ชั่น " + Global.getVersion(this));
         mAuth = FirebaseAuth.getInstance();
 
         Boolean saveLogin = loginPreferences.getBoolean("saveLogin", false);

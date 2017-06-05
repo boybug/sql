@@ -275,7 +275,7 @@ public class Order extends ModelBase {
         if (getRecordStat() != RecordStat.NULL) {
             try {
                 String[] params = {String.valueOf(id), String.valueOf(cus_id), String.valueOf(stat), String.valueOf(wh_grp_Id), String.valueOf(usr_id),
-                        String.valueOf(qty), String.valueOf(amount), String.valueOf(weight), String.valueOf(getRecordStat()), this.ship ? "1" : "0"};
+                        String.valueOf(qty), String.valueOf(amount), String.valueOf(weight), String.valueOf(getRecordStat()), ship ? "1" : "0", };
                 ResultSet rs = SqlQuery.executeWait(activity, "{call " + Global.database.getPrefix() + "setorder(?,?,?,?,?,?,?,?,?,?)}", params);
                 if (rs != null && rs.next()) {
                     result.setIden(rs.getInt("Iden"));

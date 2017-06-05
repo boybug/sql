@@ -176,8 +176,8 @@ public class OrderItem extends ModelBase {
             try {
                 String[] params = {String.valueOf(order.getId()), String.valueOf(id), String.valueOf(no), String.valueOf(product.getId()),
                         String.valueOf(qty), String.valueOf(price), String.valueOf(amount), String.valueOf(weight), String.valueOf(uom_id),
-                        String.valueOf(getRecordStat()), String.valueOf(product.getWh_Id())};
-                ResultSet rs = SqlQuery.executeWait(activity, "{call " + Global.database.getPrefix() + "setorderitem(?,?,?,?,?,?,?,?,?,?,?)}", params);
+                        String.valueOf(getRecordStat()), String.valueOf(product.getWh_Id()), product.getFbstock().getKey()};
+                ResultSet rs = SqlQuery.executeWait(activity, "{call " + Global.database.getPrefix() + "setorderitem(?,?,?,?,?,?,?,?,?,?,?,?)}", params);
                 if (rs != null && rs.next()) {
                     result.setIden(rs.getInt("Iden"));
                     result.setMsg(rs.getString("Msg"));

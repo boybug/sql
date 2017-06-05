@@ -14,6 +14,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.newit.bsrpos_sql.Model.FbStock;
 import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.Order;
 import com.newit.bsrpos_sql.Model.OrderPay;
@@ -34,6 +40,7 @@ public class ActOrder extends ActBase {
     private AdpCustom<Order> adap;
     private final int spQuery = 1;
     private final int spDelete = 2;
+    private final int spQueryOrderItem = 3;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -109,7 +116,7 @@ public class ActOrder extends ActBase {
                         dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog12, int which) {
-                                new SqlQuery(ActOrder.this, spDelete, "{call " + Global.database.getPrefix() + "deleteorder(?)}", new String[]{String.valueOf(order.getId())});
+                                new SqlQuery(ActOrder.this, spQueryOrderItem, "{call " + Global.database.getPrefix() + "getorderitem(?)}", new String[]{String.valueOf(order.getId())}, order);
                             }
                         });
                         dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
@@ -164,14 +171,14 @@ public class ActOrder extends ActBase {
     }
 
     @Override
-    public void queryReturn(ResultSet rs, int tag, Object caller) throws SQLException {
+    public void queryReturn(final ResultSet rs, int tag, Object caller) throws SQLException {
         if (tag == spQuery) {
             orders.clear();
             while (rs != null && rs.next()) {
                 Order o = new Order(rs.getInt("id"), rs.getString("no"), rs.getString("order_date"),
                         rs.getInt("cus_id"), rs.getString("cus_name"), rs.getInt("wh_grp_id"), OrderStat.valueOf(rs.getString("order_stat")),
                         rs.getInt("qty"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("usr_id"), rs.getString("usr_name"),
-                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"),rs.getFloat("paid"),rs.getFloat("charge"),rs.getFloat("refund"));
+                        OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"), rs.getFloat("paid"), rs.getFloat("charge"), rs.getFloat("refund"));
                 orders.add(o);
             }
             if (adap != null) adap.notifyDataSetChanged();
@@ -181,6 +188,24 @@ public class ActOrder extends ActBase {
                 MessageBox(result.getMsg() == null ? "ลบเอกสารแล้ว" : result.getMsg());
                 refresh();
             }
+        } else if (tag == spQueryOrderItem) {
+            while (rs != null && rs.next()) {
+                final DatabaseReference fb = FirebaseDatabase.getInstance().getReference().child(Global.getFbStockPath()).child(rs.getString("fbkey"));
+                final int qty = rs.getInt("qty");
+                fb.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        FbStock f = dataSnapshot.getValue(FbStock.class);
+                        fb.setValue(f.getReserve() - qty);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+            }
+            Order order = (Order)caller;
+            new SqlQuery(ActOrder.this, spDelete, "{call " + Global.database.getPrefix() + "deleteorder(?)}", new String[]{String.valueOf(order.getId())});
         }
     }
 }
