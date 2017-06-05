@@ -81,6 +81,12 @@ public class ActInvoice extends ActBase {
                     invoice_cus.setTextColor(Color.parseColor("#000000"));
                     order_no.setTextColor(Color.parseColor("#000000"));
                 }
+                else if (invoice.getStat() == OrderStat.Cancel) {
+                    v.setBackgroundColor(Color.parseColor("#f64343"));
+                    invoice_amount.setTextColor(Color.parseColor("#000000"));
+                    invoice_cus.setTextColor(Color.parseColor("#000000"));
+                    order_no.setTextColor(Color.parseColor("#000000"));
+                }
 
                 if (searchString != null) {
                     SetTextSpan(searchString, invoice.getNo(), invoice_no);
