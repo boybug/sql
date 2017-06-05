@@ -196,7 +196,10 @@ public class ActOrder extends ActBase {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         FbStock f = dataSnapshot.getValue(FbStock.class);
-                        fb.child("reserve").setValue(f.getReserve() - qty);
+                        if (f.getReserve() > 0) {
+                            int remaining = f.getReserve() >= qty ? f.getReserve() - qty : 0;
+                            fb.child("reserve").setValue(remaining);
+                        }
                     }
 
                     @Override
