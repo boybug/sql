@@ -13,7 +13,7 @@ public class SqlConnect {
     private static Connection conn;
 
     public static Connection connect(ActBase activity) throws SQLException {
-        if (conn == null) {
+        if (conn == null || !conn.isValid(5)) {
             final String connStrInternet = "jdbc:jtds:sqlserver://" + Global.database.getIp_wan() + ":" + String.valueOf(Global.database.getPort()) + "/" + Global.database.getDb();
             final String connStrIntranet = "jdbc:jtds:sqlserver://" + Global.database.getIp_lan() + ":" + String.valueOf(Global.database.getPort()) + "/" + Global.database.getDb();
             DriverManager.setLoginTimeout(10);
