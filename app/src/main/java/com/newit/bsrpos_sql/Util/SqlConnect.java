@@ -13,7 +13,7 @@ public class SqlConnect {
     private static Connection conn;
 
     public static Connection connect(ActBase activity) throws SQLException {
-        if (conn == null || !conn.isValid(5)) {
+        if (conn == null || conn.isClosed()) {
             final String connStrInternet = "jdbc:jtds:sqlserver://" + Global.database.getIp_wan() + ":" + String.valueOf(Global.database.getPort()) + "/" + Global.database.getDb();
             final String connStrIntranet = "jdbc:jtds:sqlserver://" + Global.database.getIp_lan() + ":" + String.valueOf(Global.database.getPort()) + "/" + Global.database.getDb();
             DriverManager.setLoginTimeout(10);
@@ -25,7 +25,8 @@ public class SqlConnect {
                 return conn;
             } catch (Exception e) {
                 e.printStackTrace();
-                activity.connectError(e);
+                activity.hideProgressDialog();
+                activity.MessageBox("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ ERP");
             }
             return null;
         }
@@ -38,11 +39,8 @@ public class SqlConnect {
                 conn.close();
             } catch (SQLException e) {
                 e.printStackTrace();
-                try {
-                    activity.connectError(e);
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
+                activity.hideProgressDialog();
+                activity.MessageBox("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ ERP");
             }
             conn = null;
         }
