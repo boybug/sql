@@ -14,7 +14,6 @@ import com.newit.bsrpos_sql.Activity.ActCustomer;
 import com.newit.bsrpos_sql.Activity.ActInvoice;
 import com.newit.bsrpos_sql.Activity.ActOrder;
 import com.newit.bsrpos_sql.Activity.ActProduct;
-import com.newit.bsrpos_sql.Activity.ActShift;
 import com.newit.bsrpos_sql.Activity.ActUser;
 import com.newit.bsrpos_sql.Model.Menu;
 import com.newit.bsrpos_sql.R;
@@ -34,7 +33,7 @@ public class AdpMenu extends BaseAdapter {
         menus.add(new Menu(3, "ลูกค้า", R.drawable.customer, R.color.colorPrimaryGreen, ActCustomer.class));
         menus.add(new Menu(4, "สินค้า", R.drawable.product, R.color.colorSquid, ActProduct.class));
         menus.add(new Menu(5, "ผู้ใช้", R.drawable.utility, R.color.colorBeef, ActUser.class));
-        menus.add(new Menu(6, "เปิด/ปิดกะ", R.drawable.utility, R.color.colorBeef, ActShift.class));
+//        menus.add(new Menu(6, "เปิด/ปิดกะ", R.drawable.utility, R.color.colorBeef, ActShift.class));
         inflater = LayoutInflater.from(context);
     }
 
