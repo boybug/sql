@@ -293,4 +293,9 @@ public abstract class ActBase<T> extends AppCompatActivity {
     }
 
     public abstract void queryReturn(ResultSet rs, int tag, Object caller) throws SQLException;
+
+    public void connectError(Exception e) throws SQLException {
+        hideProgressDialog();
+        MessageBox("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ ERP");
+    }
 }
