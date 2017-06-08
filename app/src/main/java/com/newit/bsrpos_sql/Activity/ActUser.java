@@ -54,7 +54,7 @@ public class ActUser extends ActBase {
                 else user_deleteorder.setVisibility(View.GONE);
 
                 TextView user_admin = (TextView) v.findViewById(R.id.user_admin);
-                if (user.isDeleteorder()) user_admin.setText("แอดมิน");
+                if (user.isAdmin()) user_admin.setText("แอดมิน");
                 else user_admin.setText("พนักงาน");
 
                 if (searchString != null) SetTextSpan(searchString, user.getName(), user_name);

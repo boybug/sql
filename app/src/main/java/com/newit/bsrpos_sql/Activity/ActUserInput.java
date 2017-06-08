@@ -74,6 +74,9 @@ public class ActUserInput extends ActBase {
             }
         });
 
+        if (user.getId() == Global.user.getId())
+            userinput_resetpwd.setVisibility(View.GONE);
+
         if (Global.user.isAdmin()) {
             if (user.getId() != Global.user.getId()) userinput_chngpwd.setVisibility(View.GONE);
             userinput_resetpwd.setOnClickListener(new View.OnClickListener() {
@@ -129,7 +132,6 @@ public class ActUserInput extends ActBase {
                 }
             });
         } else {
-            userinput_resetpwd.setVisibility(View.GONE);
             userinput_deleteorder.setEnabled(false);
             userinput_chngpwd.setVisibility(View.VISIBLE);
         }

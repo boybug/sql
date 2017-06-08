@@ -44,7 +44,7 @@ public class ActProduct extends ActBase {
                 product_name.setText(prod.getName());
 
                 TextView product_price = (TextView) v.findViewById(R.id.product_price);
-                product_price.setText(String.valueOf(prod.getPrice()));
+                product_price.setText(Global.formatMoney(prod.getPrice()));
 
                 v.setBackgroundColor(Color.parseColor(prod.getColor()));
 

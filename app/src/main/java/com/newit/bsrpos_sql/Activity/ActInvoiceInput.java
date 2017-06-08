@@ -62,7 +62,7 @@ public class ActInvoiceInput extends ActBase {
         invoiceinput_no.setText(invoice.getNo());
         invoiceinput_qty.setText(String.valueOf(invoice.getQty()));
         invoiceinput_wgt.setText(String.valueOf(invoice.getWeight()));
-        invoiceinput_amt.setText(String.valueOf(invoice.getAmount()));
+        invoiceinput_amt.setText(Global.formatMoney(invoice.getAmount()));
         invoiceinput_order.setText(invoice.getOrder_no());
         invoiceinput_user.setText(invoice.getUsr_name());
 
@@ -74,7 +74,7 @@ public class ActInvoiceInput extends ActBase {
                 TextView invoiceitem_qty = (TextView) v.findViewById(R.id.invoiceitem_qty);
                 invoiceitem_no.setText(String.valueOf(model.getNo()));
                 invoiceitem_desc.setText(model.getProd_name());
-                invoiceitem_qty.setText(String.valueOf(String.valueOf(model.getPrice()) + "x" + model.getQty()));
+                invoiceitem_qty.setText(String.valueOf(Global.formatMoney(model.getPrice()) + "x" + model.getQty()));
             }
         };
         final ListView list = (ListView) findViewById(R.id.list_order_item);

@@ -66,7 +66,7 @@ public class ActProductPrice extends ActBase {
                     productprice_from_to.setText(stepPrice.getFrom() + " - " + stepPrice.getTo());
 
                     TextView productprice_price = (TextView) v.findViewById(R.id.productprice_price);
-                    productprice_price.setText(String.valueOf(stepPrice.getPrice()));
+                    productprice_price.setText(Global.formatMoney(stepPrice.getPrice()));
                 }
             };
 

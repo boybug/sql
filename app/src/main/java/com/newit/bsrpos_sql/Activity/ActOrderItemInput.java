@@ -50,12 +50,12 @@ public class ActOrderItemInput extends ActBase {
 
             orderiteminput_desc.setText(item.getProduct().getName());
             orderiteminput_wgt.setText(String.valueOf(item.getWeight()));
-            orderiteminput_price.setText(String.valueOf(item.getPrice()));
+            orderiteminput_price.setText(Global.formatMoney(item.getPrice()));
 
             orderiteminput_qty.setSelectAllOnFocus(true);
             orderiteminput_qty.setText(String.valueOf(item.getQty()));
             orderiteminput_stock.setText(String.valueOf(item.getProduct().getRemaining() + item.getQty()));
-            orderiteminput_amt.setText(String.valueOf(item.getAmount()));
+            orderiteminput_amt.setText(Global.formatMoney(item.getAmount()));
 
             oldQty = getQty();
 

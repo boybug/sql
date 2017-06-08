@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import java.text.DecimalFormat;
+
 public class Global {
     public static final int speechCode = 100;
     public static User user;
@@ -31,5 +33,10 @@ public class Global {
         } catch (PackageManager.NameNotFoundException e) {
             return null;
         }
+    }
+
+    public static String formatMoney(float value) {
+        DecimalFormat df = new DecimalFormat("#,###,##0.00");
+        return df.format(value);
     }
 }

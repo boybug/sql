@@ -62,7 +62,7 @@ public class ActOrder extends ActBase {
                 order_cus.setText(order.getCus_name());
 
                 TextView order_amount = (TextView) v.findViewById(R.id.order_amount);
-                order_amount.setText(String.valueOf(order.getAmount()));
+                order_amount.setText(Global.formatMoney(order.getAmount()));
 
                 TextView order_ship = (TextView) v.findViewById(R.id.order_ship);
                 order_ship.setText(String.valueOf(order.isShip() ? "ส่ง" : "ไม่ส่ง"));

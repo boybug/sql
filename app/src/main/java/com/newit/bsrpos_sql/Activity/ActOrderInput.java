@@ -120,7 +120,7 @@ public class ActOrderInput extends ActBase {
                 TextView orderitem_qty = (TextView) v.findViewById(R.id.orderitem_qty);
                 orderitem_no.setText(String.valueOf(model.getNo()));
                 orderitem_desc.setText(model.getProduct().getName());
-                orderitem_qty.setText(String.valueOf(String.valueOf(model.getPrice()) + "x" + model.getQty()));
+                orderitem_qty.setText(String.valueOf(Global.formatMoney(model.getPrice()) + "x" + model.getQty()));
             }
         };
         final ListView listOrderItem = (ListView) findViewById(R.id.list_order_item);
@@ -198,7 +198,7 @@ public class ActOrderInput extends ActBase {
                     orderproduct_name.setText(model.getName());
 
                     TextView orderproduct_price = (TextView) v.findViewById(R.id.orderproduct_price);
-                    orderproduct_price.setText(String.valueOf(model.getPrice()) + " ฿");
+                    orderproduct_price.setText(Global.formatMoney(model.getPrice()) + " ฿");
 
                     if (model.isStepPrice()) {
                         orderproduct_price.setTextColor(Color.RED);
@@ -374,7 +374,7 @@ public class ActOrderInput extends ActBase {
         orderinput_no.setText(order.getNo());
         orderinput_qty.setText(String.valueOf(order.getQty()));
         orderinput_wgt.setText(String.valueOf(order.getWeight()));
-        orderinput_amt.setText(String.valueOf(order.getAmount()));
+        orderinput_amt.setText(Global.formatMoney(order.getAmount()));
         orderinput_listtitle.setText("รายการสินค้า(" + String.valueOf(order.getItems().size()) + ")");
     }
 

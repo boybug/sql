@@ -46,7 +46,7 @@ public class ActInvoice extends ActBase {
             protected void populateView(View v, Invoice invoice) {
 
                 TextView order_no = (TextView) v.findViewById(R.id.order_no);
-                  order_no.setText("ใบสั่ง : " + invoice.getOrder_no());
+                order_no.setText("ใบสั่ง : " + invoice.getOrder_no());
 
                 TextView invoice_no = (TextView) v.findViewById(R.id.invoice_no);
                 invoice_no.setText("ใบแจ้งหนี้ : " + invoice.getNo());
@@ -55,7 +55,7 @@ public class ActInvoice extends ActBase {
                 invoice_cus.setText(invoice.getCus_name());
 
                 TextView invoice_amount = (TextView) v.findViewById(R.id.invoice_amount);
-                invoice_amount.setText(String.valueOf(invoice.getAmount()));
+                invoice_amount.setText(Global.formatMoney(invoice.getAmount()));
 
                 TextView invoice_ship = (TextView) v.findViewById(R.id.invoice_ship);
                 invoice_ship.setText(String.valueOf(invoice.isShip() ? "ส่ง" : "ไม่ส่ง"));
@@ -68,20 +68,17 @@ public class ActInvoice extends ActBase {
                     invoice_amount.setTextColor(Color.BLACK);
                     invoice_cus.setTextColor(Color.BLACK);
                     order_no.setTextColor(Color.parseColor("#F49144"));
-                }
-                else if (invoice.getStat() == OrderStat.New) {
+                } else if (invoice.getStat() == OrderStat.New) {
                     v.setBackgroundColor(Color.parseColor("#abdacf"));
                     invoice_amount.setTextColor(Color.parseColor("#ff0000"));
                     invoice_cus.setTextColor(Color.parseColor("#0070a2"));
                     order_no.setTextColor(Color.parseColor("#F49144"));
-                }
-                else if (invoice.getStat() == OrderStat.Confirm) {
+                } else if (invoice.getStat() == OrderStat.Confirm) {
                     v.setBackgroundColor(Color.parseColor("#F49144"));
                     invoice_amount.setTextColor(Color.parseColor("#000000"));
                     invoice_cus.setTextColor(Color.parseColor("#000000"));
                     order_no.setTextColor(Color.parseColor("#000000"));
-                }
-                else if (invoice.getStat() == OrderStat.Cancel) {
+                } else if (invoice.getStat() == OrderStat.Cancel) {
                     v.setBackgroundColor(Color.parseColor("#f64343"));
                     invoice_amount.setTextColor(Color.parseColor("#000000"));
                     invoice_cus.setTextColor(Color.parseColor("#000000"));

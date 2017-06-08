@@ -34,7 +34,6 @@ import com.newit.bsrpos_sql.Util.SqlQuery;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -135,16 +134,14 @@ public class ActOrderInputPayment extends ActBase {
                     }
                     float paid = Float.parseFloat(s.toString());
                     float refund = paid - order.getAmount() - charge;
-                    DecimalFormat format = new DecimalFormat("##.##");
-                    String formattedText = format.format(refund);
-                    orderiteminputpayment_refund.setText(formattedText);
+                    orderiteminputpayment_refund.setText(Global.formatMoney(refund));
                 }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 if (orderiteminputpayment_paid.length() == 0) {
-                    orderiteminputpayment_paid.setText("0");
+                    orderiteminputpayment_paid.setText(Global.formatMoney(0));
                     orderiteminputpayment_paid.setSelectAllOnFocus(true);
                 }
             }
@@ -162,7 +159,7 @@ public class ActOrderInputPayment extends ActBase {
             @Override
             public void afterTextChanged(Editable s) {
                 if (orderiteminputpayment_refund.length() == 0) {
-                    orderiteminputpayment_refund.setText("0");
+                    orderiteminputpayment_refund.setText(Global.formatMoney(0));
                     orderiteminputpayment_refund.setSelectAllOnFocus(true);
                 }
             }
@@ -219,11 +216,11 @@ public class ActOrderInputPayment extends ActBase {
         orderiteminputpayment_no.setText(order.getNo());
         orderiteminputpayment_qty.setText(String.valueOf(order.getQty()));
         orderiteminputpayment_wgt.setText(String.valueOf(order.getWeight()));
-        orderiteminputpayment_amt.setText(String.valueOf(order.getAmount()));
+        orderiteminputpayment_amt.setText(Global.formatMoney(order.getAmount()));
         switch_payship.setChecked(order.isShip());
-        orderiteminputpayment_paid.setText(String.valueOf(order.getAmount()));
-        orderiteminputpayment_refund.setText("0");
-        orderiteminputpayment_charge.setText("0");
+        orderiteminputpayment_paid.setText(Global.formatMoney(order.getAmount()));
+        orderiteminputpayment_refund.setText(Global.formatMoney(0));
+        orderiteminputpayment_charge.setText(Global.formatMoney(0));
 
         if (order.getStat() == OrderStat.Confirm) {
             if (order.getPay() == OrderPay.Cash) {
@@ -234,9 +231,9 @@ public class ActOrderInputPayment extends ActBase {
                 radio_paycredit.setChecked(true);
             }
             orderiteminputpayment_remark.setText(order.getRemark());
-            orderiteminputpayment_paid.setText(String.valueOf(order.getPaid()));
-            orderiteminputpayment_refund.setText(String.valueOf(order.getRefund()));
-            orderiteminputpayment_charge.setText(String.valueOf(order.getCharge()));
+            orderiteminputpayment_paid.setText(Global.formatMoney(order.getPaid()));
+            orderiteminputpayment_refund.setText(Global.formatMoney(order.getRefund()));
+            orderiteminputpayment_charge.setText(Global.formatMoney(order.getCharge()));
         } else order.setPay(OrderPay.Cash);
     }
 
@@ -247,11 +244,9 @@ public class ActOrderInputPayment extends ActBase {
         } else charge = 0;
         float paid = order.getAmount() + charge;
         float refund = paid - (order.getAmount() + charge);
-        DecimalFormat format = new DecimalFormat("##.##");
-        String formattedText = format.format(refund);
-        orderiteminputpayment_charge.setText(String.valueOf(charge));
-        orderiteminputpayment_refund.setText(formattedText);
-        orderiteminputpayment_paid.setText(String.valueOf(paid));
+        orderiteminputpayment_charge.setText(Global.formatMoney(charge));
+        orderiteminputpayment_refund.setText(Global.formatMoney(refund));
+        orderiteminputpayment_paid.setText(Global.formatMoney(paid));
         stop = false;
     }
 
