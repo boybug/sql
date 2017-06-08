@@ -86,7 +86,7 @@ public class ActInvoice extends ActBase {
                 }
 
                 if (searchString != null) {
-                    SetTextSpan(searchString, invoice.getNo(), invoice_no);
+                    SetTextSpan(searchString, invoice_no.getText().toString(), invoice_no);
                     SetTextSpan(searchString, invoice.getCus_name(), invoice_cus);
                 }
             }

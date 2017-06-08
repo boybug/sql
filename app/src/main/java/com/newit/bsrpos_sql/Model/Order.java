@@ -259,7 +259,7 @@ public class Order extends ModelBase {
 
     @Override
     public String getSearchString() {
-        return cus_name;
+        return cus_name+no;
     }
 
     public OrderItem findItem(int id) {
