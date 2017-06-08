@@ -121,6 +121,6 @@ public class Invoice extends ModelBase {
 
     @Override
     public String getSearchString() {
-        return no;
+        return cus_name;
     }
 }
