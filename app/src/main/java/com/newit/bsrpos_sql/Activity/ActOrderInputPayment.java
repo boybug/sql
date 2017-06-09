@@ -132,7 +132,7 @@ public class ActOrderInputPayment extends ActBase {
                     if (s.length() == 0) {
                         s = "0";
                     }
-                    float paid = Float.parseFloat(s.toString());
+                    float paid = Float.parseFloat(s.toString().replace(",",""));
                     float refund = paid - order.getAmount() - charge;
                     orderiteminputpayment_refund.setText(Global.formatMoney(refund));
                 }
@@ -186,9 +186,9 @@ public class ActOrderInputPayment extends ActBase {
                     dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             order.setRemark(orderiteminputpayment_remark.getText().toString());
-                            order.setPaid(Float.valueOf(orderiteminputpayment_paid.getText().toString()));
-                            order.setCharge(Float.valueOf(orderiteminputpayment_charge.getText().toString()));
-                            order.setRefund(Float.valueOf(orderiteminputpayment_refund.getText().toString()));
+                            order.setPaid(Float.valueOf(orderiteminputpayment_paid.getText().toString().replace(",","")));
+                            order.setCharge(Float.valueOf(orderiteminputpayment_charge.getText().toString().replace(",","")));
+                            order.setRefund(Float.valueOf(orderiteminputpayment_refund.getText().toString().replace(",","")));
                             String[] params = {String.valueOf(order.getId()), order.isShip() ? "1" : "0", String.valueOf(order.getPay()), String.valueOf(order.getRemark()), String.valueOf(order.getPaid()), String.valueOf(order.getCharge()), String.valueOf(order.getRefund())};
                             new SqlQuery(ActOrderInputPayment.this, spUpdate, "{call " + Global.database.getPrefix() + "setorderpay(?,?,?,?,?,?,?)}", params);
                         }
