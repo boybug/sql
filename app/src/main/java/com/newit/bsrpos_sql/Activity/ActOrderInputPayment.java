@@ -125,14 +125,15 @@ public class ActOrderInputPayment extends ActBase {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!stop) {
+                    String str = s.toString().replace(",","");
                     float charge;
                     if (order.getPay() == OrderPay.Credit) {
                         charge = (float) ((order.getAmount() * 2) / 100.00);
                     } else charge = 0;
-                    if (s.length() == 0) {
-                        s = "0";
+                    if (str.length() == 0) {
+                        str = "0";
                     }
-                    float paid = Float.parseFloat(s.toString().replace(",",""));
+                    float paid = Float.parseFloat(str);
                     float refund = paid - order.getAmount() - charge;
                     orderiteminputpayment_refund.setText(Global.formatMoney(refund));
                 }

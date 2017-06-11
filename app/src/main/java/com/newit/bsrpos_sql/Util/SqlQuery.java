@@ -56,8 +56,6 @@ public class SqlQuery extends AsyncTask<String, String, ResultSet> {
             } else throw (new SQLException());
         } catch (SQLException e) {
             e.printStackTrace();
-
-            //   activity.MessageBox(spName + " execution error : " + e.getMessage());
         }
         return null;
     }
@@ -69,7 +67,6 @@ public class SqlQuery extends AsyncTask<String, String, ResultSet> {
             activity.queryReturn(rs, tag, caller);
         } catch (SQLException e) {
             e.printStackTrace();
-            //     activity.MessageBox(spName + " post-execution error : " + e.getMessage());
         }
     }
 
@@ -89,7 +86,6 @@ public class SqlQuery extends AsyncTask<String, String, ResultSet> {
             } else throw (new SQLException());
         } catch (SQLException e) {
             e.printStackTrace();
-            //     activity.MessageBox(spName + " execution error : " + e.getMessage());
         }
         return null;
     }

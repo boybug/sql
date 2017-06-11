@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.print.PrintAttributes;
 import android.print.PrintManager;
@@ -35,8 +36,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.newit.bsrpos_sql.Model.Database;
 import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.ModelBase;
+import com.newit.bsrpos_sql.Model.User;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
 import com.newit.bsrpos_sql.Util.SqlConnect;
@@ -56,6 +59,7 @@ public abstract class ActBase<T> extends AppCompatActivity {
     protected String searchString;
     private List<T> backup;
     private ActionBar bar;
+    private final int speechCode = 100;
 
 
     public void showProgressDialog() {
@@ -81,6 +85,7 @@ public abstract class ActBase<T> extends AppCompatActivity {
     public void hideProgressDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
+            mProgressDialog = null;
         }
     }
 
@@ -127,7 +132,7 @@ public abstract class ActBase<T> extends AppCompatActivity {
                     intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "th-TH");
                     intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "พูดคำที่ต้องการค้นหา...");
                     try {
-                        ActBase.this.startActivityForResult(intent, Global.speechCode);
+                        ActBase.this.startActivityForResult(intent, speechCode);
                     } catch (ActivityNotFoundException a) {
                         ActBase.this.MessageBox("เครื่องนี้ไม่รองรับระบบวิเคราะห์เสียง.");
                     }
@@ -184,13 +189,10 @@ public abstract class ActBase<T> extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case Global.speechCode: {
-                if (resultCode == RESULT_OK && null != data) {
-                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    txt_search.setText(result.get(0));
-                }
-                break;
+        if (requestCode == speechCode) {
+            if (resultCode == RESULT_OK && null != data) {
+                ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                txt_search.setText(result.get(0));
             }
         }
     }
@@ -293,5 +295,26 @@ public abstract class ActBase<T> extends AppCompatActivity {
     }
 
     public abstract void queryReturn(ResultSet rs, int tag, Object caller) throws SQLException;
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("user", Global.user);
+        outState.putInt("wh_Grp_Id", Global.wh_Grp_Id);
+        outState.putString("wh_grp_name", Global.wh_grp_name);
+        outState.putBoolean("isLocal", Global.isLocal);
+        outState.putSerializable("database", Global.database);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Global.user = (User) savedInstanceState.getSerializable("user");
+        Global.wh_Grp_Id = savedInstanceState.getInt("wh_Grp_Id");
+        Global.wh_grp_name = savedInstanceState.getString("wh_grp_name");
+        Global.isLocal = savedInstanceState.getBoolean("isLocal");
+        Global.database = (Database) savedInstanceState.getSerializable("database");
+    }
+
 
 }

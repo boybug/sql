@@ -38,9 +38,9 @@ import java.util.Objects;
 
 public class ActLogin extends ActBase {
     private SharedPreferences.Editor loginPrefsEditor;
-    private EditText txt_username, txt_password;
+    private EditText login_name, login_password;
     private String username, password;
-    private CheckBox saveLoginCheckBox;
+    private CheckBox login_remember, login_local;
     private FirebaseAuth mAuth;
     private final int spLogin = 1;
 
@@ -54,32 +54,30 @@ public class ActLogin extends ActBase {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        TextView ver = (TextView) findViewById(R.id.ver);
-        txt_username = (EditText) findViewById(R.id.login_name);
-        txt_password = (EditText) findViewById(R.id.login_password);
-        saveLoginCheckBox = (CheckBox) findViewById(R.id.login_remember);
+        TextView login_version = (TextView) findViewById(R.id.login_version);
+        login_name = (EditText) findViewById(R.id.login_name);
+        login_password = (EditText) findViewById(R.id.login_password);
+        login_remember = (CheckBox) findViewById(R.id.login_remember);
+        login_local = (CheckBox) findViewById(R.id.login_local);
         SharedPreferences loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginPrefsEditor = loginPreferences.edit();
-        ver.setText("เวอร์ชั่น " + Global.getVersion(this));
+        login_version.setText("เวอร์ชั่น " + Global.getVersion(this));
         mAuth = FirebaseAuth.getInstance();
-
         Boolean saveLogin = loginPreferences.getBoolean("saveLogin", false);
 
-        CheckBox login_local = (CheckBox) findViewById(R.id.login_local);
-        Global.isLocal = login_local.isChecked();
-
         if (saveLogin) {
-            txt_username.setText(loginPreferences.getString("username", null));
-            saveLoginCheckBox.setChecked(true);
-            txt_password.requestFocus();
+            login_name.setText(loginPreferences.getString("username", null));
+            login_remember.setChecked(true);
+            login_local.setChecked(loginPreferences.getBoolean("local", false));
+            login_password.requestFocus();
         }
 
         Button bt_cmd_save = (Button) findViewById(R.id.login_login);
         bt_cmd_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                username = txt_username.getText().toString();
-                password = txt_password.getText().toString();
+                username = login_name.getText().toString();
+                password = login_password.getText().toString();
                 if (!Global.isNetworkAvailable(getApplicationContext())) {
                     MessageBox("ไม่มีสัญญาณเน็ทเวิร์ค");
                 } else if (ActLogin.this.Validate()) {
@@ -215,6 +213,7 @@ public class ActLogin extends ActBase {
                     MessageBox("เวอร์ชั่นของคุณเป็น " + appversion + " กรุณาอัพเกรดเป็นเวอร์ชั่นใหม่สุด " + latestversion);
                     mAuth.signOut();
                 } else {
+                    Global.isLocal = login_local.isChecked();
                     new SqlQuery(ActLogin.this, spLogin, "{call " + Global.database.getPrefix() + "loginbyemail(?,?)}", new String[]{username, password});
                 }
             }
@@ -229,19 +228,20 @@ public class ActLogin extends ActBase {
     private boolean Validate() {
         Boolean isValid = true;
         if (username.equals("")) {
-            txt_username.setError("ต้องกรอก");
+            login_name.setError("ต้องกรอก");
             isValid = false;
         }
         if (password.equals("") || password.length() < 6) {
-            txt_password.setError("ต้องกรอก 6 หลักขึ้นไป");
+            login_password.setError("ต้องกรอก 6 หลักขึ้นไป");
             isValid = false;
         }
         return isValid;
     }
 
     public void rememberlogin() {
-        if (saveLoginCheckBox.isChecked()) {
+        if (login_remember.isChecked()) {
             loginPrefsEditor.putBoolean("saveLogin", true);
+            loginPrefsEditor.putBoolean("local", login_local.isChecked());
             loginPrefsEditor.putString("username", username);
             loginPrefsEditor.commit();
         } else {
@@ -251,7 +251,7 @@ public class ActLogin extends ActBase {
     }
 
     public void onBackPressed() {
-        if (!saveLoginCheckBox.isChecked()) {
+        if (!login_remember.isChecked()) {
             loginPrefsEditor.clear();
             loginPrefsEditor.commit();
         }

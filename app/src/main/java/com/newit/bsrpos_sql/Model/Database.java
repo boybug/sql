@@ -1,9 +1,12 @@
 package com.newit.bsrpos_sql.Model;
 
-public class Database {
+import java.io.Serializable;
+
+public class Database implements Serializable {
     private String name;
     private String db;
-    private int port;
+    private int port_lan;
+    private int port_wan;
     private String pwd;
     private String user;
     private String ip_lan;
@@ -29,12 +32,20 @@ public class Database {
         this.db = db;
     }
 
-    public int getPort() {
-        return port;
+    public int getPort_lan() {
+        return port_lan;
     }
 
-    public void setPort(int port) {
-        this.port = port;
+    public void setPort_lan(int port_lan) {
+        this.port_lan = port_lan;
+    }
+
+    public int getPort_wan() {
+        return port_wan;
+    }
+
+    public void setPort_wan(int port_wan) {
+        this.port_wan = port_wan;
     }
 
     public String getPwd() {

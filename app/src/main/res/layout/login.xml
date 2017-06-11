@@ -78,7 +78,7 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/ver"
+            android:id="@+id/login_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="เวอร์ชั่น"

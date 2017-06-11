@@ -9,7 +9,6 @@ import android.net.NetworkInfo;
 import java.text.DecimalFormat;
 
 public class Global {
-    public static final int speechCode = 100;
     public static User user;
     public static int wh_Grp_Id = -1;
     public static String wh_grp_name = "";

@@ -14,10 +14,10 @@ public class SqlConnect {
 
     public static Connection connect(final ActBase activity) throws SQLException {
         if (conn == null || conn.isClosed()) {
-            final String connStrInternet = "jdbc:jtds:sqlserver://" + Global.database.getIp_wan() + ":" + String.valueOf(Global.database.getPort()) + "/" + Global.database.getDb();
-            final String connStrIntranet = "jdbc:jtds:sqlserver://" + Global.database.getIp_lan() + ":" + String.valueOf(Global.database.getPort()) + "/" + Global.database.getDb();
+            final String connStrInternet = "jdbc:jtds:sqlserver://" + Global.database.getIp_wan() + ":" + String.valueOf(Global.database.getPort_wan()) + "/" + Global.database.getDb();
+            final String connStrIntranet = "jdbc:jtds:sqlserver://" + Global.database.getIp_lan() + ":" + String.valueOf(Global.database.getPort_lan()) + "/" + Global.database.getDb();
             try {
-                 Class.forName("net.sourceforge.jtds.jdbc.Driver");
+                Class.forName("net.sourceforge.jtds.jdbc.Driver");
                 SqlConnect.conn = DriverManager.getConnection(Global.isLocal ? connStrIntranet : connStrInternet, Global.database.getUser(), Global.database.getPwd());
                 activity.hideProgressDialog();
                 return conn;
