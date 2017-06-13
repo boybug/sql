@@ -125,7 +125,7 @@ public class ActOrderInputPayment extends ActBase {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!stop) {
-                    String str = s.toString().replace(",","");
+                    String str = s.toString().replace(",", "");
                     float charge;
                     if (order.getPay() == OrderPay.Credit) {
                         charge = (float) ((order.getAmount() * 2) / 100.00);
@@ -187,9 +187,9 @@ public class ActOrderInputPayment extends ActBase {
                     dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             order.setRemark(orderiteminputpayment_remark.getText().toString());
-                            order.setPaid(Float.valueOf(orderiteminputpayment_paid.getText().toString().replace(",","")));
-                            order.setCharge(Float.valueOf(orderiteminputpayment_charge.getText().toString().replace(",","")));
-                            order.setRefund(Float.valueOf(orderiteminputpayment_refund.getText().toString().replace(",","")));
+                            order.setPaid(Float.valueOf(orderiteminputpayment_paid.getText().toString().replace(",", "")));
+                            order.setCharge(Float.valueOf(orderiteminputpayment_charge.getText().toString().replace(",", "")));
+                            order.setRefund(Float.valueOf(orderiteminputpayment_refund.getText().toString().replace(",", "")));
                             String[] params = {String.valueOf(order.getId()), order.isShip() ? "1" : "0", String.valueOf(order.getPay()), String.valueOf(order.getRemark()), String.valueOf(order.getPaid()), String.valueOf(order.getCharge()), String.valueOf(order.getRefund())};
                             new SqlQuery(ActOrderInputPayment.this, spUpdate, "{call " + Global.database.getPrefix() + "setorderpay(?,?,?,?,?,?,?)}", params);
                         }
@@ -254,6 +254,12 @@ public class ActOrderInputPayment extends ActBase {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.nologout, menu);
+        if (menu != null) {
+            menu.clear();
+            for (int i = 0; i < invoices.size(); i++) {
+                menu.add(0, i, Menu.NONE, "พิมพ์ใบเสร็จ: " + invoices.get(i).getNo());
+            }
+        }
         this.menu = menu;
         return true;
     }
@@ -292,13 +298,9 @@ public class ActOrderInputPayment extends ActBase {
                         OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"), rs.getInt("order_id"),
                         rs.getString("order_no"), rs.getFloat("paid"), rs.getFloat("charge"), rs.getFloat("refund"), OrderStat.valueOf(rs.getString("stat")));
                 invoices.add(i);
+                invalidateOptionsMenu();
             }
-            if (menu != null) {
-                menu.clear();
-                for (int i = 0; i < invoices.size(); i++) {
-                    menu.add(0, i, Menu.NONE, "พิมพ์ใบเสร็จ: " + invoices.get(i).getNo());
-                }
-            }
+
         } else if (tag == spQueryInvoicePrint) {
             if (rs != null && rs.next()) {
                 String htmlDocument = rs.getString("html");
@@ -306,5 +308,4 @@ public class ActOrderInputPayment extends ActBase {
             }
         }
     }
-
 }
