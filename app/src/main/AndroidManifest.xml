@@ -71,7 +71,8 @@
             android:name=".Activity.ActInvoice"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
         <activity android:name=".Activity.ActInvoiceInput" />
-        <activity android:name=".Activity.ActShift"></activity>
+        <activity android:name=".Activity.ActShift" />
+        <activity android:name=".Activity.ActBank"></activity>
     </application>
 
 </manifest>

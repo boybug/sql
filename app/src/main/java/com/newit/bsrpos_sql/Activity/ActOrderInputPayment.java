@@ -2,6 +2,7 @@ package com.newit.bsrpos_sql.Activity;
 
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -92,6 +93,7 @@ public class ActOrderInputPayment extends ActBase {
                 switch (checkedId) {
                     case R.id.radio_paycash:
                         order.setPay(OrderPay.Cash);
+                        order.setBank_id(-1);
                         stop = true;
                         calRefund();
                         break;
@@ -99,9 +101,12 @@ public class ActOrderInputPayment extends ActBase {
                         order.setPay(OrderPay.Transfer);
                         stop = true;
                         calRefund();
+                        Intent intent = new Intent(ActOrderInputPayment.this, ActBank.class);
+                        startActivityForResult(intent, 1);
                         break;
                     case R.id.radio_paycredit:
                         order.setPay(OrderPay.Credit);
+                        order.setBank_id(-1);
                         stop = true;
                         calRefund();
                         break;
@@ -178,6 +183,8 @@ public class ActOrderInputPayment extends ActBase {
                     MessageBox("ใบสั่งขายได้ถูกยืนยันไปแล้ว");
                 else if (order.getItems().size() == 0)
                     MessageBox("ไม่มีรายการสินค้า");
+                else if (order.getPay() == OrderPay.Transfer && order.getBank_id() <= 0)
+                    MessageBox("เงินโอนยังไม่ได้เลือกธนาคาร");
                 else {
                     AlertDialog.Builder dialog = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new AlertDialog.Builder(ActOrderInputPayment.this, android.R.style.Theme_Material_Light_Dialog_Alert) : new AlertDialog.Builder(ActOrderInputPayment.this);
                     dialog.setTitle("ยืนยันใบสั่งขาย");
@@ -190,8 +197,17 @@ public class ActOrderInputPayment extends ActBase {
                             order.setPaid(Float.valueOf(orderiteminputpayment_paid.getText().toString().replace(",", "")));
                             order.setCharge(Float.valueOf(orderiteminputpayment_charge.getText().toString().replace(",", "")));
                             order.setRefund(Float.valueOf(orderiteminputpayment_refund.getText().toString().replace(",", "")));
-                            String[] params = {String.valueOf(order.getId()), order.isShip() ? "1" : "0", String.valueOf(order.getPay()), String.valueOf(order.getRemark()), String.valueOf(order.getPaid()), String.valueOf(order.getCharge()), String.valueOf(order.getRefund())};
-                            new SqlQuery(ActOrderInputPayment.this, spUpdate, "{call " + Global.database.getPrefix() + "setorderpay(?,?,?,?,?,?,?)}", params);
+                            String[] params = {
+                                    String.valueOf(order.getId()),
+                                    order.isShip() ? "1" : "0",
+                                    String.valueOf(order.getPay()),
+                                    String.valueOf(order.getRemark()),
+                                    String.valueOf(order.getPaid()),
+                                    String.valueOf(order.getCharge()),
+                                    String.valueOf(order.getRefund()),
+                                    String.valueOf(order.getBank_id())
+                            };
+                            new SqlQuery(ActOrderInputPayment.this, spUpdate, "{call " + Global.database.getPrefix() + "setorderpay(?,?,?,?,?,?,?,?)}", params);
                         }
                     });
                     dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
@@ -305,6 +321,16 @@ public class ActOrderInputPayment extends ActBase {
             if (rs != null && rs.next()) {
                 String htmlDocument = rs.getString("html");
                 webView.loadDataWithBaseURL(null, htmlDocument, "text/HTML", "UTF-8", null);
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK && null != data) {
+                order.setBank_id(data.getIntExtra("bank_id", -1));
             }
         }
     }

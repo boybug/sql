@@ -63,7 +63,7 @@ public class ActInvoice extends ActBase {
                 TextView invoice_usr = (TextView) v.findViewById(R.id.invoice_usr);
                 invoice_usr.setText("ผู้เปิดใบแจ้งหนี้ : " + String.valueOf(invoice.getUsr_name()));
 
-                if (invoice.getStat() == null) {
+                if (invoice.getStat() == OrderStat.Null) {
                     v.setBackgroundColor(Color.WHITE);
                     invoice_amount.setTextColor(Color.BLACK);
                     invoice_cus.setTextColor(Color.BLACK);

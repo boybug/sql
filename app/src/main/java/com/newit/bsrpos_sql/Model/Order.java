@@ -32,6 +32,7 @@ public class Order extends ModelBase {
     private float paid;
     private float charge;
     private float refund;
+    private int bank_id;
 
     public Order(int cus_id, String cus_name, boolean ship) {
         super(true);
@@ -50,10 +51,11 @@ public class Order extends ModelBase {
         this.paid = 0;
         this.charge = 0;
         this.refund = 0;
+        this.bank_id = -1;
     }
 
     public Order(int id, String no, String date, int cus_id, String cus_name, int wh_grp_Id, OrderStat stat, int qty, float weight,
-                 float amount, int usr_id, String usr_name, OrderPay pay, boolean ship, String remark, float paid, float charge, float refund) {
+                 float amount, int usr_id, String usr_name, OrderPay pay, boolean ship, String remark, float paid, float charge, float refund, int bank_id) {
         super(false);
         this.id = id;
         this.no = no;
@@ -73,6 +75,7 @@ public class Order extends ModelBase {
         this.paid = paid;
         this.charge = charge;
         this.refund = refund;
+        this.bank_id = bank_id;
     }
 
     public String getNo() {
@@ -107,7 +110,6 @@ public class Order extends ModelBase {
             this.stat = stat;
             updateRecordStat();
         }
-
     }
 
     public int getId() {
@@ -149,7 +151,6 @@ public class Order extends ModelBase {
             this.weight = weight;
             updateRecordStat();
         }
-
     }
 
     public float getAmount() {
@@ -249,6 +250,17 @@ public class Order extends ModelBase {
         }
     }
 
+    public int getBank_id() {
+        return bank_id;
+    }
+
+    public void setBank_id(int bank_id) {
+        if (!Objects.equals(this.bank_id, bank_id)) {
+            this.bank_id = bank_id;
+            updateRecordStat();
+        }
+    }
+
     public List<OrderItem> getDeletingItems() {
         return deletingItems;
     }
@@ -259,7 +271,7 @@ public class Order extends ModelBase {
 
     @Override
     public String getSearchString() {
-        return cus_name+no;
+        return cus_name + no;
     }
 
     public OrderItem findItem(int id) {
@@ -275,7 +287,7 @@ public class Order extends ModelBase {
         if (getRecordStat() != RecordStat.NULL) {
             try {
                 String[] params = {String.valueOf(id), String.valueOf(cus_id), String.valueOf(stat), String.valueOf(wh_grp_Id), String.valueOf(usr_id),
-                        String.valueOf(qty), String.valueOf(amount), String.valueOf(weight), String.valueOf(getRecordStat()), ship ? "1" : "0", };
+                        String.valueOf(qty), String.valueOf(amount), String.valueOf(weight), String.valueOf(getRecordStat()), ship ? "1" : "0",};
                 ResultSet rs = SqlQuery.executeWait(activity, "{call " + Global.database.getPrefix() + "setorder(?,?,?,?,?,?,?,?,?,?)}", params);
                 if (rs != null && rs.next()) {
                     result.setIden(rs.getInt("Iden"));
