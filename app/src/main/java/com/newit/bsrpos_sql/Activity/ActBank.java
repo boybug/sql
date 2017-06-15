@@ -3,7 +3,6 @@ package com.newit.bsrpos_sql.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -63,7 +62,8 @@ public class ActBank extends ActBase {
 
     @Override
     public void onBackPressed() {
-        MessageBox("โปรดเลือกธนาคาร");
+        MessageBox("ยังไม่ได้เลือกธนาคาร");
+        super.onBackPressed();
     }
 
     @Override
@@ -74,14 +74,6 @@ public class ActBank extends ActBase {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.nologout, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-//        if (item.getItemId() == R.id.nav_logout) {
-//            super.backPressed(ActLogin.class);
-//        }
         return true;
     }
 
