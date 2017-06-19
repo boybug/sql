@@ -68,7 +68,7 @@ public class ActOrderInput extends ActBase {
     private final int spUpdateFbStock = 6;
 
     private DrawerLayout drawer;
-    private DatabaseReference fb = FirebaseDatabase.getInstance().getReference().child(Global.getFbStockPath(getApplicationContext()));
+    private DatabaseReference fb ;
     private WebView webView;
 
     @SuppressWarnings("unchecked")
@@ -90,6 +90,7 @@ public class ActOrderInput extends ActBase {
         orderinput_amt = (TextView) findViewById(R.id.orderinput_amt);
         orderinput_listtitle = (TextView) findViewById(R.id.orderinput_listtitle);
 
+        fb = FirebaseDatabase.getInstance().getReference().child(Global.getFbStockPath(getApplicationContext()));
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
             MessageBox("error");
@@ -100,7 +101,7 @@ public class ActOrderInput extends ActBase {
         Customer customer = (Customer) (bundle != null ? bundle.getSerializable("customer") : null);
 
         if (order == null && customer != null) {
-            order = new Order(customer.getId(), customer.getName(), customer.isShip(),getApplicationContext());
+            order = new Order(customer.getId(), customer.getName(), customer.isShip(),Global.getUser(getApplicationContext()),Global.getwh_Grp_Id(getApplicationContext()));
             setTitle("เปิดใบสั่งใหม่@" + Global.getwh_grp_name(getApplicationContext()));
         } else if (order != null) {
             showProgressDialog();

@@ -2,8 +2,6 @@ package com.newit.bsrpos_sql.Model;
 
 
 
-import android.content.Context;
-
 import com.newit.bsrpos_sql.Activity.ActBase;
 import com.newit.bsrpos_sql.Util.SqlQuery;
 
@@ -40,7 +38,7 @@ public class Order extends ModelBase {
     private User user;
     private WhGrp whGrp;
 
-    public Order(int cus_id, String cus_name, boolean ship, Context activity) {
+    public Order(int cus_id, String cus_name, boolean ship, User user, int wh_grp_Id) {
         super(true);
         date = new Date().toString();
         qty = 0;
@@ -48,10 +46,10 @@ public class Order extends ModelBase {
         amount = 0;
         this.cus_id = cus_id;
         this.cus_name = cus_name;
-        usr_id = Global.getUser(activity).getId();
-        usr_name = Global.getUser(activity).getName();
+        usr_id = user.getId();
+        usr_name = user.getName();
         stat = OrderStat.New;
-        wh_grp_Id = Global.getwh_Grp_Id(activity);
+        this.wh_grp_Id = wh_grp_Id;
         this.ship = ship;
         this.pay = OrderPay.Cash;
         this.paid = 0;
