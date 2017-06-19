@@ -47,7 +47,7 @@ public class Global {
     }
 
     public static User getUser(Context context) {
-        return (User) getObject("user", context);
+        return (User) getObject("user", context, User.class);
     }
 
     public static void setDatabase(Database database, Context context) {
@@ -55,7 +55,7 @@ public class Global {
     }
 
     public static Database getDatabase(Context context) {
-        return (Database) getObject("database", context);
+        return (Database) getObject("database", context, Database.class);
     }
 
     private static void setString(String key, String value, Context context) {
@@ -104,11 +104,11 @@ public class Global {
         editor.commit();
     }
 
-    private static Object getObject(String key, Context context) {
+    private static Object getObject(String key, Context context, Class className) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         Gson gson = new Gson();
         String json = preferences.getString(key, null);
-        return gson.fromJson(json, Object.class);
+        return gson.fromJson(json, className);
     }
 
 
