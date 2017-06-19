@@ -37,7 +37,7 @@ public class ActOrderItemInput extends ActBase {
         setContentView(R.layout.orderiteminput);
 
         if (validate()) {
-            fb = FirebaseDatabase.getInstance().getReference().child(Global.getFbStockPath()).child(item.getProduct().getFbstock().getKey()).child("reserve");
+            fb = FirebaseDatabase.getInstance().getReference().child(Global.getFbStockPath(getApplicationContext())).child(item.getProduct().getFbstock().getKey()).child("reserve");
 
             TextView orderiteminput_desc = (TextView) findViewById(R.id.orderiteminput_desc);
             orderiteminput_stock = (TextView) findViewById(R.id.orderiteminput_stock);

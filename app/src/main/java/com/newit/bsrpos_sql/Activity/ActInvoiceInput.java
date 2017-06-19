@@ -44,8 +44,8 @@ public class ActInvoiceInput extends ActBase {
             finish();
         }
         invoice = (Invoice) (bundle != null ? bundle.getSerializable("invoice") : null);
-        new SqlQuery(ActInvoiceInput.this, spQueryInvoiceItem, "{call " + Global.database.getPrefix() + "getinvoiceitem(?)}", new String[]{String.valueOf(invoice.getId())});
-        setTitle("ใบแจ้งหนี้ " + invoice.getNo() + "@" + Global.wh_grp_name);
+        new SqlQuery(ActInvoiceInput.this, spQueryInvoiceItem, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getinvoiceitem(?)}", new String[]{String.valueOf(invoice.getId())});
+        setTitle("ใบแจ้งหนี้ " + invoice.getNo() + "@" + Global.getwh_grp_name(getApplicationContext()));
 
         TextView invoiceinput_cus = (TextView) findViewById(R.id.invoiceinput_cus);
         TextView invoiceinput_no = (TextView) findViewById(R.id.invoiceinput_no);
@@ -83,7 +83,7 @@ public class ActInvoiceInput extends ActBase {
         invoiceinput_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new SqlQuery(ActInvoiceInput.this, spQueryOrder, "{call " + Global.database.getPrefix() + "getorder(?,?)}", new String[]{String.valueOf(Global.wh_Grp_Id), String.valueOf(invoice.getOrder_Id())});
+                new SqlQuery(ActInvoiceInput.this, spQueryOrder, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getorder(?,?)}", new String[]{String.valueOf(Global.getwh_Grp_Id(getApplicationContext())), String.valueOf(invoice.getOrder_Id())});
             }
         });
     }

@@ -33,7 +33,7 @@ public class ActCustomer extends ActBase {
         setContentView(R.layout.listing);
 
         hideFloatButton(R.id.fab);
-        setTitle("รายการลูกค้า@" + Global.wh_grp_name);
+        setTitle("รายการลูกค้า@" + Global.getwh_grp_name(getApplicationContext()));
         setSwipeRefresh(R.id.swipe_refresh, R.id.listing_list);
 
         adap = new AdpCustom<Customer>(R.layout.listing_grid_cus, getLayoutInflater(), customers) {
@@ -75,7 +75,7 @@ public class ActCustomer extends ActBase {
 
     @Override
     public void refresh() {
-        new SqlQuery(ActCustomer.this, 1, "{call " + Global.database.getPrefix() + "getcus(?)}", new String[]{String.valueOf(Global.wh_Grp_Id)});
+        new SqlQuery(ActCustomer.this, 1, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getcus(?)}", new String[]{String.valueOf(Global.getwh_Grp_Id(getApplicationContext()))});
     }
 
     @Override

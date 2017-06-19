@@ -177,7 +177,7 @@ public class OrderItem extends ModelBase {
                 String[] params = {String.valueOf(order.getId()), String.valueOf(id), String.valueOf(no), String.valueOf(product.getId()),
                         String.valueOf(qty), String.valueOf(price), String.valueOf(amount), String.valueOf(weight), String.valueOf(uom_id),
                         String.valueOf(getRecordStat()), String.valueOf(product.getWh_Id()), product.getFbstock().getKey()};
-                ResultSet rs = SqlQuery.executeWait(activity, "{call " + Global.database.getPrefix() + "setorderitem(?,?,?,?,?,?,?,?,?,?,?,?)}", params);
+                ResultSet rs = SqlQuery.executeWait(activity, "{call " + Global.getDatabase(activity).getPrefix() + "setorderitem(?,?,?,?,?,?,?,?,?,?,?,?)}", params);
                 if (rs != null && rs.next()) {
                     result.setIden(rs.getInt("Iden"));
                     result.setMsg(rs.getString("Msg"));
@@ -199,7 +199,7 @@ public class OrderItem extends ModelBase {
         SqlResult result = new SqlResult();
         if (getRecordStat() != RecordStat.NULL) {
             try {
-                ResultSet rs = SqlQuery.executeWait(activity, "{call " + Global.database.getPrefix() + "deleteorderitem(?)}", new String[]{String.valueOf(id)});
+                ResultSet rs = SqlQuery.executeWait(activity, "{call " + Global.getDatabase(activity).getPrefix() + "deleteorderitem(?)}", new String[]{String.valueOf(id)});
                 if (rs != null && rs.next()) {
                     result.setIden(rs.getInt("Iden"));
                     result.setMsg(rs.getString("Msg"));

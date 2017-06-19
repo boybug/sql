@@ -38,7 +38,7 @@ public class ActInvoice extends ActBase {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        setTitle("รายการใบแจ้งหนี้@" + Global.wh_grp_name);
+        setTitle("รายการใบแจ้งหนี้@" + Global.getwh_grp_name(getApplicationContext()));
         setSwipeRefresh(R.id.swipe_refresh, R.id.listing_list);
 
         adap = new AdpCustom<Invoice>(R.layout.listing_grid_invoice, getLayoutInflater(), invoices) {
@@ -116,7 +116,7 @@ public class ActInvoice extends ActBase {
 
     @Override
     public void refresh() {
-        new SqlQuery(ActInvoice.this, spQuery, "{call " + Global.database.getPrefix() + "getinvoice(?,?)}", new String[]{"0", String.valueOf(Global.wh_Grp_Id)});
+        new SqlQuery(ActInvoice.this, spQuery, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getinvoice(?,?)}", new String[]{"0", String.valueOf(Global.getwh_Grp_Id(getApplicationContext()))});
     }
 
     @Override

@@ -68,7 +68,7 @@ public class ActOrderInput extends ActBase {
     private final int spUpdateFbStock = 6;
 
     private DrawerLayout drawer;
-    private DatabaseReference fb = FirebaseDatabase.getInstance().getReference().child(Global.getFbStockPath());
+    private DatabaseReference fb = FirebaseDatabase.getInstance().getReference().child(Global.getFbStockPath(getApplicationContext()));
     private WebView webView;
 
     @SuppressWarnings("unchecked")
@@ -100,14 +100,14 @@ public class ActOrderInput extends ActBase {
         Customer customer = (Customer) (bundle != null ? bundle.getSerializable("customer") : null);
 
         if (order == null && customer != null) {
-            order = new Order(customer.getId(), customer.getName(), customer.isShip());
-            setTitle("เปิดใบสั่งใหม่@" + Global.wh_grp_name);
+            order = new Order(customer.getId(), customer.getName(), customer.isShip(),getApplicationContext());
+            setTitle("เปิดใบสั่งใหม่@" + Global.getwh_grp_name(getApplicationContext()));
         } else if (order != null) {
             showProgressDialog();
-            new SqlQuery(ActOrderInput.this, spQueryOrderItem, "{call " + Global.database.getPrefix() + "getorderitem(?)}", new String[]{String.valueOf(order.getId())});
-            setTitle("ใบสั่งขาย " + order.getNo() + "@" + Global.wh_grp_name);
+            new SqlQuery(ActOrderInput.this, spQueryOrderItem, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getorderitem(?)}", new String[]{String.valueOf(order.getId())});
+            setTitle("ใบสั่งขาย " + order.getNo() + "@" + Global.getwh_grp_name(getApplicationContext()));
         }
-        new SqlQuery(ActOrderInput.this, spQueryConfirmedStock, "{call " + Global.database.getPrefix() + "getconfirmedstock(?)}", new String[]{String.valueOf(Global.wh_Grp_Id)});
+        new SqlQuery(ActOrderInput.this, spQueryConfirmedStock, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getconfirmedstock(?)}", new String[]{String.valueOf(Global.getwh_Grp_Id(getApplicationContext()))});
         redrawOrder();
         //endregion
 
@@ -141,7 +141,7 @@ public class ActOrderInput extends ActBase {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                     final OrderItem item = order.getItems().get(position);
-                    if (order.getUsr_id() != Global.user.getId())
+                    if (order.getUsr_id() != Global.getUser(getApplicationContext()).getId())
                         MessageBox("ไม่สามารถแก้ไขรายการคนอื่นได้");
                     else if (order.getStat() == OrderStat.Confirm)
                         MessageBox("เอกสารยืนยันแล้วลบไม่ได้");
@@ -216,7 +216,7 @@ public class ActOrderInput extends ActBase {
             listProduct.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    if (order.getUsr_id() != Global.user.getId())
+                    if (order.getUsr_id() != Global.getUser(getApplicationContext()).getId())
                         MessageBox("ไม่สามารถแก้ไขรายการคนอื่นได้");
                     else {
                         Product p = adapProduct.getModels().get(position);
@@ -224,7 +224,7 @@ public class ActOrderInput extends ActBase {
                             OrderItem item = order.findItem(p);
                             if (item == null) {
                                 item = new OrderItem(order, order.getItems().size() + 1, p);
-                                new SqlQuery(ActOrderInput.this, spQueryOrderItemPrice, "{call " + Global.database.getPrefix() + "getstepprice(?,?)}", new String[]{String.valueOf(p.getId()), String.valueOf(p.getWh_Id())}, item);
+                                new SqlQuery(ActOrderInput.this, spQueryOrderItemPrice, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getstepprice(?,?)}", new String[]{String.valueOf(p.getId()), String.valueOf(p.getWh_Id())}, item);
                                 order.getItems().add(item);
                             }
                             item.addQty(1);
@@ -263,7 +263,7 @@ public class ActOrderInput extends ActBase {
         bt_cmd_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (order.getUsr_id() != Global.user.getId())
+                if (order.getUsr_id() != Global.getUser(getApplicationContext()).getId())
                     MessageBox("ไม่สามารถบันทึกรายการคนอื่นได้");
                 else if (order.getStat() == OrderStat.Confirm)
                     MessageBox("ไม่สามารถบันทึกรายการที่ยืนยันแล้ว");
@@ -422,7 +422,7 @@ public class ActOrderInput extends ActBase {
     @Override
     public void refresh() {
         if (order.getStat() == OrderStat.New) {
-            new SqlQuery(ActOrderInput.this, spQueryProduct, "{call " + Global.database.getPrefix() + "getproduct(?)}", new String[]{String.valueOf(Global.wh_Grp_Id)});
+            new SqlQuery(ActOrderInput.this, spQueryProduct, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getproduct(?)}", new String[]{String.valueOf(Global.getwh_Grp_Id(getApplicationContext()))});
         }
     }
 
@@ -450,7 +450,7 @@ public class ActOrderInput extends ActBase {
                         createWebPrintJob(view, "BSRPOS Order:" + order.getNo());
                     }
                 });
-                new SqlQuery(ActOrderInput.this, spQueryOrderPrint, "{call " + Global.database.getPrefix() + "getorderprint(?)}", new String[]{String.valueOf(order.getId())});
+                new SqlQuery(ActOrderInput.this, spQueryOrderPrint, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getorderprint(?)}", new String[]{String.valueOf(order.getId())});
             }
         } else if (item.getItemId() == 2) {
             if (order.getItems().size() == 0) {
@@ -476,7 +476,7 @@ public class ActOrderInput extends ActBase {
                 Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"), rs.getInt("stock"), rs.getFloat("weight"), rs.getString("color"), rs.getBoolean("stepprice"), rs.getFloat("price"), rs.getInt("uom_id"), rs.getInt("wh_Id"));
                 setProductFb(p);
                 OrderItem item = new OrderItem(order, rs.getInt("id"), rs.getInt("no"), p, rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("uom_id"), rs.getInt("wh_Id"));
-                new SqlQuery(ActOrderInput.this, spQueryOrderItemPrice, "{call " + Global.database.getPrefix() + "getstepprice(?,?)}", new String[]{String.valueOf(p.getId()), String.valueOf(p.getWh_Id())}, item);
+                new SqlQuery(ActOrderInput.this, spQueryOrderItemPrice, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getstepprice(?,?)}", new String[]{String.valueOf(p.getId()), String.valueOf(p.getWh_Id())}, item);
                 order.getItems().add(item);
             }
             adapOrderItem.notifyDataSetChanged();
@@ -578,6 +578,6 @@ public class ActOrderInput extends ActBase {
         int remaining = f.getReserve() >= c.getQty() ? f.getReserve() - c.getQty() : 0;
         fb.child(f.getKey()).child("reserve").setValue(remaining);
         f.setReserve(remaining);
-        new SqlQuery(ActOrderInput.this, spUpdateFbStock, "{call " + Global.database.getPrefix() + "updateorderitem(?)}", new String[]{String.valueOf(c.getItem_id())});
+        new SqlQuery(ActOrderInput.this, spUpdateFbStock, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "updateorderitem(?)}", new String[]{String.valueOf(c.getItem_id())});
     }
 }

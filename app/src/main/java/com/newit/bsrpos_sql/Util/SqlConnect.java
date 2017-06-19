@@ -14,11 +14,11 @@ public class SqlConnect {
 
     public static Connection connect(final ActBase activity) throws SQLException {
         if (conn == null || conn.isClosed()) {
-            final String connStrInternet = "jdbc:jtds:sqlserver://" + Global.database.getIp_wan() + ":" + String.valueOf(Global.database.getPort_wan()) + "/" + Global.database.getDb();
-            final String connStrIntranet = "jdbc:jtds:sqlserver://" + Global.database.getIp_lan() + ":" + String.valueOf(Global.database.getPort_lan()) + "/" + Global.database.getDb();
+            final String connStrInternet = "jdbc:jtds:sqlserver://" + Global.getDatabase(activity.getApplicationContext()).getIp_wan() + ":" + String.valueOf(Global.getDatabase(activity.getApplicationContext()).getPort_wan()) + "/" + Global.getDatabase(activity.getApplicationContext()).getDb();
+            final String connStrIntranet = "jdbc:jtds:sqlserver://" + Global.getDatabase(activity.getApplicationContext()).getIp_lan() + ":" + String.valueOf(Global.getDatabase(activity.getApplicationContext()).getPort_lan()) + "/" + Global.getDatabase(activity.getApplicationContext()).getDb();
             try {
                 Class.forName("net.sourceforge.jtds.jdbc.Driver");
-                SqlConnect.conn = DriverManager.getConnection(Global.isLocal ? connStrIntranet : connStrInternet, Global.database.getUser(), Global.database.getPwd());
+                SqlConnect.conn = DriverManager.getConnection(Global.getisLocal(activity.getApplicationContext()) ? connStrIntranet : connStrInternet, Global.getDatabase(activity.getApplicationContext()).getUser(), Global.getDatabase(activity.getApplicationContext()).getPwd());
                 activity.hideProgressDialog();
                 return conn;
             } catch (Exception e) {

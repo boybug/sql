@@ -74,11 +74,11 @@ public class ActUserInput extends ActBase {
             }
         });
 
-        if (user.getId() == Global.user.getId())
+        if (user.getId() == Global.getUser(getApplicationContext()).getId())
             userinput_resetpwd.setVisibility(View.GONE);
 
-        if (Global.user.isAdmin()) {
-            if (user.getId() != Global.user.getId()) userinput_chngpwd.setVisibility(View.GONE);
+        if (Global.getUser(getApplicationContext()).isAdmin()) {
+            if (user.getId() != Global.getUser(getApplicationContext()).getId()) userinput_chngpwd.setVisibility(View.GONE);
             userinput_resetpwd.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -90,7 +90,7 @@ public class ActUserInput extends ActBase {
                     dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             showProgressDialog();
-                            new SqlQuery(ActUserInput.this, spResetPwd, "{call " + Global.database.getPrefix() + "chngpasword(?,?,?)}", new String[]{user.getLogin(), user.getPassword(), "123456"});
+                            new SqlQuery(ActUserInput.this, spResetPwd, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "chngpasword(?,?,?)}", new String[]{user.getLogin(), user.getPassword(), "123456"});
                         }
                     });
                     dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
@@ -113,7 +113,7 @@ public class ActUserInput extends ActBase {
                     dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             showProgressDialog();
-                            new SqlQuery(ActUserInput.this, spUpdateDeleteOrder, "{call " + Global.database.getPrefix() + "chnguserdetail(?,?)}", new String[]{user.getLogin(), userinput_deleteorder.isChecked() ? "1" : "0"});
+                            new SqlQuery(ActUserInput.this, spUpdateDeleteOrder, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "chnguserdetail(?,?)}", new String[]{user.getLogin(), userinput_deleteorder.isChecked() ? "1" : "0"});
                         }
                     });
                     dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
@@ -200,7 +200,7 @@ public class ActUserInput extends ActBase {
                             MessageBox("รหัสผ่าน 6 หลักขึ้นไป");
                         } else if (!TextUtils.isEmpty(oldpass) && !TextUtils.isEmpty(newpass) && !TextUtils.isEmpty(confirmpass) && Objects.equals(newpass, confirmpass)) {
                             showProgressDialog();
-                            new SqlQuery(ActUserInput.this, spChngPwd, "{call " + Global.database.getPrefix() + "chngpasword(?,?,?)}", new String[]{user.getLogin(), String.valueOf(oldpass), String.valueOf(newpass)});
+                            new SqlQuery(ActUserInput.this, spChngPwd, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "chngpasword(?,?,?)}", new String[]{user.getLogin(), String.valueOf(oldpass), String.valueOf(newpass)});
                         }
                     }
                 });

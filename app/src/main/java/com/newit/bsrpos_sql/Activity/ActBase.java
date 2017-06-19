@@ -36,10 +36,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.newit.bsrpos_sql.Model.Database;
 import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.ModelBase;
-import com.newit.bsrpos_sql.Model.User;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
 import com.newit.bsrpos_sql.Util.SqlConnect;
@@ -299,22 +297,22 @@ public abstract class ActBase<T> extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable("user", Global.user);
-        outState.putInt("wh_Grp_Id", Global.wh_Grp_Id);
-        outState.putString("wh_grp_name", Global.wh_grp_name);
-        outState.putBoolean("isLocal", Global.isLocal);
-        outState.putSerializable("database", Global.database);
+        outState.putSerializable("user", Global.getUser(getApplicationContext()));
+        outState.putInt("wh_Grp_Id", Global.getwh_Grp_Id(getApplicationContext()));
+        outState.putString("wh_grp_name", Global.getwh_grp_name(getApplicationContext()));
+        outState.putBoolean("isLocal", Global.getisLocal(getApplicationContext()));
+        outState.putSerializable("database", Global.getDatabase(getApplicationContext()));
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        Global.user = (User) savedInstanceState.getSerializable("user");
-        Global.wh_Grp_Id = savedInstanceState.getInt("wh_Grp_Id");
-        Global.wh_grp_name = savedInstanceState.getString("wh_grp_name");
-        Global.isLocal = savedInstanceState.getBoolean("isLocal");
-        Global.database = (Database) savedInstanceState.getSerializable("database");
-    }
+//    @Override
+//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//        super.onRestoreInstanceState(savedInstanceState);
+//        Global.user = (User) savedInstanceState.getSerializable("user");
+//        Global.wh_Grp_Id = savedInstanceState.getInt("wh_Grp_Id");
+//        Global.wh_grp_name = savedInstanceState.getString("wh_grp_name");
+//        Global.isLocal = savedInstanceState.getBoolean("isLocal");
+//        Global.database = (Database) savedInstanceState.getSerializable("database");
+//    }
 
 
 }

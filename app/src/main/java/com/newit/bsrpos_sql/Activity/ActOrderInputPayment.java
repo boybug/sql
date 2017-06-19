@@ -59,7 +59,7 @@ public class ActOrderInputPayment extends ActBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.orderinput_payment);
 
-        setTitle("ยืนยันใบสั่งขาย@ " + Global.wh_grp_name);
+        setTitle("ยืนยันใบสั่งขาย@ " + Global.getwh_grp_name(getApplicationContext()));
 
         orderinput_cus = (TextView) findViewById(R.id.orderinput_cus);
         orderiteminputpayment_no = (TextView) findViewById(R.id.orderinput_no);
@@ -177,7 +177,7 @@ public class ActOrderInputPayment extends ActBase {
         bt_cmd_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (order.getUsr_id() != Global.user.getId())
+                if (order.getUsr_id() != Global.getUser(getApplicationContext()).getId())
                     MessageBox("ไม่สามารถยืนยันใบสั่งของคนอื่น");
                 else if (order.getStat() == OrderStat.Confirm)
                     MessageBox("ใบสั่งขายได้ถูกยืนยันไปแล้ว");
@@ -207,7 +207,7 @@ public class ActOrderInputPayment extends ActBase {
                                     String.valueOf(order.getRefund()),
                                     String.valueOf(order.getBank_id())
                             };
-                            new SqlQuery(ActOrderInputPayment.this, spUpdate, "{call " + Global.database.getPrefix() + "setorderpay(?,?,?,?,?,?,?,?)}", params);
+                            new SqlQuery(ActOrderInputPayment.this, spUpdate, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "setorderpay(?,?,?,?,?,?,?,?)}", params);
                         }
                     });
                     dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
@@ -227,7 +227,7 @@ public class ActOrderInputPayment extends ActBase {
 
     private void getInvoices() {
         invoices.clear();
-        new SqlQuery(ActOrderInputPayment.this, spGetInvoice, "{call " + Global.database.getPrefix() + "getinvoice(?,?)}", new String[]{String.valueOf(order.getId()), String.valueOf(order.getWh_grp_Id())});
+        new SqlQuery(ActOrderInputPayment.this, spGetInvoice, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getinvoice(?,?)}", new String[]{String.valueOf(order.getId()), String.valueOf(order.getWh_grp_Id())});
     }
 
     private void redrawOrder() {
@@ -309,7 +309,7 @@ public class ActOrderInputPayment extends ActBase {
                 createWebPrintJob(view, "BSRPOS Invoice:" + invoice.getNo());
             }
         });
-        new SqlQuery(ActOrderInputPayment.this, spQueryInvoicePrint, "{call " + Global.database.getPrefix() + "getinvoiceprint(?)}", new String[]{String.valueOf(invoice.getId())});
+        new SqlQuery(ActOrderInputPayment.this, spQueryInvoicePrint, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getinvoiceprint(?)}", new String[]{String.valueOf(invoice.getId())});
         return true;
     }
 

@@ -29,7 +29,7 @@ public class ActShift extends ActBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.listing);
 
-        if (!Global.user.isAdmin()) hideFloatButton(R.id.fab);
+        if (!Global.getUser(getApplicationContext()).isAdmin()) hideFloatButton(R.id.fab);
         setTitle("เปิดปิดกะ");
         setSwipeRefresh(R.id.swipe_refresh, R.id.listing_list);
 
@@ -79,7 +79,7 @@ public class ActShift extends ActBase {
 
     @Override
     public void refresh() {
-        new SqlQuery(ActShift.this, 1, "{call " + Global.database.getPrefix() + "getshift(?)}", new String[]{String.valueOf(Global.wh_Grp_Id)});
+        new SqlQuery(ActShift.this, 1, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getshift(?)}", new String[]{String.valueOf(Global.getwh_Grp_Id(getApplicationContext()))});
 
     }
 

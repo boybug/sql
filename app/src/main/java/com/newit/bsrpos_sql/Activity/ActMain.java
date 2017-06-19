@@ -21,7 +21,7 @@ public class ActMain extends ActBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        setTitle(Global.user.getName() + "@" + Global.wh_grp_name);
+        setTitle(Global.getUser(getApplicationContext()).getName() + "@" + Global.getwh_grp_name(getApplicationContext()));
 
         final AdpMenu adap = new AdpMenu(getApplicationContext());
         ListView list = (ListView) findViewById(R.id.list_main);

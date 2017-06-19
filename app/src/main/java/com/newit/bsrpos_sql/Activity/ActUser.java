@@ -59,7 +59,7 @@ public class ActUser extends ActBase {
 
                 if (searchString != null) SetTextSpan(searchString, user.getName(), user_name);
 
-                if (!Global.user.isAdmin()) {
+                if (!Global.getUser(getApplicationContext()).isAdmin()) {
                     user_deleteorder.setEnabled(false);
                     user_admin.setEnabled(false);
                 }
@@ -77,12 +77,12 @@ public class ActUser extends ActBase {
                 ActUser.this.startActivity(intent);
             }
         });
-        if (Global.user.isAdmin()) {
+        if (Global.getUser(getApplicationContext()).isAdmin()) {
             list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                     final User user = adap.getModels().get(position);
-                    if (user.getId() == Global.user.getId())
+                    if (user.getId() == Global.getUser(getApplicationContext()).getId())
                         MessageBox("ลบตัวเองไม่ได้");
                     else {
                         AlertDialog.Builder dialog = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new android.support.v7.app.AlertDialog.Builder(ActUser.this, android.R.style.Theme_Material_Light_Dialog_Alert) : new android.support.v7.app.AlertDialog.Builder(ActUser.this);
@@ -93,7 +93,7 @@ public class ActUser extends ActBase {
                         dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog12, int which) {
-                                new SqlQuery(ActUser.this, spDelete, "{call " + Global.database.getPrefix() + "deleteuser(?,?)}", new String[]{user.getLogin(), String.valueOf(user.getId())});
+                                new SqlQuery(ActUser.this, spDelete, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "deleteuser(?,?)}", new String[]{user.getLogin(), String.valueOf(user.getId())});
                             }
                         });
                         dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
@@ -114,7 +114,7 @@ public class ActUser extends ActBase {
 
     @Override
     public void refresh() {
-        new SqlQuery(ActUser.this, spQuery, "{call " + Global.database.getPrefix() + "getuser(?,?)}", new String[]{Global.user.getLogin(), String.valueOf(Global.user.isAdmin())});
+        new SqlQuery(ActUser.this, spQuery, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getuser(?,?)}", new String[]{Global.getUser(getApplicationContext()).getLogin(), String.valueOf(Global.getUser(getApplicationContext()).isAdmin())});
     }
 
     @Override

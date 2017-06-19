@@ -39,10 +39,10 @@ public class ActProductPrice extends ActBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.productprice);
 
-        setTitle("รายละเอียดสินค้า@" + Global.wh_grp_name);
+        setTitle("รายละเอียดสินค้า@" + Global.getwh_grp_name(getApplicationContext()));
 
         if (validate()) {
-            fb = FirebaseDatabase.getInstance().getReference().child(Global.getFbStockPath());
+            fb = FirebaseDatabase.getInstance().getReference().child(Global.getFbStockPath(getApplicationContext()));
 
             TextView productprice_name = (TextView) findViewById(R.id.productprice_name);
             productprice_stock = (TextView) findViewById(R.id.productprice_stock);
@@ -56,7 +56,7 @@ public class ActProductPrice extends ActBase {
             productprice_remaining.setText(String.valueOf(prod.getStock()));
             productprice_wgt.setText(String.valueOf(prod.getWeight()));
 
-            new SqlQuery(ActProductPrice.this, 1, "{call " + Global.database.getPrefix() + "getstepprice(?,?)}", new String[]{String.valueOf(prod.getId()), String.valueOf(prod.getWh_Id())});
+            new SqlQuery(ActProductPrice.this, 1, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getstepprice(?,?)}", new String[]{String.valueOf(prod.getId()), String.valueOf(prod.getWh_Id())});
 
             adap = new AdpCustom<StepPrice>(R.layout.listing_grid_productprice, getLayoutInflater(), stepPrices) {
                 @Override

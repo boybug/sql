@@ -34,7 +34,7 @@ public class ActProduct extends ActBase {
         setContentView(R.layout.listing);
 
         hideFloatButton(R.id.fab);
-        setTitle("รายการสินค้า@" + Global.wh_grp_name);
+        setTitle("รายการสินค้า@" + Global.getwh_grp_name(getApplicationContext()));
         setSwipeRefresh(R.id.swipe_refresh, R.id.listing_list);
 
         adap = new AdpCustom<Product>(R.layout.listing_grid_product, getLayoutInflater(), products) {
@@ -102,7 +102,7 @@ public class ActProduct extends ActBase {
 
     @Override
     public void refresh() {
-        new SqlQuery(ActProduct.this, 1, "{call " + Global.database.getPrefix() + "getproduct(?)}", new String[]{String.valueOf(Global.wh_Grp_Id)});
+        new SqlQuery(ActProduct.this, 1, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getproduct(?)}", new String[]{String.valueOf(Global.getwh_Grp_Id(getApplicationContext()))});
 
     }
 

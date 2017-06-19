@@ -204,17 +204,18 @@ public class ActLogin extends ActBase {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 DataSnapshot value = dataSnapshot.getChildren().iterator().next();
-                Global.database = value.getValue(Database.class);
+                Database database = value.getValue(Database.class);
+                Global.setDatabase(database, getApplicationContext());
                 String appversion = Global.getVersion(getApplicationContext());
-                String latestversion = Global.database.getAppversion();
+                String latestversion = database.getAppversion();
 
                 if (!Objects.equals(latestversion, appversion)) {
                     hideProgressDialog();
                     MessageBox("เวอร์ชั่นของคุณเป็น " + appversion + " กรุณาอัพเกรดเป็นเวอร์ชั่นใหม่สุด " + latestversion);
                     mAuth.signOut();
                 } else {
-                    Global.isLocal = login_local.isChecked();
-                    new SqlQuery(ActLogin.this, spLogin, "{call " + Global.database.getPrefix() + "loginbyemail(?,?)}", new String[]{username, password});
+                    Global.setisLocal(login_local.isChecked(), getApplicationContext());
+                    new SqlQuery(ActLogin.this, spLogin, "{call " + database.getPrefix() + "loginbyemail(?,?)}", new String[]{username, password});
                 }
             }
 
@@ -264,7 +265,8 @@ public class ActLogin extends ActBase {
         try {
             if (tag == this.spLogin) {
                 if (rs != null && rs.next() && rs.getInt("usr_Id") > 0) {
-                    Global.user = new User(rs.getInt("usr_Id"), rs.getString("login_name"), rs.getString("usr_name"), rs.getBoolean("admin"), rs.getBoolean("deleteorder"), rs.getString("password"), rs.getString("email"));
+                    User user = new User(rs.getInt("usr_Id"), rs.getString("login_name"), rs.getString("usr_name"), rs.getBoolean("admin"), rs.getBoolean("deleteorder"), rs.getString("password"), rs.getString("email"));
+                    Global.setUser(user, getApplicationContext());
                     loginPrefsEditor.apply();
                     rememberlogin();
                     hideProgressDialog();

@@ -48,7 +48,7 @@ public class ActOrder extends ActBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.listing);
 
-        setTitle("รายการใบสั่ง@" + Global.wh_grp_name);
+        setTitle("รายการใบสั่ง@" + Global.getwh_grp_name(getApplicationContext()));
         setSwipeRefresh(R.id.swipe_refresh, R.id.listing_list);
 
         adap = new AdpCustom<Order>(R.layout.listing_grid_order, getLayoutInflater(), orders) {
@@ -98,14 +98,14 @@ public class ActOrder extends ActBase {
                 ActOrder.this.startActivity(intent);
             }
         });
-        if (Global.user.isDeleteorder()) {
+        if (Global.getUser(getApplicationContext()).isDeleteorder()) {
             list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                     final Order order = adap.getModels().get(position);
                     if (order.getStat() == OrderStat.Confirm)
                         MessageBox("ใบสั่งขายยืนยันแล้วลบไม่ได้");
-                    else if (order.getUsr_id() != Global.user.getId())
+                    else if (order.getUsr_id() != Global.getUser(getApplicationContext()).getId())
                         MessageBox("ไม่สามารถลบใบสั่งคนอื่นได้");
                     else {
                         AlertDialog.Builder dialog = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new AlertDialog.Builder(ActOrder.this, android.R.style.Theme_Material_Light_Dialog_Alert) : new AlertDialog.Builder(ActOrder.this);
@@ -116,7 +116,7 @@ public class ActOrder extends ActBase {
                         dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog12, int which) {
-                                new SqlQuery(ActOrder.this, spQueryOrderItem, "{call " + Global.database.getPrefix() + "getorderitem(?)}", new String[]{String.valueOf(order.getId())}, order);
+                                new SqlQuery(ActOrder.this, spQueryOrderItem, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getorderitem(?)}", new String[]{String.valueOf(order.getId())}, order);
                             }
                         });
                         dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
@@ -153,7 +153,7 @@ public class ActOrder extends ActBase {
 
     @Override
     public void refresh() {
-        new SqlQuery(ActOrder.this, spQuery, "{call " + Global.database.getPrefix() + "getorder(?,?)}", new String[]{String.valueOf(Global.wh_Grp_Id), "0"});
+        new SqlQuery(ActOrder.this, spQuery, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getorder(?,?)}", new String[]{String.valueOf(Global.getwh_Grp_Id(getApplicationContext())), "0"});
     }
 
     @Override
@@ -191,7 +191,7 @@ public class ActOrder extends ActBase {
             }
         } else if (tag == spQueryOrderItem) {
             while (rs != null && rs.next()) {
-                final DatabaseReference fb = FirebaseDatabase.getInstance().getReference().child(Global.getFbStockPath()).child(rs.getString("fbkey"));
+                final DatabaseReference fb = FirebaseDatabase.getInstance().getReference().child(Global.getFbStockPath(getApplicationContext())).child(rs.getString("fbkey"));
                 final int qty = rs.getInt("qty");
                 fb.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -209,7 +209,7 @@ public class ActOrder extends ActBase {
                 });
             }
             Order order = (Order) caller;
-            new SqlQuery(ActOrder.this, spDelete, "{call " + Global.database.getPrefix() + "deleteorder(?)}", new String[]{String.valueOf(order.getId())});
+            new SqlQuery(ActOrder.this, spDelete, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "deleteorder(?)}", new String[]{String.valueOf(order.getId())});
         }
     }
 }

@@ -24,7 +24,7 @@ public class ActCustomerDetail extends ActBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.customerdetail);
 
-        setTitle("รายละเอียดลูกค้า@" + Global.wh_grp_name);
+        setTitle("รายละเอียดลูกค้า@" + Global.getwh_grp_name(getApplicationContext()));
 
         if (validate()) {
             TextView customerdetail_name = (TextView) findViewById(R.id.customerdetail_name);

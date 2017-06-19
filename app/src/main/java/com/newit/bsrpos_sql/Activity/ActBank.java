@@ -68,7 +68,7 @@ public class ActBank extends ActBase {
 
     @Override
     public void refresh() {
-        new SqlQuery(ActBank.this, 1, "{call " + Global.database.getPrefix() + "getbank(?)}", new String[]{String.valueOf(Global.wh_Grp_Id)});
+        new SqlQuery(ActBank.this, 1, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getbank(?)}", new String[]{String.valueOf(Global.getwh_Grp_Id(getApplicationContext()))});
     }
 
     @Override

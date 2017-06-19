@@ -50,8 +50,8 @@ public class ActWhGrp extends ActBase {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 WhGrp whGrp = adap.getItem(position);
-                Global.wh_Grp_Id = whGrp.getId();
-                Global.wh_grp_name = whGrp.getName();
+                Global.setwh_Grp_Id(whGrp.getId(),getApplicationContext());
+                Global.setwh_grp_name(whGrp.getName(),getApplicationContext());
                 Intent intent = new Intent(ActWhGrp.this, ActMain.class);
                 ActWhGrp.this.startActivity(intent);
                 ActWhGrp.this.finish();
@@ -68,7 +68,7 @@ public class ActWhGrp extends ActBase {
 
     @Override
     public void refresh() {
-        new SqlQuery(ActWhGrp.this, 1, "{call " + Global.database.getPrefix() + "getwhgrp(?)}", new String[]{String.valueOf(Global.user.getId())});
+        new SqlQuery(ActWhGrp.this, 1, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getwhgrp(?)}", new String[]{String.valueOf(Global.getUser(getApplicationContext()).getId())});
     }
 
     @Override
