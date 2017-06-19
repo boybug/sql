@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.print.PrintAttributes;
 import android.print.PrintManager;
@@ -36,7 +35,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.ModelBase;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.AdpCustom;
@@ -295,24 +293,10 @@ public abstract class ActBase<T> extends AppCompatActivity {
     public abstract void queryReturn(ResultSet rs, int tag, Object caller) throws SQLException;
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putSerializable("user", Global.getUser(getApplicationContext()));
-        outState.putInt("wh_Grp_Id", Global.getwh_Grp_Id(getApplicationContext()));
-        outState.putString("wh_grp_name", Global.getwh_grp_name(getApplicationContext()));
-        outState.putBoolean("isLocal", Global.getisLocal(getApplicationContext()));
-        outState.putSerializable("database", Global.getDatabase(getApplicationContext()));
+    protected void onDestroy() {
+        super.onDestroy();
+        if((mProgressDialog != null) && mProgressDialog.isShowing() ){
+            mProgressDialog.dismiss();
+        }
     }
-
-//    @Override
-//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-//        super.onRestoreInstanceState(savedInstanceState);
-//        Global.user = (User) savedInstanceState.getSerializable("user");
-//        Global.wh_Grp_Id = savedInstanceState.getInt("wh_Grp_Id");
-//        Global.wh_grp_name = savedInstanceState.getString("wh_grp_name");
-//        Global.isLocal = savedInstanceState.getBoolean("isLocal");
-//        Global.database = (Database) savedInstanceState.getSerializable("database");
-//    }
-
-
 }
