@@ -27,7 +27,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.newit.bsrpos_sql.Model.ConfirmedStock;
 import com.newit.bsrpos_sql.Model.Customer;
 import com.newit.bsrpos_sql.Model.FbStock;
 import com.newit.bsrpos_sql.Model.Global;
@@ -36,6 +35,7 @@ import com.newit.bsrpos_sql.Model.OrderItem;
 import com.newit.bsrpos_sql.Model.OrderStat;
 import com.newit.bsrpos_sql.Model.Product;
 import com.newit.bsrpos_sql.Model.RecordStat;
+import com.newit.bsrpos_sql.Model.ReservedStock;
 import com.newit.bsrpos_sql.Model.SqlResult;
 import com.newit.bsrpos_sql.Model.StepPrice;
 import com.newit.bsrpos_sql.R;
@@ -45,7 +45,6 @@ import com.newit.bsrpos_sql.Util.SqlQuery;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -54,7 +53,7 @@ public class ActOrderInput extends ActBase {
     private Order order;
     private List<Product> products = new ArrayList<>();
     private List<FbStock> fbStocks = new ArrayList<>();
-    private List<ConfirmedStock> confirmedStocks = new ArrayList<>();
+    private List<ReservedStock> reservedStocks = new ArrayList<>();
     private AdpCustom<Product> adapProduct;
     private int selectedIndex;
     private AdpCustom<OrderItem> adapOrderItem;
@@ -64,11 +63,10 @@ public class ActOrderInput extends ActBase {
     private final int spQueryProduct = 2;
     private final int spQueryOrderItemPrice = 3;
     private final int spQueryOrderPrint = 4;
-    private final int spQueryConfirmedStock = 5;
-    private final int spUpdateFbStock = 6;
+    private final int spQueryReservedStock = 5;
 
     private DrawerLayout drawer;
-    private DatabaseReference fb ;
+    private DatabaseReference fb;
     private WebView webView;
 
     @SuppressWarnings("unchecked")
@@ -101,14 +99,14 @@ public class ActOrderInput extends ActBase {
         Customer customer = (Customer) (bundle != null ? bundle.getSerializable("customer") : null);
 
         if (order == null && customer != null) {
-            order = new Order(customer.getId(), customer.getName(), customer.isShip(),Global.getUser(getApplicationContext()),Global.getwh_Grp_Id(getApplicationContext()));
+            order = new Order(customer.getId(), customer.getName(), customer.isShip(), Global.getUser(getApplicationContext()), Global.getwh_Grp_Id(getApplicationContext()));
             setTitle("เปิดใบสั่งใหม่@" + Global.getwh_grp_name(getApplicationContext()));
         } else if (order != null) {
             showProgressDialog();
             new SqlQuery(ActOrderInput.this, spQueryOrderItem, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getorderitem(?)}", new String[]{String.valueOf(order.getId())});
             setTitle("ใบสั่งขาย " + order.getNo() + "@" + Global.getwh_grp_name(getApplicationContext()));
         }
-        new SqlQuery(ActOrderInput.this, spQueryConfirmedStock, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getconfirmedstock(?)}", new String[]{String.valueOf(Global.getwh_Grp_Id(getApplicationContext()))});
+        new SqlQuery(ActOrderInput.this, spQueryReservedStock, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getreservestock(?)}", new String[]{String.valueOf(Global.getwh_Grp_Id(getApplicationContext()))});
         redrawOrder();
         //endregion
 
@@ -504,28 +502,18 @@ public class ActOrderInput extends ActBase {
                 String htmlDocument = rs.getString("html");
                 webView.loadDataWithBaseURL(null, htmlDocument, "text/HTML", "UTF-8", null);
             }
-        } else if (tag == spQueryConfirmedStock) {
-            confirmedStocks.clear();
+        } else if (tag == spQueryReservedStock) {
+            reservedStocks.clear();
             while (rs != null && rs.next()) {
-                boolean found = false;
-                ConfirmedStock c = new ConfirmedStock(rs.getInt("item_Id"), rs.getInt("wh_Id"), rs.getInt("prod_Id"), rs.getInt("qty"));
-                for (FbStock f : fbStocks) {
-                    if (f.getWh_id() == c.getWh_Id() && f.getProd_id() == c.getProd_Id()) {
-                        updateFbStock(f, c);
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    confirmedStocks.add(c);
-                }
+                ReservedStock c = new ReservedStock(rs.getInt("wh_Id"), rs.getInt("prod_Id"), rs.getInt("qty"), rs.getString("fbkey"));
+                reservedStocks.add(c);
             }
-        } else if (tag == spUpdateFbStock) {
-            if (rs != null && rs.next()) {
-                SqlResult result = new SqlResult(rs);
-                if (result.getMsg() != null)
-                    MessageBox(result.getMsg());
+            fb.removeValue();
+            showProgressDialog();
+            for (ReservedStock r : reservedStocks) {
+                fb.child(r.getFbkey()).setValue(r);
             }
+            hideProgressDialog();
         }
     }
 
@@ -565,20 +553,5 @@ public class ActOrderInput extends ActBase {
                 }
             }
         }
-        Iterator<ConfirmedStock> i = confirmedStocks.iterator();
-        while (i.hasNext()) {
-            ConfirmedStock c = i.next();
-            if (c.getWh_Id() == fbstock.getWh_id() && c.getProd_Id() == fbstock.getProd_id()) {
-                updateFbStock(fbstock, c);
-                i.remove();
-            }
-        }
-    }
-
-    public void updateFbStock(FbStock f, ConfirmedStock c) {
-        int remaining = f.getReserve() >= c.getQty() ? f.getReserve() - c.getQty() : 0;
-        fb.child(f.getKey()).child("reserve").setValue(remaining);
-        f.setReserve(remaining);
-        new SqlQuery(ActOrderInput.this, spUpdateFbStock, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "updateorderitem(?)}", new String[]{String.valueOf(c.getItem_id())});
     }
 }
