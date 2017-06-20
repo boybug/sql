@@ -166,6 +166,7 @@ public class ActOrder extends ActBase {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (Global.getUser(getApplicationContext()).isAdmin()) {
+            menu.removeItem(9);
             menu.add(1, 9, Menu.NONE, "ล้างใบสั่งคงค้าง(สิ้นวัน)");
             return true;
         } else return super.onPrepareOptionsMenu(menu);
