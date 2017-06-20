@@ -18,6 +18,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.newit.bsrpos_sql.Model.FbStock;
 import com.newit.bsrpos_sql.Model.Global;
@@ -163,9 +164,36 @@ public class ActOrder extends ActBase {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (Global.getUser(getApplicationContext()).isAdmin()) {
+            menu.add(1, 9, Menu.NONE, "ล้างใบสั่งคงค้าง(สิ้นวัน)");
+            return true;
+        } else return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.nav_logout) {
             super.backPressed(ActLogin.class);
+        } else if (item.getItemId() == 9) {
+            AlertDialog.Builder dialog = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert) : new AlertDialog.Builder(this);
+            dialog.setTitle("ล้างใบสั่งคงค้าง(สิ้นวัน)");
+            dialog.setIcon(R.mipmap.ic_launcher);
+            dialog.setCancelable(true);
+            dialog.setMessage("ท่านต้องการลบใบสั่งคงค้างทั้งหมดหรือไม่? การกระทำนี้ไม่สามารถ undo ได้");
+            dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog12, int which) {
+                    clearFbStock();
+                }
+            });
+            dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog1, int which) {
+                    dialog1.cancel();
+                }
+            });
+            dialog.show();
         }
         return true;
     }
@@ -210,6 +238,25 @@ public class ActOrder extends ActBase {
             }
             Order order = (Order) caller;
             new SqlQuery(ActOrder.this, spDelete, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "deleteorder(?)}", new String[]{String.valueOf(order.getId())});
+        }
+    }
+
+
+    private void clearFbStock() {
+        if (Global.getUser(getApplicationContext()).isAdmin()) {
+            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(Global.getFbStockPath(getApplicationContext()));
+            Query q = ref.orderByChild("reserve").startAt(1);
+            q.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    FbStock fb = dataSnapshot.getValue(FbStock.class);
+                    ref.child(fb.getKey()).child("reserve").setValue(0);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
         }
     }
 }
