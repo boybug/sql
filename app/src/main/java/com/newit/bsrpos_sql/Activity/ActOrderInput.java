@@ -474,7 +474,7 @@ public class ActOrderInput extends ActBase {
         if (tag == spQueryOrderItem) {
             order.getItems().clear();
             while (rs != null && rs.next()) {
-                Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"), rs.getInt("stock"), rs.getFloat("weight"), rs.getString("color"), rs.getBoolean("stepprice"), rs.getFloat("price"), rs.getInt("uom_id"), rs.getInt("wh_Id"));
+                Product p = new Product(rs.getInt("prod_Id"), rs.getString("prod_name"), rs.getInt("stock"), rs.getFloat("weightperuom"), rs.getString("color"), rs.getBoolean("stepprice"), rs.getFloat("price"), rs.getInt("uom_id"), rs.getInt("wh_Id"));
                 setProductFb(p);
                 OrderItem item = new OrderItem(order, rs.getInt("id"), rs.getInt("no"), p, rs.getInt("qty"), rs.getFloat("price"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("uom_id"), rs.getInt("wh_Id"));
                 new SqlQuery(ActOrderInput.this, spQueryOrderItemPrice, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getstepprice(?,?)}", new String[]{String.valueOf(p.getId()), String.valueOf(p.getWh_Id())}, item);

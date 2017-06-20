@@ -115,8 +115,8 @@ public class OrderItem extends ModelBase {
 
     public void setWeight(float weight) {
         if (this.weight != weight) {
-            updateRecordStat();
             this.weight = weight;
+            updateRecordStat();
         }
     }
 
