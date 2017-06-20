@@ -47,9 +47,23 @@ public class ActMain extends ActBase {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(android.view.Menu menu) {
+        if (Global.getUser(getApplicationContext()).isAdmin()) {
+            menu.removeItem(9);
+            menu.add(1, 9, android.view.Menu.NONE, "เปลี่ยนสาขา");
+            return true;
+        } else return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.nav_logout) {
             Intent intent = new Intent(ActMain.this, ActLogin.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        } else if (item.getItemId() == 9) {
+            Intent intent = new Intent(ActMain.this, ActWhGrp.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();

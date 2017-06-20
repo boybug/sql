@@ -106,7 +106,6 @@ public class ActOrderInput extends ActBase {
             new SqlQuery(ActOrderInput.this, spQueryOrderItem, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getorderitem(?)}", new String[]{String.valueOf(order.getId())});
             setTitle("ใบสั่งขาย " + order.getNo() + "@" + Global.getwh_grp_name(getApplicationContext()));
         }
-        new SqlQuery(ActOrderInput.this, spQueryReservedStock, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getreservestock(?)}", new String[]{String.valueOf(Global.getwh_Grp_Id(getApplicationContext()))});
         redrawOrder();
         //endregion
 
@@ -421,6 +420,7 @@ public class ActOrderInput extends ActBase {
     @Override
     public void refresh() {
         if (order.getStat() == OrderStat.New) {
+            new SqlQuery(ActOrderInput.this, spQueryReservedStock, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getreservestock(?)}", new String[]{String.valueOf(Global.getwh_Grp_Id(getApplicationContext()))});
             new SqlQuery(ActOrderInput.this, spQueryProduct, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getproduct(?)}", new String[]{String.valueOf(Global.getwh_Grp_Id(getApplicationContext()))});
         }
     }
