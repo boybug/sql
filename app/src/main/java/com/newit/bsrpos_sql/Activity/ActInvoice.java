@@ -84,11 +84,12 @@ public class ActInvoice extends ActBase {
                     invoice_cus.setTextColor(Color.parseColor("#000000"));
                     order_no.setTextColor(Color.parseColor("#000000"));
                 }
-
                 if (searchString != null) {
+                    SetTextSpan(searchString, invoice.getStat().toString(), invoice_no);
                     SetTextSpan(searchString, invoice_no.getText().toString(), invoice_no);
                     SetTextSpan(searchString, invoice.getCus_name(), invoice_cus);
                 }
+
             }
         };
         ListView list = (ListView) findViewById(R.id.listing_list);

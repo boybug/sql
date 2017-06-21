@@ -288,7 +288,7 @@ public class Order extends ModelBase {
 
     @Override
     public String getSearchString() {
-        return cus_name + no;
+        return cus_name + no + stat;
     }
 
     public OrderItem findItem(int id) {

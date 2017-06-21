@@ -44,7 +44,7 @@ public class Invoice extends ModelBase {
         this.paid = paid;
         this.charge = charge;
         this.refund = refund;
-        this.stat = stat;
+        if(stat == OrderStat.Null) this.stat = OrderStat.New; else this.stat = stat;
     }
 
     public String getNo() {
@@ -121,6 +121,6 @@ public class Invoice extends ModelBase {
 
     @Override
     public String getSearchString() {
-        return cus_name+no;
+        return cus_name+no+stat;
     }
 }

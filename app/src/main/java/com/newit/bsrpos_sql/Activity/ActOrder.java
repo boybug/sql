@@ -86,6 +86,7 @@ public class ActOrder extends ActBase {
                 }
 
                 if (searchString != null) {
+                    SetTextSpan(searchString, order.getStat().toString(), order_no);
                     SetTextSpan(searchString, order.getNo(), order_no);
                     SetTextSpan(searchString, order.getCus_name(), order_cus);
                 }
@@ -247,9 +248,8 @@ public class ActOrder extends ActBase {
         } else if (tag == spDeleteOrderTemp) {
             if (rs != null && rs.next()) {
                 SqlResult result = new SqlResult(rs);
-                if (result.getMsg() == null) {
-                    new SqlQuery(ActOrder.this, spGetReserveStock, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getreservestock(?)}", new String[]{String.valueOf(Global.getwh_Grp_Id(getApplicationContext()))});
-                } else MessageBox(result.getMsg());
+                new SqlQuery(ActOrder.this, spGetReserveStock, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getreservestock(?)}", new String[]{String.valueOf(Global.getwh_Grp_Id(getApplicationContext()))});
+                MessageBox(result.getMsg());
             }
         } else if (tag == spGetReserveStock) {
             while (rs != null && rs.next()) {
@@ -260,7 +260,7 @@ public class ActOrder extends ActBase {
                 f.setReserve(rs.getInt("qty"));
                 fb.child(f.getKey()).setValue(f);
             }
-            MessageBox("ล้างใบสั่งสำเร็จ");
+//            MessageBox("ล้างใบสั่งสำเร็จ");
             refresh();
         }
     }
