@@ -42,6 +42,9 @@ public class ActOrder extends ActBase {
     private final int spQuery = 1;
     private final int spDelete = 2;
     private final int spQueryOrderItem = 3;
+    private final int spDeleteOrderTemp = 4;
+
+    private DatabaseReference fb;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -51,6 +54,7 @@ public class ActOrder extends ActBase {
 
         setTitle("รายการใบสั่ง@" + Global.getwh_grp_name(getApplicationContext()));
         setSwipeRefresh(R.id.swipe_refresh, R.id.listing_list);
+        fb = FirebaseDatabase.getInstance().getReference().child(Global.getFbStockPath(getApplicationContext()));
 
         adap = new AdpCustom<Order>(R.layout.listing_grid_order, getLayoutInflater(), orders) {
             @Override
@@ -178,17 +182,18 @@ public class ActOrder extends ActBase {
             super.backPressed(ActLogin.class);
         } else if (item.getItemId() == 9) {
             AlertDialog.Builder dialog = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert) : new AlertDialog.Builder(this);
-            dialog.setTitle("ล้างใบสั่งคงค้าง(สิ้นวัน)");
+            dialog.setTitle("คำเตือน");
             dialog.setIcon(R.mipmap.ic_launcher);
             dialog.setCancelable(true);
-            dialog.setMessage("ท่านต้องการลบใบสั่งคงค้างทั้งหมดหรือไม่? การกระทำนี้ไม่สามารถ undo ได้");
-            dialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+            dialog.setMessage("การลบใบสั่งคงค้างต้องทำในระหว่างที่ไม่มีเครื่องใดกำลังเปิดใบสั่งอยู่ โปรดเช็คให้แน่ใจก่อนยืนยันการลบ...");
+            dialog.setPositiveButton("ยืนยัน", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog12, int which) {
-                    clearFbStock();
+                    new SqlQuery(ActOrder.this, spDeleteOrderTemp, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "deleteordertemp(?)}", new String[]{String.valueOf(Global.getwh_Grp_Id(getApplicationContext()))});
+                    fb.removeValue();
                 }
             });
-            dialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
+            dialog.setNegativeButton("ยกเลิก", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog1, int which) {
                     dialog1.cancel();
@@ -220,15 +225,15 @@ public class ActOrder extends ActBase {
             }
         } else if (tag == spQueryOrderItem) {
             while (rs != null && rs.next()) {
-                final DatabaseReference fb = FirebaseDatabase.getInstance().getReference().child(Global.getFbStockPath(getApplicationContext())).child(rs.getString("fbkey"));
+                final String key = rs.getString("fbkey");
                 final int qty = rs.getInt("qty");
-                fb.addListenerForSingleValueEvent(new ValueEventListener() {
+                fb.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         FbStock f = dataSnapshot.getValue(FbStock.class);
                         if (f.getReserve() > 0) {
                             int remaining = f.getReserve() >= qty ? f.getReserve() - qty : 0;
-                            fb.child("reserve").setValue(remaining);
+                            fb.child(key).child("reserve").setValue(remaining);
                         }
                     }
 
@@ -239,25 +244,12 @@ public class ActOrder extends ActBase {
             }
             Order order = (Order) caller;
             new SqlQuery(ActOrder.this, spDelete, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "deleteorder(?)}", new String[]{String.valueOf(order.getId())});
-        }
-    }
-
-
-    private void clearFbStock() {
-        if (Global.getUser(getApplicationContext()).isAdmin()) {
-            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(Global.getFbStockPath(getApplicationContext()));
-            Query q = ref.orderByChild("reserve").startAt(1);
-            q.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    FbStock fb = dataSnapshot.getValue(FbStock.class);
-                    ref.child(fb.getKey()).child("reserve").setValue(0);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
+        } else if (tag == spDeleteOrderTemp) {
+            if (rs != null && rs.next()) {
+                SqlResult result = new SqlResult(rs);
+                MessageBox(result.getMsg() == null ? "ล้างใบสั่งสำเร็จ" : result.getMsg());
+                refresh();
+            }
         }
     }
 }

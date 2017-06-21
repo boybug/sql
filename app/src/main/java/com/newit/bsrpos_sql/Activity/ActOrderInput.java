@@ -27,6 +27,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.newit.bsrpos_sql.Model.Customer;
 import com.newit.bsrpos_sql.Model.FbStock;
 import com.newit.bsrpos_sql.Model.Global;
@@ -35,7 +36,6 @@ import com.newit.bsrpos_sql.Model.OrderItem;
 import com.newit.bsrpos_sql.Model.OrderStat;
 import com.newit.bsrpos_sql.Model.Product;
 import com.newit.bsrpos_sql.Model.RecordStat;
-import com.newit.bsrpos_sql.Model.ReservedStock;
 import com.newit.bsrpos_sql.Model.SqlResult;
 import com.newit.bsrpos_sql.Model.StepPrice;
 import com.newit.bsrpos_sql.R;
@@ -53,7 +53,6 @@ public class ActOrderInput extends ActBase {
     private Order order;
     private List<Product> products = new ArrayList<>();
     private List<FbStock> fbStocks = new ArrayList<>();
-    private List<ReservedStock> reservedStocks = new ArrayList<>();
     private AdpCustom<Product> adapProduct;
     private int selectedIndex;
     private AdpCustom<OrderItem> adapOrderItem;
@@ -63,7 +62,7 @@ public class ActOrderInput extends ActBase {
     private final int spQueryProduct = 2;
     private final int spQueryOrderItemPrice = 3;
     private final int spQueryOrderPrint = 4;
-    private final int spQueryReservedStock = 5;
+    private final int spQueryConfirmedStock = 5;
 
     private DrawerLayout drawer;
     private DatabaseReference fb;
@@ -106,6 +105,7 @@ public class ActOrderInput extends ActBase {
             new SqlQuery(ActOrderInput.this, spQueryOrderItem, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getorderitem(?)}", new String[]{String.valueOf(order.getId())});
             setTitle("ใบสั่งขาย " + order.getNo() + "@" + Global.getwh_grp_name(getApplicationContext()));
         }
+        new SqlQuery(ActOrderInput.this, spQueryConfirmedStock, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getconfirmedstock(?)}", new String[]{String.valueOf(Global.getwh_Grp_Id(getApplicationContext()))});
         redrawOrder();
         //endregion
 
@@ -420,7 +420,6 @@ public class ActOrderInput extends ActBase {
     @Override
     public void refresh() {
         if (order.getStat() == OrderStat.New) {
-            new SqlQuery(ActOrderInput.this, spQueryReservedStock, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getreservestock(?)}", new String[]{String.valueOf(Global.getwh_Grp_Id(getApplicationContext()))});
             new SqlQuery(ActOrderInput.this, spQueryProduct, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getproduct(?)}", new String[]{String.valueOf(Global.getwh_Grp_Id(getApplicationContext()))});
         }
     }
@@ -468,7 +467,7 @@ public class ActOrderInput extends ActBase {
     }
 
     @Override
-    public void queryReturn(ResultSet rs, int tag, Object caller) throws SQLException {
+    public void queryReturn(final ResultSet rs, int tag, Object caller) throws SQLException {
         if (tag == spQueryOrderItem) {
             order.getItems().clear();
             while (rs != null && rs.next()) {
@@ -502,18 +501,22 @@ public class ActOrderInput extends ActBase {
                 String htmlDocument = rs.getString("html");
                 webView.loadDataWithBaseURL(null, htmlDocument, "text/HTML", "UTF-8", null);
             }
-        } else if (tag == spQueryReservedStock) {
-            reservedStocks.clear();
+        } else if (tag == spQueryConfirmedStock) {
             while (rs != null && rs.next()) {
-                ReservedStock c = new ReservedStock(rs.getInt("wh_Id"), rs.getInt("prod_Id"), rs.getInt("qty"), rs.getString("fbkey"));
-                reservedStocks.add(c);
+                final String key = rs.getString("fbkey");
+                final int qty = rs.getInt("qty");
+                fb.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        FbStock f = dataSnapshot.getValue(FbStock.class);
+                        fb.child(key).child("reserve").setValue(f.getReserve() >= qty ? f.getReserve() - qty : 0);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
             }
-            fb.removeValue();
-            showProgressDialog();
-            for (ReservedStock r : reservedStocks) {
-                fb.child(r.getFbkey()).setValue(r);
-            }
-            hideProgressDialog();
         }
     }
 
