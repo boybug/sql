@@ -42,8 +42,9 @@ public class ActOrder extends ActBase {
     private final int spDelete = 2;
     private final int spQueryOrderItem = 3;
     private final int spDeleteOrderTemp = 4;
-
+    private final int spGetReserveStock = 5;
     private DatabaseReference fb;
+
 
     @SuppressWarnings("unchecked")
     @Override
@@ -246,9 +247,21 @@ public class ActOrder extends ActBase {
         } else if (tag == spDeleteOrderTemp) {
             if (rs != null && rs.next()) {
                 SqlResult result = new SqlResult(rs);
-                MessageBox(result.getMsg() == null ? "ล้างใบสั่งสำเร็จ" : result.getMsg());
-                refresh();
+                if (result.getMsg() == null) {
+                    new SqlQuery(ActOrder.this, spGetReserveStock, "{call " + Global.getDatabase(getApplicationContext()).getPrefix() + "getreservestock(?)}", new String[]{String.valueOf(Global.getwh_Grp_Id(getApplicationContext()))});
+                } else MessageBox(result.getMsg());
             }
+        } else if (tag == spGetReserveStock) {
+            while (rs != null && rs.next()) {
+                FbStock f = new FbStock();
+                f.setKey(rs.getString("fbkey"));
+                f.setProd_id(rs.getInt("prod_id"));
+                f.setWh_id(rs.getInt("wh_id"));
+                f.setReserve(rs.getInt("qty"));
+                fb.child(f.getKey()).setValue(f);
+            }
+            MessageBox("ล้างใบสั่งสำเร็จ");
+            refresh();
         }
     }
 }
