@@ -51,6 +51,7 @@ public class ActBank extends ActBase {
                 Bank bank = banks.get(position);
                 Intent intent = new Intent();
                 intent.putExtra("bank_id", bank.getId());
+                intent.putExtra("bank_name", bank.getName());
                 setResult(RESULT_OK, intent);
                 finish();
             }

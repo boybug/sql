@@ -43,7 +43,7 @@ public class ActOrderInputPayment extends ActBase {
     private Order order;
     private List<Invoice> invoices = new ArrayList<>();
 
-    private TextView orderiteminputpayment_no, orderiteminputpayment_qty, orderiteminputpayment_wgt, orderiteminputpayment_amt, orderinput_cus, orderiteminputpayment_remark;
+    private TextView orderiteminputpayment_no, orderiteminputpayment_qty, orderiteminputpayment_wgt, orderiteminputpayment_amt, orderinput_cus, orderiteminputpayment_remark, orderiteminputpayment_bank;
     private RadioButton radio_paycash, radio_paytranfer, radio_paycredit;
     private Switch switch_payship;
     private EditText orderiteminputpayment_paid, orderiteminputpayment_charge, orderiteminputpayment_refund;
@@ -70,6 +70,7 @@ public class ActOrderInputPayment extends ActBase {
         orderiteminputpayment_charge = (EditText) findViewById(R.id.orderiteminputpayment_charge);
         orderiteminputpayment_paid = (EditText) findViewById(R.id.orderiteminputpayment_paid);
         orderiteminputpayment_refund = (EditText) findViewById(R.id.orderiteminputpayment_refund);
+        orderiteminputpayment_bank = (TextView) findViewById(R.id.orderiteminputpayment_bank);
 
         switch_payship = (Switch) findViewById(R.id.switch_payship);
         RadioGroup radio_group = (RadioGroup) findViewById(R.id.radio_group);
@@ -94,6 +95,8 @@ public class ActOrderInputPayment extends ActBase {
                         case R.id.radio_paycash:
                             order.setPay(OrderPay.Cash);
                             order.setBank_id(-1);
+                            order.setBank_name("");
+                            orderiteminputpayment_bank.setText("");
                             stop = true;
                             calRefund();
                             break;
@@ -101,12 +104,16 @@ public class ActOrderInputPayment extends ActBase {
                             order.setPay(OrderPay.Transfer);
                             stop = true;
                             calRefund();
-                            Intent intent = new Intent(ActOrderInputPayment.this, ActBank.class);
-                            startActivityForResult(intent, 1);
+                            if (order.getStat() != OrderStat.Confirm) {
+                                Intent intent = new Intent(ActOrderInputPayment.this, ActBank.class);
+                                startActivityForResult(intent, 1);
+                            }
                             break;
                         case R.id.radio_paycredit:
                             order.setPay(OrderPay.Credit);
                             order.setBank_id(-1);
+                            order.setBank_name("");
+                            orderiteminputpayment_bank.setText("");
                             stop = true;
                             calRefund();
                             break;
@@ -249,6 +256,7 @@ public class ActOrderInputPayment extends ActBase {
             } else if (order.getPay() == OrderPay.Credit) {
                 radio_paycredit.setChecked(true);
             }
+            orderiteminputpayment_bank.setText(order.getBank_name());
             orderiteminputpayment_remark.setText(order.getRemark());
             orderiteminputpayment_paid.setText(Global.formatMoney(order.getPaid()));
             orderiteminputpayment_refund.setText(Global.formatMoney(order.getRefund()));
@@ -348,6 +356,8 @@ public class ActOrderInputPayment extends ActBase {
         if (requestCode == 1) {
             if (resultCode == RESULT_OK && null != data) {
                 order.setBank_id(data.getIntExtra("bank_id", -1));
+                order.setBank_name(data.getStringExtra("bank_name"));
+                orderiteminputpayment_bank.setText(order.getBank_name());
             }
         }
     }

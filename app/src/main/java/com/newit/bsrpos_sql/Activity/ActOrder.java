@@ -18,7 +18,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.newit.bsrpos_sql.Model.FbStock;
 import com.newit.bsrpos_sql.Model.Global;
@@ -213,7 +212,7 @@ public class ActOrder extends ActBase {
                         rs.getInt("cus_id"), rs.getString("cus_name"), rs.getInt("wh_grp_id"), OrderStat.valueOf(rs.getString("order_stat")),
                         rs.getInt("qty"), rs.getFloat("weight"), rs.getFloat("amount"), rs.getInt("usr_id"), rs.getString("usr_name"),
                         OrderPay.valueOf(rs.getString("pay")), rs.getBoolean("ship"), rs.getString("remark"), rs.getFloat("paid"), rs.getFloat("charge"),
-                        rs.getFloat("refund"), rs.getInt("bank_id"));
+                        rs.getFloat("refund"), rs.getInt("bank_id"), rs.getString("bank_name"));
                 orders.add(o);
             }
             if (adap != null) adap.notifyDataSetChanged();

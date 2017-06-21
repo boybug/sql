@@ -35,8 +35,8 @@ public class Order extends ModelBase {
     private float charge;
     private float refund;
     private int bank_id;
-    private User user;
-    private WhGrp whGrp;
+    private String bank_name;
+
 
     public Order(int cus_id, String cus_name, boolean ship, User user, int wh_grp_Id) {
         super(true);
@@ -56,10 +56,11 @@ public class Order extends ModelBase {
         this.charge = 0;
         this.refund = 0;
         this.bank_id = -1;
+        this.bank_name = "";
     }
 
     public Order(int id, String no, String date, int cus_id, String cus_name, int wh_grp_Id, OrderStat stat, int qty, float weight,
-                 float amount, int usr_id, String usr_name, OrderPay pay, boolean ship, String remark, float paid, float charge, float refund, int bank_id) {
+                 float amount, int usr_id, String usr_name, OrderPay pay, boolean ship, String remark, float paid, float charge, float refund, int bank_id, String bank_name) {
         super(false);
         this.id = id;
         this.no = no;
@@ -80,6 +81,7 @@ public class Order extends ModelBase {
         this.charge = charge;
         this.refund = refund;
         this.bank_id = bank_id;
+        this.bank_name = bank_name;
     }
 
     public String getNo() {
@@ -265,6 +267,17 @@ public class Order extends ModelBase {
         }
     }
 
+    public String getBank_name() {
+        return bank_name;
+    }
+
+    public void setBank_name(String bank_name) {
+        if (!Objects.equals(this.bank_name, bank_name)) {
+            this.bank_name = bank_name;
+            updateRecordStat();
+        }
+    }
+
     public List<OrderItem> getDeletingItems() {
         return deletingItems;
     }
@@ -338,4 +351,6 @@ public class Order extends ModelBase {
         setWeight(tempWeight);
         setAmount(tempAmount);
     }
+
+
 }
