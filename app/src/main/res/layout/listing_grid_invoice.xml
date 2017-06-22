@@ -53,6 +53,19 @@
         android:layout_toStartOf="@+id/invoice_amount" />
 
     <TextView
+        android:id="@+id/invoice_stat"
+        android:layout_width="fill_parent"
+        android:layout_height="26dip"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/invoice_cus"
+        android:layout_toStartOf="@+id/invoice_amount"
+        android:paddingLeft="5dp"
+        android:paddingTop="3dp"
+        android:text="invoice_usr"
+        android:visibility="gone"
+        android:textSize="12sp" />
+
+    <TextView
         android:id="@+id/invoice_cus"
         android:layout_width="fill_parent"
         android:layout_height="26dip"

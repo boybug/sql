@@ -75,6 +75,8 @@ public class ActOrder extends ActBase {
                 TextView order_usr = (TextView) v.findViewById(R.id.order_usr);
                 order_usr.setText("ผู้เปิดใบสั่ง : " + String.valueOf(order.getUsr_name()));
 
+                TextView order_stat = (TextView) v.findViewById(R.id.order_stat);
+
                 if (order.getStat() == OrderStat.New) {
                     v.setBackgroundColor(Color.parseColor("#abdacf"));
                     order_amount.setTextColor(Color.parseColor("#ff0000"));
@@ -86,7 +88,7 @@ public class ActOrder extends ActBase {
                 }
 
                 if (searchString != null) {
-                    SetTextSpan(searchString, order.getStat().toString(), order_no);
+                    SetTextSpan(searchString, order.getStat().toString(), order_stat);
                     SetTextSpan(searchString, order.getNo(), order_no);
                     SetTextSpan(searchString, order.getCus_name(), order_cus);
                 }

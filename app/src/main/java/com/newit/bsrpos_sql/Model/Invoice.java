@@ -44,7 +44,7 @@ public class Invoice extends ModelBase {
         this.paid = paid;
         this.charge = charge;
         this.refund = refund;
-        if(stat == OrderStat.Null) this.stat = OrderStat.New; else this.stat = stat;
+        this.stat = stat;
     }
 
     public String getNo() {
