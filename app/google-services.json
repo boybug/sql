@@ -1,27 +1,43 @@
 {
   "project_info": {
-    "project_number": "465243183368",
-    "firebase_url": "https://bsrpossqltest.firebaseio.com",
-    "project_id": "bsrpossqltest",
-    "storage_bucket": "bsrpossqltest.appspot.com"
+    "project_number": "355356318505",
+    "firebase_url": "https://bsrpossql.firebaseio.com",
+    "project_id": "bsrpossql",
+    "storage_bucket": "bsrpossql.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:465243183368:android:6b992af82fc6887a",
+        "mobilesdk_app_id": "1:355356318505:android:6b992af82fc6887a",
         "android_client_info": {
           "package_name": "com.newit.bsrpos_sql"
         }
       },
       "oauth_client": [
         {
-          "client_id": "465243183368-f54nguiuvg6an69dh2smild2fv4991ob.apps.googleusercontent.com",
+          "client_id": "355356318505-5qfohfcld0aqqp718llcs822k5mbt5aq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.newit.bsrpos_sql",
+            "certificate_hash": "3190ea7634120fb21ab1df817c91e2824b4aee9d"
+          }
+        },
+        {
+          "client_id": "355356318505-lu7q0r5tg0lg6e14lirppeb3igaun2lt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.newit.bsrpos_sql",
+            "certificate_hash": "362f327b080e2b9277b0955f0bff5489d6beff51"
+          }
+        },
+        {
+          "client_id": "355356318505-2ho4evqsakdcrcsufe21qlctg4uhc86i.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAN4AK32ljF3dL6klM2j3WDf1EYFDpHWmE"
+          "current_key": "AIzaSyDAhog1ayyFvIrpTkgDa9eYHcmqleqGs2w"
         }
       ],
       "services": {
@@ -29,8 +45,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "355356318505-2ho4evqsakdcrcsufe21qlctg4uhc86i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
