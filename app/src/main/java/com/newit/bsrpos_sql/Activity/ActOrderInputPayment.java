@@ -91,34 +91,34 @@ public class ActOrderInputPayment extends ActBase {
         radio_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                    switch (checkedId) {
-                        case R.id.radio_paycash:
-                            order.setPay(OrderPay.Cash);
-                            order.setBank_id(-1);
-                            order.setBank_name("");
-                            orderiteminputpayment_bank.setText("");
-                            stop = true;
-                            calRefund();
-                            break;
-                        case R.id.radio_paytranfer:
-                            order.setPay(OrderPay.Transfer);
-                            stop = true;
-                            calRefund();
-                            if (order.getStat() != OrderStat.Confirm) {
-                                Intent intent = new Intent(ActOrderInputPayment.this, ActBank.class);
-                                startActivityForResult(intent, 1);
-                            }
-                            break;
-                        case R.id.radio_paycredit:
-                            order.setPay(OrderPay.Credit);
-                            order.setBank_id(-1);
-                            order.setBank_name("");
-                            orderiteminputpayment_bank.setText("");
-                            stop = true;
-                            calRefund();
-                            break;
-                    }
+                switch (checkedId) {
+                    case R.id.radio_paycash:
+                        order.setPay(OrderPay.Cash);
+                        order.setBank_id(-1);
+                        order.setBank_name("");
+                        orderiteminputpayment_bank.setText("");
+                        stop = true;
+                        calRefund();
+                        break;
+                    case R.id.radio_paytranfer:
+                        order.setPay(OrderPay.Transfer);
+                        stop = true;
+                        calRefund();
+                        if (order.getStat() != OrderStat.Confirm) {
+                            Intent intent = new Intent(ActOrderInputPayment.this, ActBank.class);
+                            startActivityForResult(intent, 1);
+                        }
+                        break;
+                    case R.id.radio_paycredit:
+                        order.setPay(OrderPay.Credit);
+                        order.setBank_id(-1);
+                        order.setBank_name("");
+                        orderiteminputpayment_bank.setText("");
+                        stop = true;
+                        calRefund();
+                        break;
                 }
+            }
         });
         switch_payship.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -360,5 +360,12 @@ public class ActOrderInputPayment extends ActBase {
                 orderiteminputpayment_bank.setText(order.getBank_name());
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        setResult(RESULT_OK, intent);
+        super.onBackPressed();
     }
 }

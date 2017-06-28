@@ -344,8 +344,7 @@ public class ActOrderInput extends ActBase {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
-            if (data.getBooleanExtra("FINISH", false))
-                finish();
+            finish();
         } else if (requestCode == 3 && resultCode == Activity.RESULT_OK) {
             int delta = data.getIntExtra("DELTA", 0);
             OrderItem oi = order.getItems().get(selectedIndex);
@@ -509,7 +508,8 @@ public class ActOrderInput extends ActBase {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         FbStock f = dataSnapshot.getValue(FbStock.class);
-                        fb.child(key).child("reserve").setValue(f.getReserve() >= qty ? f.getReserve() - qty : 0);
+                        if (f != null)
+                            fb.child(key).child("reserve").setValue(f.getReserve() >= qty ? f.getReserve() - qty : 0);
                     }
 
                     @Override
