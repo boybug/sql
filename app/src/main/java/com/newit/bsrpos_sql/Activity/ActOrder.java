@@ -147,17 +147,20 @@ public class ActOrder extends ActBase {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("order", true);
                 Intent intent = new Intent(ActOrder.this, ActCustomer.class);
+                intent.putExtras(bundle);
                 ActOrder.this.startActivity(intent);
-                ActOrder.this.finish();
+//                ActOrder.this.finish();
             }
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        backPressed(ActMain.class);
-    }
+//    @Override
+//    public void onBackPressed() {
+//        backPressed(ActMain.class);
+//    }
 
     @Override
     public void refresh() {

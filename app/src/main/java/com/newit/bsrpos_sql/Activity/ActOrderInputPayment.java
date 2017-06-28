@@ -53,6 +53,7 @@ public class ActOrderInputPayment extends ActBase {
     private final int spGetInvoice = 2;
     private final int spQueryInvoicePrint = 3;
     private boolean stop;
+    private boolean confirm = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -341,6 +342,7 @@ public class ActOrderInputPayment extends ActBase {
                 invoices.add(i);
                 invalidateOptionsMenu();
             }
+            confirm = true;
 
         } else if (tag == spQueryInvoicePrint) {
             if (rs != null && rs.next()) {
@@ -364,8 +366,12 @@ public class ActOrderInputPayment extends ActBase {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent();
-        setResult(RESULT_OK, intent);
-        super.onBackPressed();
+        if (confirm) {
+            Intent intent = new Intent(this, ActOrder.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        }
+        else super.onBackPressed();
     }
 }

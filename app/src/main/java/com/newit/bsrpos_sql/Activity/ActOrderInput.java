@@ -343,7 +343,7 @@ public class ActOrderInput extends ActBase {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
+        if (requestCode == 2 && resultCode == 100) {
             finish();
         } else if (requestCode == 3 && resultCode == Activity.RESULT_OK) {
             int delta = data.getIntExtra("DELTA", 0);
@@ -402,7 +402,7 @@ public class ActOrderInput extends ActBase {
                             fb.child(f.getKey()).child("reserve").setValue(f.getReserve() + item.getQty());
                         }
                     }
-                    backPressed(ActOrder.class);
+                   backPressed(ActOrder.class);
 
                 }
             });

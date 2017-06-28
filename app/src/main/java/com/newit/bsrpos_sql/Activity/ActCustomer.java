@@ -25,12 +25,15 @@ public class ActCustomer extends ActBase {
 
     private List<Customer> customers = new ArrayList<>();
     private AdpCustom<Customer> adap;
+    private Bundle b1;
 
     @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.listing);
+
+        b1 = getIntent().getExtras();
 
         hideFloatButton(R.id.fab);
         setTitle("รายการลูกค้า@" + Global.getwh_grp_name(getApplicationContext()));
@@ -61,6 +64,8 @@ public class ActCustomer extends ActBase {
                 Intent intent = new Intent(ActCustomer.this, ActCustomerDetail.class);
                 intent.putExtras(bundle);
                 ActCustomer.this.startActivity(intent);
+//                if(b1 != null) finish();
+
             }
         });
 
@@ -68,10 +73,10 @@ public class ActCustomer extends ActBase {
         addVoiceSearch(R.id.search_txt, R.id.search_btn, R.id.search_clear, customers, adap);
     }
 
-    @Override
-    public void onBackPressed() {
-        backPressed(ActMain.class);
-    }
+//    @Override
+//    public void onBackPressed() {
+//        backPressed(ActMain.class);
+//    }
 
     @Override
     public void refresh() {

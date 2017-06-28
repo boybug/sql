@@ -60,6 +60,7 @@ public class ActCustomerDetail extends ActBase {
                 Intent intent = new Intent(ActCustomerDetail.this, ActOrderInput.class);
                 intent.putExtras(bundle);
                 ActCustomerDetail.this.startActivity(intent);
+                finish();
             }
         });
     }

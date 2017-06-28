@@ -44,7 +44,8 @@
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
         <activity
             android:name=".Activity.ActCustomerDetail"
-            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode"
+            android:noHistory="true" />
         <activity
             android:name=".Activity.ActProduct"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
