@@ -2,7 +2,9 @@ package com.newit.bsrpos_sql.Activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -26,12 +28,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.newit.bsrpos_sql.Model.Database;
 import com.newit.bsrpos_sql.Model.Global;
 import com.newit.bsrpos_sql.Model.User;
 import com.newit.bsrpos_sql.R;
 import com.newit.bsrpos_sql.Util.SqlQuery;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
@@ -212,6 +219,40 @@ public class ActLogin extends ActBase {
                 if (!Objects.equals(latestversion, appversion)) {
                     hideProgressDialog();
                     MessageBox("เวอร์ชั่นของคุณเป็น " + appversion + " กรุณาอัพเกรดเป็นเวอร์ชั่นใหม่สุด " + latestversion);
+
+//
+//                    FirebaseStorage storage = FirebaseStorage.getInstance();
+//                    StorageReference storageRef = storage.getReferenceFromUrl("gs://bsrpossqltest.appspot.com/1.2.10.apk");
+//
+//                    File localFile = null;
+//                    try {
+//                        localFile = File.createTempFile("1.2.10", "apk");
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    if (localFile != null) {
+//                        storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+//                            @Override
+//                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+//                                String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/";
+//                                String fileName = "1.2.10.apk";
+//                                destination += fileName;
+//                                final Uri uri = Uri.parse("file://" + destination);
+//
+//                                Intent install = new Intent(Intent.ACTION_VIEW);
+//                                install.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                                install.setDataAndType(uri, "application/vnd.android.package-archive");
+//                                startActivity(install);
+//                            }
+//                        }).addOnFailureListener(new OnFailureListener() {
+//                            @Override
+//                            public void onFailure(@NonNull Exception exception) {
+//                                MessageBox(exception.getMessage());
+//                            }
+//                        });
+//                    }
+
+
                     mAuth.signOut();
                 } else {
                     Global.setisLocal(login_local.isChecked(), getApplicationContext());
