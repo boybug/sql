@@ -17,8 +17,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -138,27 +140,39 @@ public class ActUserInput extends ActBase {
     }
 
     private void PassResetViaEmail(final String login, final String oldpassword, final String newpassword, boolean isReset) {
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        AuthCredential credential = EmailAuthProvider.getCredential(login, oldpassword);
-        if (user != null) {
-            user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        user.updatePassword(newpassword).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    MessageBox("รีเซทรหัสผ่านแล้ว");
-                                } else {
-                                    MessageBox("ผิดพลาด ไม่สามารถรีเซทรหัสผ่าน");
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if ((Objects.equals(Global.getUser(getApplicationContext()).getEmail(), login))) {
+            AuthCredential credential = EmailAuthProvider.getCredential(login, oldpassword);
+            if (user != null) {
+                user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            user.updatePassword(newpassword).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        MessageBox("เปลี่ยนรหัสผ่านสำเร็จ");
+                                    } else {
+                                        MessageBox("ผิดพลาด ไม่สามารถรีเซทรหัสผ่าน");
+                                    }
                                 }
-                            }
-                        });
-                    } else {
-                        MessageBox("ผิดพลาด รหัสผ่านไม่ตรงกัน");
+                            });
+                        } else {
+                            MessageBox("ผิดพลาด รหัสผ่านไม่ตรงกัน");
+                        }
                     }
+                });
+            }
+        }
+        else{
+            FirebaseAuth.getInstance().signInWithEmailAndPassword(login, oldpassword).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                @Override
+                public void onSuccess(AuthResult authResult) {
+                    FirebaseUser users = authResult.getUser();
+                    users.updatePassword(newpassword);
+                    MessageBox("รีเซทรหัสผ่านแล้ว");
                 }
             });
         }
@@ -215,7 +229,7 @@ public class ActUserInput extends ActBase {
             if (rs != null && rs.next()) {
                 SqlResult result = new SqlResult(rs);
                 if (result.getMsg() == null) {
-                    MessageBox("เปลี่ยนรหัสผ่านสำเร็จ");
+//                    MessageBox("เปลี่ยนรหัสผ่านสำเร็จ");
                     PassResetViaEmail(user.getEmail(), oldpass, newpass, false);
                 } else MessageBox(result.getMsg());
             }
